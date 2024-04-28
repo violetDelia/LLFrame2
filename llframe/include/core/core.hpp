@@ -19,4 +19,5 @@
 #ifndef __LLFRAME_CORE_HPP__
 #define __LLFRAME_CORE_HPP__
 #include "core/base_type.hpp"
+#include "core/exception.hpp"
 #endif //__LLFRAME_CORE_HPP__
