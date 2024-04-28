@@ -1,5 +1,6 @@
 #include <iostream>
 #include "llframe.hpp"
 int main() {
-    std::cout << "run" << std::endl;
+    llframe::float32_t num(244);
+    std::cout << num << std::endl;
 }

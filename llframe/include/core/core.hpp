@@ -13,10 +13,10 @@
 //    limitations under the License.
 
 /**
- * @brief llframe 头文件
+ * @brief core 头文件
  *
  */
-#ifndef __LLFRAME_HPP__
-#define __LLFRAME_HPP__
-#include "core/core.hpp"
-#endif //__LLFRAME_HPP__
+#ifndef __LLFRAME_CORE_HPP__
+#define __LLFRAME_CORE_HPP__
+#include "core/base_type.hpp"
+#endif //__LLFRAME_CORE_HPP__
