@@ -1,0 +1,76 @@
+##---------- options cache ----------##
+if(DEFINED BUILD_SHARED_LIBS)
+    unset(BUILD_SHARED_LIBS CACHE)
+endif()
+
+if(DEFINED TEST_ALL)
+    unset(TEST_ALL CACHE)
+endif()
+
+##---------- options ----------##
+option(BUILD_SHARED_LIBS "build shared libs" ON)
+option(TEST "run test" ON)
+
+##---------- cmake setting ----------##
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
+project(main LANGUAGES C CXX CUDA)
+
+##---------- define absolute path ----------##
+cmake_path(APPEND LLFRAME_DIR ${CMAKE_CURRENT_SOURCE_DIR} "llframe")
+
+##---------- define install absolute path ----------##
+cmake_path(APPEND INSTALL_DIR ${CMAKE_CURRENT_SOURCE_DIR} "install")
+cmake_path(APPEND INSTALL_INCLUDE_DIR ${INSTALL_DIR} "include")
+cmake_path(APPEND INSTALL_LIB_DIR ${INSTALL_DIR} "lib")
+cmake_path(APPEND INSTALL_RUNTIME_DIR ${INSTALL_DIR} "bin")
+cmake_path(APPEND INSTALL_CMAKE_DIR ${INSTALL_DIR} "cmake")
+
+
+##---------- compiler setting ----------##
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+set(CUDA_STANDARD 20)
+
+set(CMAKE_DEBUG_POSTFIX _d)
+set(CMAKE_INSTALL_PREFIX ${INSTALL_DIR})
+
+#msvc编译器设置
+if(MSVC)
+    #去掉msvc4819警告
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/wd4819>)
+    #打开openmp支持
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/openmp>)
+    #去掉编译cuda 4819 警告
+    string(REGEX REPLACE "\"$" " /wd4819\"" CMAKE_CUDA_FLAGS ${CMAKE_CUDA_FLAGS})
+
+    add_compile_options(
+        $<$<CONFIG:>:/MT>
+        $<$<CONFIG:Debug>:/MTd>
+        $<$<CONFIG:Release>:/MT>
+    )
+endif()
+
+##---------- external library ----------##
+find_package(OPENBLAS 0.3.26 REQUIRED PATHS "D:/CPlus/openblas/lib/cmake/OpenBLAS")
+cmake_path(SET OPENBLAS_INCLUDE_DIR "D:/CPlus/openblas/include")
+cmake_path(SET OPENBLAS_LIB_DIR "D:/CPlus/openblas/lib")
+include_directories(${OPENBLAS_INCLUDE_DIR})
+link_directories(${OPENBLAS_LIB_DIR})
+
+find_package(OpenMP REQUIRED)
+
+find_package(GTest 1.14.0 REQUIRED)
+
+find_package(CUDAToolkit 11.7.64 REQUIRED)
+
+##---------- external library ----------##
+add_subdirectory(${LLFRAME_DIR})
+message(${LLFRAME_INCLUDE_DIR})
+
+##---------- main ----------##
+add_executable(main "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
+target_include_directories(main PRIVATE $<BUILD_INTERFACE:${LLFRAME_INCLUDE_DIR}>
+$<INSTALL_INTERFACE:${LLFRAME_INSTALL_DIR}>
+)
+target_link_libraries(main PRIVATE LLFrame)
+

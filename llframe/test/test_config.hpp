@@ -1,0 +1,5 @@
+#ifndef __LLFRAME_TEST_CONFIG__
+#define __LLFRAME_TEST_CONFIG__
+#define TEST_CONFIG
+
+#endif //__LLFRAME_TEST_CONFIG__

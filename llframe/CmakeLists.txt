@@ -1,0 +1,80 @@
+##---------- cmake setting ----------##
+set(LLFRAME_VERSION 1.0.0)
+project(LLFrame VERSION ${LLFRAME_VERSION} LANGUAGES C CXX CUDA)
+
+##---------- option ----------##
+if(TEST)
+    option(TEST_LLFRAME "test llframe" ON)
+endif()
+
+##---------- define absolute path ----------##
+cmake_path(APPEND LLFRAME_CMAKE_DIR ${CMAKE_CURRENT_SOURCE_DIR} "cmake")
+cmake_path(APPEND LLFRAME_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} "include")
+cmake_path(APPEND LLFRAME_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR} "src")
+cmake_path(APPEND LLFRAME_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR} "test")
+
+set(LLFRAME_INCLUDE_DIR ${LLFRAME_INCLUDE_DIR} PARENT_SCOPE)
+
+##---------- define install absolute path ----------##
+set(LLFRAME_INSTALL_CMAKE_DIR ${INSTALL_CMAKE_DIR})
+set(LLFRAME_INSTALL_INCLUDE_DIR ${INSTALL_INCLUDE_DIR})
+set(LLFRAME_INSTALL_LIB_DIR ${INSTALL_LIB_DIR})
+set(LLFRAME_INSTALL_RUNTIME_DIR ${INSTALL_RUNTIME_DIR})
+
+##---------- serach sorce file ----------##
+aux_source_directory(${LLFRAME_SOURCE_DIR} LLFRAME_SOURCE_FILES)
+
+##---------- compiler llframe ----------##
+if(BUILD_SHARED_LIBS)
+    add_library(LLFrame SHARED ${LLFRAME_SOURCE_FILES})
+else()
+    add_library(LLFrame STATIC ${LLFRAME_SOURCE_FILES})
+endif()
+
+set_target_properties(LLFrame PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
+target_include_directories(LLFrame
+    PRIVATE
+    $<BUILD_INTERFACE:${LLFRAME_INCLUDE_DIR}>
+    $<INSTALL_INTERFACE:${LLFRAME_INSTALL_DIR}>
+)
+
+target_link_libraries(LLFrame
+    PRIVATE
+)
+set_property(TARGET LLFrame PROPERTY VERSION ${LLFRAME_VERSION})
+
+##---------- test ----------##
+if(TEST_LLFRAME)
+    enable_testing()
+    add_subdirectory(${LLFRAME_TEST_DIR})
+endif(TEST_LLFRAME)
+message(${LLFRAME_INSTALL_INCLUDE_DIR})
+
+##---------- install ----------##
+include(CMakePackageConfigHelpers)
+#安装头文件
+install(DIRECTORY "${LLFRAME_INCLUDE_DIR}/" DESTINATION "${LLFRAME_INSTALL_INCLUDE_DIR}")
+#将目标安装至指定路径
+install(TARGETS LLFrame
+    EXPORT LLFrameTargets
+    RUNTIME DESTINATION ${LLFRAME_INSTALL_RUNTIME_DIR} #动态库
+    LIBRARY DESTINATION ${LLFRAME_INSTALL_LIB_DIR}  #静态库
+    ARCHIVE DESTINATION ${LLFRAME_INSTALL_LIB_DIR})
+#安装LLFrameTargets.cmake文件
+install(EXPORT LLFrameTargets
+    FILE LLFrameTargets.cmake
+    DESTINATION ${LLFRAME_INSTALL_CMAKE_DIR})
+#生成LLFrameConfig.cmake文件并安装
+configure_package_config_file("${LLFRAME_CMAKE_DIR}/LLFrameConfig.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/LLFrameConfig.cmake"
+    INSTALL_DESTINATION ${LLFRAME_INSTALL_CMAKE_DIR}
+)
+#生成LLFrameConfigVersion.cmake文件
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/LLFrameConfigVersion.cmake"
+    VERSION ${LLFRAME_VERSION}
+    COMPATIBILITY SameMajorVersion)
+#安装LLFrameConfigVersion.cmake文件
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/LLFrameConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/LLFrameConfigVersion.cmake"
+    DESTINATION ${LLFRAME_INSTALL_CMAKE_DIR})
