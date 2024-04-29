@@ -20,4 +20,5 @@
 #define __LLFRAME_CORE_HPP__
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
+#include "core/shape.hpp"
 #endif //__LLFRAME_CORE_HPP__

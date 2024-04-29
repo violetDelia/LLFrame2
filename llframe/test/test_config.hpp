@@ -3,4 +3,5 @@
 // #define TEST_CONFIG
 // #define TEST_BASE_TYPE
 #define TEST_EXCEPTION
+#define TEST_SHAPE
 #endif //__LLFRAME_TEST_CONFIG__

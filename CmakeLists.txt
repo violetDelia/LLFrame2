@@ -8,7 +8,7 @@ if(DEFINED TEST_ALL)
 endif()
 
 ##---------- options ----------##
-option(BUILD_SHARED_LIBS "build shared libs" ON)
+option(BUILD_SHARED_LIBS "build shared libs" OFF)
 option(TEST "run test" ON)
 
 ##---------- cmake setting ----------##

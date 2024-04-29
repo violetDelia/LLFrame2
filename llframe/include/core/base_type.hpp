@@ -20,7 +20,9 @@
 #define __LLFRAME_BASE_TYPE_HPP__
 #include <cstdint>
 #include <cstddef>
-namespace llframe { inline namespace base_type {
+#include <type_traits>
+namespace llframe {
+inline namespace base_type {
 using int8_t = std::int8_t;
 using int16_t = std::int16_t;
 using int32_t = std::int32_t;
@@ -33,5 +35,29 @@ using float32_t = float;
 using float64_t = double;
 using size_t = std::size_t;
 using ptrdiff_t = std::ptrdiff_t;
-}}     // namespace llframe::base_type
+} // namespace base_type
+// 常用概念
+inline namespace concepts {
+
+/**
+ * @brief 类型是否为整数
+ */
+template <class Ty>
+concept is_Integral = std::is_integral_v<Ty>;
+
+/**
+ * @brief 类型是否为浮点型
+ */
+template <class Ty>
+concept is_Floating_Point = std::is_floating_point_v<Ty>;
+
+/**
+ * @brief 类型是否为数值
+ */
+template <class Ty>
+concept is_Arithmetic = std::is_arithmetic_v<Ty>;
+
+} // namespace concepts
+
+} // namespace llframe
 #endif //__LLFRAME_BASE_TYPE_HPP__

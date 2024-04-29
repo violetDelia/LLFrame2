@@ -149,6 +149,15 @@ public:
     using Exception::Exception;
 };
 
+/**
+ * @brief 范围错误导致的异常
+ *
+ */
+class Bad_Range : public Exception {
+public:
+    using Exception::Exception;
+};
+
 }} // namespace llframe::exception
 /**
  * @brief 抛出异常
