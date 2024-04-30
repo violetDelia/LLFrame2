@@ -37,18 +37,18 @@ public:
     using Self = Shape<N_Dim>;
     using Base = std::array<int64_t, N_Dim>;
 
-    using value_type = Base::value_type;
-    using size_type = Base::size_type;
-    using difference_type = Base::difference_type;
-    using pointer = Base::pointer;
-    using const_pointer = Base::const_pointer;
-    using reference = Base::reference;
-    using const_reference = Base::const_reference;
+    using value_type = typename Base::value_type;
+    using size_type = typename Base::size_type;
+    using difference_type = typename Base::difference_type;
+    using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
+    using reference = typename Base::reference;
+    using const_reference = typename Base::const_reference;
 
-    using iterator = Base::iterator;
-    using const_iterator = Base::const_iterator;
-    using reverse_iterator = Base::reverse_iterator;
-    using const_reverse_iterator = Base::const_reverse_iterator;
+    using iterator = typename Base::iterator;
+    using const_iterator = typename Base::const_iterator;
+    using reverse_iterator = typename Base::reverse_iterator;
+    using const_reverse_iterator = typename Base::const_reverse_iterator;
 
 public: // 构造函数
     using Base::array;
@@ -141,6 +141,9 @@ struct _Is_Shape : std::false_type {};
 template <template <size_t> class _Ty, size_t _Arg>
 struct _Is_Shape<_Ty<_Arg>> : std::is_base_of<Shape<_Arg>, _Ty<_Arg>> {};
 
+/**
+ * @brief 判断类型是否是Shape的实例
+ */
 template <class Ty>
 concept is_Shape = _Is_Shape<Ty>::value;
 /**
@@ -169,11 +172,17 @@ template <is_Shape Left, is_Shape Right>
     return false;
 }
 
+/**
+ * @brief 判断两个Shape是否相等
+ *
+ */
 template <is_Shape Shape>
 [[nodiscard]] constexpr bool operator==(const Shape &left, const Shape &right) {
     return std::equal(left.cbegin(), left.cend(), right.cbegin());
 }
-
+/**
+ * @brief 生成一个Shape
+ */
 template <is_Integral... Integrals>
 constexpr Shape<sizeof...(Integrals)> make_shape(Integrals... values) {
     return Shape<sizeof...(Integrals)>(values...);

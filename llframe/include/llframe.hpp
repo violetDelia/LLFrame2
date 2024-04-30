@@ -20,4 +20,5 @@
 #define __LLFRAME_HPP__
 #include "core/core.hpp"
 #include "device/device.hpp"
+#include "allocator/allocator.hpp"
 #endif //__LLFRAME_HPP__

@@ -13,24 +13,22 @@
 //    limitations under the License.
 
 /**
- * @brief device 定义
+ * @brief 分配器定义文件
  *
  */
-#ifndef __LLFRAME_DEVICE_DEFINE_HPP__
-#define __LLFRAME_DEVICE_DEFINE_HPP__
-#include <type_traits>
-namespace llframe { namespace device {
-
-class Device;
-
-/**
- * @brief 判断类型是否是Device的基类
- */
+#ifndef __LLFRAME_ALLOCATOR_DEFINE_HPP__
+#define __LLFRAME_ALLOCATOR_DEFINE_HPP__
+#include "device/device_define.hpp"
+namespace llframe { namespace allocator {
 template <class Ty>
-concept is_Device = std::is_base_of_v<Device, Ty>;
+class Biasc_Allocator;
 
-template <is_Device Device>
-class Device_Platform;
+template <device::is_Device Device>
+class Memory_Pool;
 
-}}     // namespace llframe::device
-#endif //__LLFRAME_DEVICE_DEFINE_HPP__
+template <class Ty, device::is_Device Device>
+class Allocator;
+
+}} // namespace llframe::allocator
+
+#endif //__LLFRAME_ALLOCATOR_DEFINE_HPP__

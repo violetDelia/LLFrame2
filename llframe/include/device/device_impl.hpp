@@ -25,7 +25,7 @@
 #include <memory>
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
-namespace llframe { inline namespace device {
+namespace llframe { namespace device {
 /**
  * @brief 设备的基类
  *
@@ -87,7 +87,7 @@ class GPU : public Device {
 public:
     using Self = GPU;
     using Base = Device;
-    using size_type = Base::size_type;
+    using size_type = typename Base::size_type;
     using property_type = cudaDeviceProp;
     using property_pointer = std::shared_ptr<property_type>;
     using cublas_handle_type = cublasHandle_t;
