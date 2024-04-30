@@ -63,6 +63,11 @@ find_package(GTest 1.14.0 REQUIRED)
 
 find_package(CUDAToolkit 11.7.64 REQUIRED)
 
+cmake_path(SET CUDNN_INCLUDE_DIR "D:/NVIDA GPU Computing ToolKit/CUDA/v11.7/include")
+# win64
+cmake_path(SET CUDNN_LIB_DIR "D:/NVIDA GPU Computing ToolKit/CUDA/v11.7/lib/x64")
+include_directories(${CUDNN_INCLUDE_DIR})
+include_directories(${CUDNN_LIB_DIR}) 
 ##---------- external library ----------##
 add_subdirectory(${LLFRAME_DIR})
 message(${LLFRAME_INCLUDE_DIR})
@@ -72,5 +77,5 @@ add_executable(main "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 target_include_directories(main PRIVATE $<BUILD_INTERFACE:${LLFRAME_INCLUDE_DIR}>
 $<INSTALL_INTERFACE:${LLFRAME_INSTALL_DIR}>
 )
-target_link_libraries(main PRIVATE LLFrame)
+target_link_libraries(main PRIVATE LLFrame CUDA::cudart CUDA::cublas cudnn)
 

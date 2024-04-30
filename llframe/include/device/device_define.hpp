@@ -13,11 +13,21 @@
 //    limitations under the License.
 
 /**
- * @brief llframe 头文件
+ * @brief device 定义
  *
  */
-#ifndef __LLFRAME_HPP__
-#define __LLFRAME_HPP__
-#include "core/core.hpp"
-#include "device/device.hpp"
-#endif //__LLFRAME_HPP__
+#ifndef __LLFRAME_DEVICE_DEFINE_HPP__
+#define __LLFRAME_DEVICE_DEFINE_HPP__
+#include <type_traits>
+namespace llframe { inline namespace device {
+
+class Device;
+
+template <class Ty>
+concept is_Device = std::is_base_of_v<Device, Ty>;
+
+template <is_Device Device>
+class Device_Platform;
+
+}}     // namespace llframe::device
+#endif //__LLFRAME_DEVICE_DEFINE_HPP__

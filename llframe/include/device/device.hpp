@@ -13,11 +13,12 @@
 //    limitations under the License.
 
 /**
- * @brief llframe 头文件
+ * @brief device 头文件
  *
  */
-#ifndef __LLFRAME_HPP__
-#define __LLFRAME_HPP__
-#include "core/core.hpp"
-#include "device/device.hpp"
-#endif //__LLFRAME_HPP__
+#ifndef __LLFRAME_DEVICE_HPP__
+#define __LLFRAME_DEVICE_HPP__
+#include "device/device_define.hpp"
+#include "device/device_impl.hpp"
+#include "device/device_platform.hpp"
+#endif //__LLFRAME_DEVICE_HPP__

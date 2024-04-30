@@ -39,7 +39,7 @@ target_include_directories(LLFrame
 )
 
 target_link_libraries(LLFrame
-    PRIVATE
+    PRIVATE CUDA::cudart CUDA::cublas cudnn
 )
 set_property(TARGET LLFrame PROPERTY VERSION ${LLFRAME_VERSION})
 

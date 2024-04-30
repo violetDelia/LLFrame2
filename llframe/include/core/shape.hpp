@@ -115,12 +115,18 @@ public: // 重载运算符
     }
 
 public:
+    /**
+     * @brief 返回Shape所有元素相乘的结果
+     */
     [[nodiscard]] value_type count() const noexcept {
         if constexpr (N_Dim == 0) { return 0; }
         return std::accumulate(this->cbegin(), this->cend(), size_type{1},
                                std::multiplies<value_type>());
     }
 
+    /**
+     * @brief 返回Shape的维度个数
+     */
     [[nodiscard]] size_type dims() const noexcept {
         return Dims;
     }
