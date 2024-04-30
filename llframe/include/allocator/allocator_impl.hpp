@@ -139,7 +139,7 @@ public:
             __LLFRAME_THROW_EXCEPTION_INFO__(Unhandled, "awake device fault!")
         }
         void *adress;
-        if (cudaMalloc(&adress, bytes)) { __THROW_CUDA_ERROR__; }
+        if (cudaMalloc(&adress, bytes)) { __LLFRAME_THROW_CUDA_ERROR__; }
         return adress;
     };
 
@@ -152,10 +152,9 @@ public:
     static constexpr void deallocate_bytes(const void_pointer adress,
                                            const size_type bytes,
                                            const size_type device_id = 0) {
-        if (!platform::awake_device(device_id)) {
-            __LLFRAME_THROW_EXCEPTION_INFO__(Unhandled, "awake device fault!")
-        }
-        if (cudaFree(adress)) { __THROW_CUDA_ERROR__; }
+        if (!platform::awake_device(device_id))
+            __LLFRAME_THROW_EXCEPTION_INFO__(Unhandled, "awake device fault!");
+        if (cudaFree(adress)) __LLFRAME_THROW_CUDA_ERROR__;
         return;
     };
 };

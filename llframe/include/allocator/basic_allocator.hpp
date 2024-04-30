@@ -42,10 +42,9 @@ protected:
         if constexpr (Ty_Size == 0) return 0;
         constexpr size_type max_n =
             std::numeric_limits<size_type>::max() / Ty_Size;
-        if (max_n < n) {
+        if (max_n < n)
             __LLFRAME_THROW_EXCEPTION_INFO__(Bad_Alloc,
-                                             "allocate betys overflow!")
-        }
+                                             "allocate betys overflow!");
         return n * Ty_Size;
     }
 };

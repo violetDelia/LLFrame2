@@ -83,18 +83,14 @@ void test_Shape_operator_assign(Integrals... values) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_construct_iterator(Integrals... values) {
+    using shape_type = llframe::Shape<sizeof...(Integrals)>;
     std::array<int, sizeof...(Integrals)> arr{values...};
-    llframe::Shape<sizeof...(Integrals)> shape(arr.begin(), arr.end());
+    shape_type shape(arr.begin(), arr.end());
     for (int i = 0; i < shape.dims(); i++) { ASSERT_EQ(shape[i], arr[i]); }
-    ASSERT_THROW(
-        llframe::Shape<sizeof...(Integrals)>(arr.begin(), arr.end() + 1),
-        llframe::Bad_Range);
+    ASSERT_THROW(shape_type(arr.begin(), arr.end() + 1), llframe::Bad_Range);
     if constexpr (sizeof...(Integrals) > 0) {
-        ASSERT_THROW(
-            llframe::Shape<sizeof...(Integrals)>(arr.end(), arr.begin()),
-            llframe::Bad_Range);
-        llframe::Shape<sizeof...(Integrals)> shape_incomplete(arr.begin(),
-                                                              arr.end() - 1);
+        ASSERT_THROW(shape_type(arr.end(), arr.begin()), llframe::Bad_Range);
+        shape_type shape_incomplete(arr.begin(), arr.end() - 1);
         for (int i = 0; i < shape_incomplete.dims() - 1; i++) {
             ASSERT_EQ(shape_incomplete[i], arr[i]);
         }
@@ -156,8 +152,9 @@ TEST(Shape, count) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_operator_equal(Integrals... values) {
-    llframe::Shape<sizeof...(Integrals)> shape1(values...);
-    llframe::Shape<sizeof...(Integrals)> shape2(values...);
+    using shape_type = llframe::Shape<sizeof...(Integrals)>;
+    shape_type shape1(values...);
+    shape_type shape2(values...);
     ASSERT_TRUE(shape1 == shape2);
     ASSERT_FALSE(shape1 != shape2);
     llframe::Shape<sizeof...(Integrals) + 1> shape3(values...);

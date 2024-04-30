@@ -1,43 +1,72 @@
 #include "test_config.hpp"
 #ifdef TEST_DEVICE
-#include <gtest/gtest.h>
 #include "test_common.hpp"
-template <llframe::is_Device Device>
-void test_Device_construct() {
+#include <cuda_runtime.h>
+
+template <llframe::device::is_Device Device>
+void test_Device_defalt_construct() {
+    ASSERT_DEVICE_IS_VALID_GPU(Device, 0);
     Device device;
-    ASSERT_EQ(device.ID(), 0);
-    Device device1(1);
-    ASSERT_EQ(device1.ID(), 1);
-    Device device2(device1);
-    ASSERT_EQ(device2.ID(), 1);
-    Device device3(std::move(device2));
-    ASSERT_EQ(device3.ID(), 1);
-    auto device4 = device3;
-    ASSERT_EQ(device4.ID(), 1);
-    auto device5 = std::move(device4);
-    ASSERT_EQ(device5.ID(), 1);
+    ASSERT_EQ(device.get_id(), 0);
 }
 
-template <llframe::is_Device Device>
-void test_Device_ID() {
-    Device device1(2);
-    Device device2(device1);
-    Device device3(std::move(device2));
-    auto device4 = device3;
-    auto device5 = std::move(device4);
-    ASSERT_EQ(device1.ID(), 2);
-    ASSERT_EQ(device2.ID(), 2);
-    ASSERT_EQ(device3.ID(), 2);
-    ASSERT_EQ(device4.ID(), 2);
-    ASSERT_EQ(device5.ID(), 2);
+template <llframe::device::is_Device Device>
+void test_Device_construct__size_type(size_t id) {
+    ASSERT_DEVICE_IS_VALID_GPU(Device, id);
+    Device device(id);
+    ASSERT_EQ(device.get_id(), id);
+}
+
+template <llframe::device::is_Device Device>
+void test_Device_construct_copy(size_t id) {
+    ASSERT_DEVICE_IS_VALID_GPU(Device, id);
+    Device device(id);
+    auto device_copy = device;
+    ASSERT_EQ(device.get_id(), device_copy.get_id());
+}
+
+template <llframe::device::is_Device Device>
+void test_Device_construct() {
+    test_Device_defalt_construct<Device>();
+    test_Device_construct__size_type<Device>(0);
+    test_Device_construct__size_type<Device>(1);
+    test_Device_construct__size_type<Device>(2);
+    test_Device_construct_copy<Device>(0);
+    test_Device_construct_copy<Device>(1);
+    test_Device_construct_copy<Device>(2);
 }
 
 TEST(Device, construct) {
-    auto tuple = Device_Tuple();
-    std::apply(
-        [](auto &&...args) {
-            (test_Device_construct<std::remove_cvref_t<decltype(args)>>(), ...);
-        },
-        tuple);
+    APPLY_TUPLE(Device_Tuple, test_Device_construct);
+}
+
+template <llframe::device::is_Device Device>
+void test_Device_get_id(size_t id) {
+    ASSERT_DEVICE_IS_VALID_GPU(Device, id);
+    Device device(id);
+    ASSERT_EQ(device.get_id(), id);
+}
+
+TEST(Device, get_id) {
+    APPLY_TUPLE(Device_Tuple, test_Device_get_id, 0);
+    APPLY_TUPLE(Device_Tuple, test_Device_get_id, 1);
+    APPLY_TUPLE(Device_Tuple, test_Device_get_id, 2);
+    APPLY_TUPLE(Device_Tuple, test_Device_get_id, 3);
+}
+
+void test_GPU_awake(size_t device_id) {
+    ASSET_VALID_GPU(device_id);
+    llframe::device::GPU device(device_id);
+    if (device.awake()) { TEST_CUDA_MOLLOC_AND_MEMCPY(100); };
+}
+
+TEST(GPU, awake) {
+    for (int i = 0; i < 10; i++) { test_GPU_awake(i); }
+}
+
+TEST(GPU, cublas_handle) {
+}
+
+TEST(GPU, cudnn_handle) {
 }
 #endif // TEST_DEVICE

@@ -38,7 +38,7 @@ public:
 public: // 构造函数
     constexpr Device() : Device(0){};
     constexpr Device(const size_type device_id) : _id(device_id){};
-    constexpr Device(const Self &other) = delete;
+    constexpr Device(const Self &other) = default;
     constexpr Device(Self &&other) = delete;
     constexpr Self &operator=(const Self &other) = default;
     constexpr Self &operator=(Self &&other) = delete;
@@ -102,14 +102,18 @@ public: // 重写构造函数
     GPU(const size_type device_id) : Base(device_id) {
         auto id = static_cast<int>(device_id);
         int device_count;
-        if (cudaGetDeviceCount(&device_count)) __THROW_CUDA_ERROR__
-        if (id >= device_count) __THROW_UNHANDLED_INFO__("device is not exist!")
+        if (cudaGetDeviceCount(&device_count)) __LLFRAME_THROW_CUDA_ERROR__
+        if (id >= device_count)
+            __LLFRAME_THROW_UNHANDLED_INFO__("device is not exist!")
         _property.reset(new property_type);
-        if (cudaGetDeviceProperties(&(*_property), id)) __THROW_CUDA_ERROR__
+        if (cudaGetDeviceProperties(&(*_property), id))
+            __LLFRAME_THROW_CUDA_ERROR__
         _default_cudnn_handle.reset(new cudnn_handle_type);
-        if (cudnnCreate(&(*_default_cudnn_handle))) __THROW_CUDNN_ERROR__
+        if (cudnnCreate(&(*_default_cudnn_handle)))
+            __LLFRAME_THROW_CUDNN_ERROR__
         _default_cublas_handle.reset(new cublas_handle_type);
-        if (cublasCreate(&(*_default_cublas_handle))) __THROW_CUBLAS_ERROR__
+        if (cublasCreate(&(*_default_cublas_handle)))
+            __LLFRAME_THROW_CUBLAS_ERROR__
     }
     GPU() : GPU(0){};
     virtual ~GPU() {

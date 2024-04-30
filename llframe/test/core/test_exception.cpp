@@ -2,82 +2,128 @@
 #ifdef TEST_EXCEPTION
 #include <gtest/gtest.h>
 #include "test_common.hpp"
+#include <string>
+
+#define DEFAULT_MESSAGE "exception!"
+#define DEFAULT_LOCATION "\n"
+#define CONCAT_STRING(arg1, arg2)                                              \
+    std::string(std::string(arg1) + std::string(arg2))
+#define DEFAULT_WAHT CONCAT_STRING(DEFAULT_MESSAGE, DEFAULT_LOCATION)
+#define MAKE_LOCATION(file, line, func_name)                                   \
+    CONCAT_STRING(                                                             \
+        CONCAT_STRING(                                                         \
+            CONCAT_STRING(                                                     \
+                CONCAT_STRING(                                                 \
+                    CONCAT_STRING(CONCAT_STRING("\t", func_name), ": "),       \
+                    file),                                                     \
+                "<"),                                                          \
+            std::to_string(line)),                                             \
+        ">\n")
+#define MAKE_WAHT_PREFIX(message) CONCAT_STRING(message, DEFAULT_LOCATION)
+#define MAKE_WAHT(message, file, line, func_name)                              \
+    CONCAT_STRING(MAKE_WAHT_PREFIX(message),                                   \
+                  MAKE_LOCATION(file, line, func_name))
 
 template <class Exception>
-void test_Exception_construct() {
-    Exception exception1;
-    Exception exception2("exception");
-    ASSERT_EQ(exception2.what(), "exception\n");
-    Exception exception3("exception", "file", 1, "func_name");
-    ASSERT_EQ(exception3.what(), "exception\n\tfunc_name: file<1>\n");
-    Exception exception4("file", 1, "func_name");
-    Exception exception5(exception3);
-    ASSERT_EQ(exception5.what(), "exception\n\tfunc_name: file<1>\n");
-    Exception exception6(std::move(exception5));
-    ASSERT_EQ(exception6.what(), "exception\n\tfunc_name: file<1>\n");
-    ASSERT_EQ(exception5.what(), "");
-    auto exception7 = exception6;
-    ASSERT_EQ(exception7.what(), "exception\n\tfunc_name: file<1>\n");
-    auto exception8 = std::move(exception7);
-    ASSERT_EQ(exception7.what(), "");
-    ASSERT_EQ(exception8.what(), "exception\n\tfunc_name: file<1>\n");
+void test_Exception_default_construct() {
+    Exception exception;
+    ASSERT_EQ(exception.what(), DEFAULT_WAHT);
+}
+template <class Exception>
+void test_Exception_construct_message(const char *message) {
+    Exception exception(message);
+    ASSERT_EQ(exception.what(), MAKE_WAHT_PREFIX(message));
+}
+
+template <class Exception>
+void test_Exception_construct_message_file_line_func_name(
+    const char *message, const char *file, const size_t line,
+    const char *func_name) {
+    Exception exception(message, file, line, func_name);
+    ASSERT_EQ(exception.what(), MAKE_WAHT(message, file, line, func_name));
+}
+
+template <class Exception>
+void test_Exception_construct_file_line_func_name(const char *file,
+                                                  const size_t line,
+                                                  const char *func_name) {
+    Exception exception(file, line, func_name);
+    ASSERT_EQ(exception.what(),
+              MAKE_WAHT(DEFAULT_MESSAGE, file, line, func_name));
+}
+
+template <class Exception>
+void test_Exception_construct_copy(const char *message, const char *file,
+                                   const size_t line, const char *func_name) {
+    Exception exception(message, file, line, func_name);
+    auto exception_copy(exception);
+    ASSERT_EQ(exception.what(), exception_copy.what());
+}
+
+template <class Exception>
+void test_Exception_construct_move(const char *message, const char *file,
+                                   const size_t line, const char *func_name) {
+    Exception exception(message, file, line, func_name);
+    auto exception_move(std::move(exception));
+    ASSERT_EQ(exception.what(), "");
+    ASSERT_EQ(exception_move.what(), MAKE_WAHT(message, file, line, func_name));
+}
+
+template <class Exception>
+void test_Exception_construct(const char *message, const char *file,
+                              const size_t line, const char *func_name) {
+    test_Exception_default_construct<Exception>();
+    test_Exception_construct_message<Exception>(message);
+    test_Exception_construct_file_line_func_name<Exception>(file, line,
+                                                            func_name);
+    test_Exception_construct_message_file_line_func_name<Exception>(
+        message, file, line, func_name);
+    test_Exception_construct_copy<Exception>(message, file, line, func_name);
+    test_Exception_construct_move<Exception>(message, file, line, func_name);
 }
 
 TEST(Exception, construct) {
-    auto tuple = Exception_Tuple();
-    std::apply(
-        [](auto &&...args) {
-            (test_Exception_construct<std::remove_cvref_t<decltype(args)>>(),
-             ...);
-        },
-        tuple);
+    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "", "", 0, "");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "\n", "**@@#", 0,
+                ")__!+");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "\t", "||!@\\23", 0,
+                ")(*(!@*))");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "???#?@?", "", 0,
+                "");
 }
 
 template <class Exception>
-void test_Exception_what() {
-    Exception exception1("exception");
-    ASSERT_EQ(exception1.what(), "exception\n");
-    Exception exception2("exception", "file", 1, "func_name");
-    ASSERT_EQ(exception2.what(), "exception\n\tfunc_name: file<1>\n");
-    Exception exception3(exception2);
-    ASSERT_EQ(exception3.what(), "exception\n\tfunc_name: file<1>\n");
-    Exception exception4(std::move(exception3));
-    ASSERT_EQ(exception4.what(), "exception\n\tfunc_name: file<1>\n");
-    auto exception5 = exception4;
-    ASSERT_EQ(exception5.what(), "exception\n\tfunc_name: file<1>\n");
-    auto exception6 = std::move(exception5);
-    ASSERT_EQ(exception6.what(), "exception\n\tfunc_name: file<1>\n");
+void test_Exception_what(const char *message, const char *file, size_t line,
+                         const char *func_name) {
+    Exception exception(message, file, line, func_name);
+    ASSERT_EQ(exception.what(), MAKE_WAHT(message, file, line, func_name));
 }
 
 TEST(Exception, what) {
-    auto tuple = Exception_Tuple();
-    std::apply(
-        [](auto &&...args) {
-            (test_Exception_what<std::remove_cvref_t<decltype(args)>>(), ...);
-        },
-        tuple);
+    APPLY_TUPLE(Exception_Tuple, test_Exception_what, "", "", 0, "");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_what, "\n", "**@@#", 0,
+                ")__!+");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_what, "\t", "||!@\\23", 0,
+                ")(*(!@*))");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_what, "???#?@?", "", 0, "");
 }
 
 template <class Exception>
-void test_Exception_add_location() {
-    Exception exception1("exception");
-    ASSERT_EQ(exception1.what(), "exception\n");
-    exception1.add_location("file", 1, "func_name");
-    ASSERT_EQ(exception1.what(), "exception\n\tfunc_name: file<1>\n");
-    Exception exception2(exception1);
-    ASSERT_EQ(exception2.what(), "exception\n\tfunc_name: file<1>\n");
-    exception2.add_location("file", 2, "func_name");
-    ASSERT_EQ(exception2.what(),
-              "exception\n\tfunc_name: file<1>\n\tfunc_name: file<2>\n");
+void test_Exception_add_location(const char *message, const char *file,
+                                 size_t line, const char *func_name) {
+    Exception exception(message);
+    ASSERT_EQ(exception.what(), MAKE_WAHT_PREFIX(message));
+    exception.add_location(file, line, func_name);
+    ASSERT_EQ(exception.what(), MAKE_WAHT(message, file, line, func_name));
 }
 
 TEST(Exception, add_location) {
-    auto tuple = Exception_Tuple();
-    std::apply(
-        [](auto &&...args) {
-            (test_Exception_add_location<std::remove_cvref_t<decltype(args)>>(),
-             ...);
-        },
-        tuple);
+    APPLY_TUPLE(Exception_Tuple, test_Exception_add_location, "", "", 0, "");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_add_location, "\n", "**@@#", 0,
+                ")__!+");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_add_location, "\t", "||!@\\23",
+                0, ")(*(!@*))");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_add_location, "???#?@?", "", 0,
+                "");
 }
 #endif // TEST_EXCEPTION

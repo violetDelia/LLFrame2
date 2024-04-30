@@ -261,28 +261,28 @@ public:
 #define __THROW_UNIMPLEMENTED__                                                \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::Unimplement, "Unimplement!")
 
-#define __THROW_UNHANDLED__                                                    \
+#define __LLFRAME_THROW_UNHANDLED__                                            \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::Unhandled, "Unhandled!")
 
-#define __THROW_UNHANDLED_INFO__(message)                                      \
+#define __LLFRAME_THROW_UNHANDLED_INFO__(message)                              \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::Unhandled, message)
 
-#define __THROW_CUDA_ERROR__                                                   \
+#define __LLFRAME_THROW_CUDA_ERROR__                                           \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CUDA_Error, "cuda error!")
 
-#define __THROW_CUDA_ERROR_INFO__(cudaError_t)                                 \
+#define __LLFRAME_THROW_CUDA_ERROR_INFO__(cudaError_t)                         \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CUDA_Error,                      \
                                      std::to_string(cudaError_t).data())
-#define __THROW_CUBLAS_ERROR__                                                 \
+#define __LLFRAME_THROW_CUBLAS_ERROR__                                         \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuBLAS_Errot, "cublas error!")
 
-#define __THROW_CUBLAS_ERROR_INFO__(cublasStatus_t)                            \
+#define __LLFRAME_THROW_CUBLAS_ERROR_INFO__(cublasStatus_t)                    \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuBLAS_Errot,                    \
                                      std::to_string(cublasStatus_t).data())
-#define __THROW_CUDNN_ERROR__                                                  \
+#define __LLFRAME_THROW_CUDNN_ERROR__                                          \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuDNN_Errot, "cudnn error!")
 
-#define __THROW_CUDNN_ERROR_INFO__(cudnnStatus_t)                              \
+#define __LLFRAME_THROW_CUDNN_ERROR_INFO__(cudnnStatus_t)                      \
     __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuDNN_Errot,                     \
                                      std::to_string(cudnnStatus_t).data())
 
