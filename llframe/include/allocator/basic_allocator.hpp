@@ -32,6 +32,7 @@ class Allocator_Base {
 public:
     using value_type = Ty;
     using pointer = Ty *;
+    using const_pointer = const pointer;
     using size_type = size_t;
     using difference_type = ptrdiff_t;
     using void_pointer = void *;
@@ -61,11 +62,12 @@ public:
     using Self = Biasc_Allocator<Ty>;
     using Base = Allocator_Base<Ty>;
 
-    using value_type = Base::value_type;
-    using pointer = Base::pointer;
-    using size_type = Base::size_type;
-    using difference_type = Base::difference_type;
-    using void_pointer = Base::void_pointer;
+    using value_type = typename Base::value_type;
+    using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
+    using size_type = typename Base::size_type;
+    using difference_type = typename Base::difference_type;
+    using void_pointer = typename Base::void_pointer;
 
 protected:
     using Base::get_size;

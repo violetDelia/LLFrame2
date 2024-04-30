@@ -22,7 +22,7 @@
 #include <mutex>
 #include <deque>
 #include "core/exception.hpp"
-#include "device/device_define.hpp"
+#include "device/device_platform.hpp"
 #include "allocator/allocator_define.hpp"
 namespace llframe { namespace allocator {
 
@@ -36,6 +36,7 @@ public:
 
     using value_type = typename Base::value_type;
     using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
     using size_type = typename Base::size_type;
     using difference_type = typename Base::difference_type;
     using void_pointer = typename Base::void_pointer;
@@ -76,6 +77,7 @@ public:
 
     using value_type = typename Base::value_type;
     using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
     using size_type = typename Base::size_type;
     using difference_type = typename Base::difference_type;
     using void_pointer = typename Base::void_pointer;
@@ -116,12 +118,13 @@ public:
 
     using value_type = typename Base::value_type;
     using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
     using size_type = typename Base::size_type;
     using difference_type = typename Base::difference_type;
     using void_pointer = typename Base::void_pointer;
 
     using device_type = device::GPU;
-    using platform = llframe::device::Device_Platform<device_type>;
+    using platform = device::Device_Platform<device_type>;
 
 protected:
     using Base::get_size;
@@ -197,6 +200,7 @@ public:
 
     using value_type = typename Base::value_type;
     using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
     using size_type = typename Base::size_type;
     using difference_type = typename Base::difference_type;
     using void_pointer = typename Base::void_pointer;

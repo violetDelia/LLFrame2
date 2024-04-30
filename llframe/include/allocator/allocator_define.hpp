@@ -21,6 +21,9 @@
 #include "device/device_define.hpp"
 namespace llframe { namespace allocator {
 template <class Ty>
+class Allocator_Base;
+
+template <class Ty>
 class Biasc_Allocator;
 
 template <device::is_Device Device>

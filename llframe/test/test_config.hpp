@@ -5,4 +5,5 @@
 #define TEST_EXCEPTION
 #define TEST_SHAPE
 #define TEST_DEVICE
+#define TEST_ALLOCATOR
 #endif //__LLFRAME_TEST_CONFIG__

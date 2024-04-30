@@ -18,6 +18,7 @@ using Exception_Tuple =
                llframe::exception::CuDNN_Errot>;
 
 using Device_Tuple = std::tuple<llframe::device::CPU, llframe::device::GPU>;
+using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
 
 #define IS_SAME(Ty1, Ty2) if constexpr (std::is_same_v<Ty1, Ty2>)
 #define IS_NOT_SAME(Ty1, Ty2) if constexpr (!std::is_same_v<Ty1, Ty2>)
@@ -27,6 +28,16 @@ using Device_Tuple = std::tuple<llframe::device::CPU, llframe::device::GPU>;
         std::apply(                                                            \
             [](auto &&...args) {                                               \
                 (func<std::remove_cvref_t<decltype(args)>>(##__VA_ARGS__),     \
+                 ...);                                                         \
+            },                                                                 \
+            tuple);                                                            \
+    };
+#define APPLY_TUPLE_2(Tuple, Tp, func, ...)                                    \
+    {                                                                          \
+        auto tuple = Tuple();                                                  \
+        std::apply(                                                            \
+            [](auto &&...args) {                                               \
+                (func<Tp, std::remove_cvref_t<decltype(args)>>(##__VA_ARGS__), \
                  ...);                                                         \
             },                                                                 \
             tuple);                                                            \
@@ -54,4 +65,64 @@ using Device_Tuple = std::tuple<llframe::device::CPU, llframe::device::GPU>;
         ASSET_VALID_GPU(id)                                                    \
         return;                                                                \
     }
+
+#define ASSET_VALID_CPU(id)                                                    \
+    if (id >= 1) return;
+
+#define ASSERT_DEVICE_IS_VALID_CPU(Device, id)                                 \
+    IS_SAME(Device, llframe::device::CPU) {                                    \
+        ASSET_VALID_CPU(id)                                                    \
+        return;                                                                \
+    }
+
+#define ASSERT_DEVICE_IS_VALID(Device, id)                                     \
+    IS_SAME(Device, llframe::device::CPU){ASSET_VALID_CPU(id)} IS_SAME(        \
+        Device, llframe::device::GPU) {                                        \
+        ASSET_VALID_GPU(id)                                                    \
+    }
+template <class Allocator>
+void test_allocator_traits() {
+    ASSERT_EQ((std::is_same_v<
+                  typename std::allocator_traits<Allocator>::const_pointer,
+                  typename Allocator::const_pointer>),
+              true);
+    ASSERT_EQ((std::is_same_v<
+                  typename std::allocator_traits<Allocator>::const_void_pointer,
+                  const void *>),
+              true);
+    ASSERT_EQ((std::is_same_v<
+                  typename std::allocator_traits<Allocator>::difference_type,
+                  typename Allocator::difference_type>),
+              true);
+    ASSERT_EQ(
+        (std::is_same_v<typename std::allocator_traits<Allocator>::pointer,
+                        typename Allocator::pointer>),
+        true);
+    ASSERT_EQ(
+        (std::is_same_v<typename std::allocator_traits<
+                            Allocator>::propagate_on_container_copy_assignment,
+                        std::false_type>),
+        true);
+    ASSERT_EQ(
+        (std::is_same_v<typename std::allocator_traits<
+                            Allocator>::propagate_on_container_move_assignment,
+                        std::false_type>),
+        true);
+    ASSERT_EQ((std::is_same_v<typename std::allocator_traits<
+                                  Allocator>::propagate_on_container_swap,
+                              std::false_type>),
+              true);
+    ASSERT_EQ(
+        (std::is_same_v<typename std::allocator_traits<Allocator>::size_type,
+                        typename Allocator::size_type>),
+        true);
+    ASSERT_EQ(
+        (std::is_same_v<typename std::allocator_traits<Allocator>::value_type,
+                        typename Allocator::value_type>),
+        true);
+    ASSERT_EQ(
+        (std::is_same_v<typename std::allocator_traits<Allocator>::void_pointer,
+                        void *>),
+        true);
+};
 #endif //__LLFRAME_TEST_COMMON__

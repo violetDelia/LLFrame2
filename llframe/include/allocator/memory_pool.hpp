@@ -60,6 +60,10 @@ public:
     }
 
 public:
+    /**
+     * @brief 获取指定设备的内存池
+     * @param device_id 设备id
+     */
     static constexpr auto &get_instance(size_type device_id) {
         static Self instance;
         return instance.memory_pool_map[device_id];
