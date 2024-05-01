@@ -21,13 +21,13 @@
 #include <type_traits>
 namespace llframe::device {
 
-class Device;
+class _Device;
 
 /**
  * @brief 判断类型是否是Device的基类
  */
 template <class Ty>
-concept is_Device = std::is_base_of_v<Device, Ty>;
+concept is_Device = std::is_base_of_v<_Device, Ty>;
 
 template <is_Device Device>
 class Device_Platform;

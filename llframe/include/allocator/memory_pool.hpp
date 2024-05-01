@@ -46,7 +46,7 @@ protected:
 
 public:
     virtual ~Memory_Pool() {
-        for (auto &memory_pool : memory_pool_map) {
+        for (auto &memory_pool : memory_pool_map_) {
             auto device_id = memory_pool.first;
             for (auto &buffer_slot : memory_pool.second) {
                 auto buffer_size = buffer_slot.first;
@@ -66,12 +66,12 @@ public:
      */
     static constexpr auto &get_instance(size_type device_id) {
         static Self instance;
-        return instance.memory_pool_map[device_id];
+        return instance.memory_pool_map_[device_id];
     }
 
 private:
     // 内存池 memory_pool_map<device_id,memory_pool<bytes,buffer_list<void*>>>
-    memory_pool_map_type memory_pool_map;
+    memory_pool_map_type memory_pool_map_;
 };
 } // namespace llframe::allocator
 #endif //__LLFRAME_MEMORY_POOL_HPP__

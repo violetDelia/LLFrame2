@@ -28,7 +28,7 @@ namespace llframe::allocator {
  * @brief 分配器的共有属性
  */
 template <class Ty>
-class Allocator_Base {
+class _Allocator_Base {
 public:
     using value_type = Ty;
     using pointer = Ty *;
@@ -39,7 +39,7 @@ public:
 
 protected:
     template <size_type Ty_Size>
-    static constexpr size_type get_size(const size_type n) {
+    static constexpr size_type get_size_(const size_type n) {
         if constexpr (Ty_Size == 0) return 0;
         constexpr size_type max_n =
             std::numeric_limits<size_type>::max() / Ty_Size;
@@ -57,10 +57,10 @@ protected:
  * @tparam Ty
  */
 template <class Ty>
-class Biasc_Allocator : public Allocator_Base<Ty> {
+class Biasc_Allocator : public _Allocator_Base<Ty> {
 public:
     using Self = Biasc_Allocator<Ty>;
-    using Base = Allocator_Base<Ty>;
+    using Base = _Allocator_Base<Ty>;
 
     using value_type = typename Base::value_type;
     using pointer = typename Base::pointer;
@@ -70,11 +70,11 @@ public:
     using void_pointer = typename Base::void_pointer;
 
 protected:
-    using Base::get_size;
+    using Base::get_size_;
 
 public:
     [[nodiscard]] static constexpr pointer allocate(const size_type n) {
-        auto bytes = get_size<sizeof(value_type)>(n);
+        auto bytes = get_size_<sizeof(value_type)>(n);
         return static_cast<pointer>(allocate_bytes(bytes));
     };
 

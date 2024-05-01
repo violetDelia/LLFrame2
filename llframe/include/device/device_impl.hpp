@@ -30,26 +30,26 @@ namespace llframe ::device {
  * @brief 设备的基类
  *
  */
-class Device {
+class _Device {
 public:
-    using Self = Device;
+    using Self = _Device;
     using size_type = size_t;
 
 public: // 构造函数
-    constexpr Device() : Device(0){};
-    constexpr Device(const size_type device_id) : _id(device_id){};
-    constexpr Device(const Self &other) = default;
-    constexpr Device(Self &&other) = delete;
+    constexpr _Device() : _Device(0){};
+    constexpr _Device(const size_type device_id) : id_(device_id){};
+    constexpr _Device(const Self &other) = default;
+    constexpr _Device(Self &&other) = delete;
     constexpr Self &operator=(const Self &other) = default;
     constexpr Self &operator=(Self &&other) = delete;
-    virtual ~Device(){};
+    virtual ~_Device(){};
 
 public:
     /**
      * @brief 返回设备编号
      */
     constexpr size_type get_id() {
-        return this->_id;
+        return this->id_;
     }
 
     /**
@@ -59,19 +59,19 @@ public:
 
 protected:
     // 设备编号
-    size_type _id{};
+    size_type id_{};
 };
 
 /**
  * @brief CPU
  *
  */
-class CPU : public Device {
+class CPU : public _Device {
 public:
-    using Base = Device;
+    using Base = _Device;
 
 public:
-    using Base::Device;
+    using Base::_Device;
 
 public:
     bool awake() override {
@@ -83,10 +83,10 @@ public:
  * @brief GPU
  *
  */
-class GPU : public Device {
+class GPU : public _Device {
 public:
     using Self = GPU;
-    using Base = Device;
+    using Base = _Device;
     using size_type = typename Base::size_type;
     using property_type = cudaDeviceProp;
     using property_pointer = std::shared_ptr<property_type>;
@@ -96,7 +96,7 @@ public:
     using cudnn_handle_pointer = std::shared_ptr<cudnn_handle_type>;
 
 private:
-    using Base::Device;
+    using Base::_Device;
 
 public: // 重写构造函数
     GPU(const size_type device_id) : Base(device_id) {
@@ -105,51 +105,51 @@ public: // 重写构造函数
         if (cudaGetDeviceCount(&device_count)) __LLFRAME_THROW_CUDA_ERROR__
         if (id >= device_count)
             __LLFRAME_THROW_UNHANDLED_INFO__("device is not exist!")
-        _property.reset(new property_type);
-        if (cudaGetDeviceProperties(&(*_property), id))
+        property_.reset(new property_type);
+        if (cudaGetDeviceProperties(&(*property_), id))
             __LLFRAME_THROW_CUDA_ERROR__
-        _default_cudnn_handle.reset(new cudnn_handle_type);
-        if (cudnnCreate(&(*_default_cudnn_handle)))
+        default_cudnn_handle_.reset(new cudnn_handle_type);
+        if (cudnnCreate(&(*default_cudnn_handle_)))
             __LLFRAME_THROW_CUDNN_ERROR__
-        _default_cublas_handle.reset(new cublas_handle_type);
-        if (cublasCreate(&(*_default_cublas_handle)))
+        default_cublas_handle_.reset(new cublas_handle_type);
+        if (cublasCreate(&(*default_cublas_handle_)))
             __LLFRAME_THROW_CUBLAS_ERROR__
     }
     GPU() : GPU(0){};
     virtual ~GPU() {
-        if (_default_cudnn_handle.use_count() == 1) {
-            cudnnDestroy(*_default_cudnn_handle);
+        if (default_cudnn_handle_.use_count() == 1) {
+            cudnnDestroy(*default_cudnn_handle_);
         }
-        if (_default_cublas_handle.use_count() == 1) {
-            cublasDestroy(*_default_cublas_handle);
+        if (default_cublas_handle_.use_count() == 1) {
+            cublasDestroy(*default_cublas_handle_);
         }
     }
 
 public:
     bool awake() override {
-        if (cudaSetDevice(this->_id)) { return false; }
+        if (cudaSetDevice(this->id_)) { return false; }
         return true;
     };
 
     auto &cudnn_handle() {
-        return *_default_cudnn_handle;
+        return *default_cudnn_handle_;
     }
 
     auto &cublas_handle() {
-        return *_default_cublas_handle;
+        return *default_cublas_handle_;
     }
 
     auto &property() {
-        return *_property;
+        return *property_;
     }
 
 protected:
     // 该设备的属性信息
-    property_pointer _property{};
+    property_pointer property_{};
     // 调用cudnn默认的cudnnHandle_t
-    cudnn_handle_pointer _default_cudnn_handle{};
+    cudnn_handle_pointer default_cudnn_handle_{};
     // 调用cublas默认的cublasHandle_t
-    cublas_handle_pointer _default_cublas_handle{};
+    cublas_handle_pointer default_cublas_handle_{};
 };
 
 } // namespace llframe::device

@@ -35,10 +35,10 @@ public: // 构造函数
     constexpr Exception() noexcept = default;
     constexpr Exception(const Self &other) noexcept = default;
     constexpr Exception(Self &&other) noexcept = default;
-    constexpr Exception(const char *message) noexcept : _message(message){};
+    constexpr Exception(const char *message) noexcept : message_(message){};
     constexpr Exception(const char *message, const char *file,
                         const size_type line, const char *func_name) noexcept :
-        _message(message) {
+        message_(message) {
         this->add_location(file, line, func_name);
     }
     constexpr Exception(const char *file, const size_type line,
@@ -57,24 +57,24 @@ public:
      */
     constexpr void add_location(const char *file, const size_type line,
                                 const char *func_name) noexcept {
-        this->_locations.append("\t");
-        this->_locations.append(func_name);
-        this->_locations.append(": ");
-        this->_locations.append(file);
-        this->_locations.append("<");
-        this->_locations.append(std::to_string(line));
-        this->_locations.append(">\n");
+        this->locations_.append("\t");
+        this->locations_.append(func_name);
+        this->locations_.append(": ");
+        this->locations_.append(file);
+        this->locations_.append("<");
+        this->locations_.append(std::to_string(line));
+        this->locations_.append(">\n");
     }
 
     [[nodiscard]] constexpr virtual std::string what() const noexcept {
-        return this->_message + this->_locations;
+        return this->message_ + this->locations_;
     }
 
 protected:
     // 异常信息
-    std::string _message{"exception!"};
+    std::string message_{"exception!"};
     // 异常传递信息
-    std::string _locations{"\n"};
+    std::string locations_{"\n"};
 };
 
 /**
