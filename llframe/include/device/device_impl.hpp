@@ -25,7 +25,7 @@
 #include <memory>
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
-namespace llframe { namespace device {
+namespace llframe ::device {
 /**
  * @brief 设备的基类
  *
@@ -152,5 +152,5 @@ protected:
     cublas_handle_pointer _default_cublas_handle{};
 };
 
-}}     // namespace llframe::device
+} // namespace llframe::device
 #endif //__LLFRAME_DEVICE_IMPL_HPP__

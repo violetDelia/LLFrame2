@@ -6,7 +6,8 @@
 
 template <size_t N_Dim>
 void test_Shape_defalt_construct() {
-    llframe::Shape<N_Dim> shape;
+    using shape_type = llframe::shape::Shape<N_Dim>;
+    shape_type shape;
     for (int i = 0; i < N_Dim; i++) { ASSERT_EQ(shape[i], 0); }
     ASSERT_EQ(shape.size(), N_Dim);
     ASSERT_EQ(shape.dims(), N_Dim);
@@ -14,12 +15,12 @@ void test_Shape_defalt_construct() {
 template <class T, T... ints>
 void test_Shape_construct_intergrals_impl(
     std::integer_sequence<T, ints...> seq) {
-    llframe::Shape<sizeof...(ints)> shape(ints...);
+    llframe::shape::Shape<sizeof...(ints)> shape(ints...);
     ASSERT_EQ(shape.size(), sizeof...(ints));
     ASSERT_EQ(shape.dims(), sizeof...(ints));
     for (int i = 0; i < shape.dims(); i++) { ASSERT_EQ(shape[i], i); }
     if constexpr (sizeof...(ints) > 1) {
-        llframe::Shape<sizeof...(ints) + 1> shape_incomplet(ints...);
+        llframe::shape::Shape<sizeof...(ints) + 1> shape_incomplet(ints...);
         ASSERT_EQ(shape_incomplet.size(), sizeof...(ints) + 1);
         ASSERT_EQ(shape_incomplet.dims(), sizeof...(ints) + 1);
         for (int i = 0; i < shape.dims() - 1; i++) {
@@ -36,7 +37,7 @@ void test_Shape_construct_intergrals() {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_make_shape(Integrals... values) {
-    auto shape = llframe::make_shape(values...);
+    auto shape = llframe::shape ::make_shape(values...);
     ASSERT_EQ(shape.size(), sizeof...(Integrals));
     std::array<typename decltype(shape)::value_type, sizeof...(Integrals)> arr{
         values...};
@@ -45,7 +46,7 @@ void test_Shape_make_shape(Integrals... values) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_construct_copy_and_move(Integrals... values) {
-    auto shape = llframe::make_shape(values...);
+    auto shape = llframe::shape ::make_shape(values...);
     auto shape_copy(shape);
     for (int i = 0; i < shape.dims(); i++) {
         ASSERT_EQ(shape[i], shape_copy[i]);
@@ -63,7 +64,7 @@ void test_Shape_construct_copy_and_move(Integrals... values) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_operator_assign(Integrals... values) {
-    auto shape = llframe::make_shape(values...);
+    auto shape = llframe::shape ::make_shape(values...);
     decltype(shape) shape_copy;
     shape_copy = shape;
     for (int i = 0; i < shape.dims(); i++) {
@@ -83,13 +84,15 @@ void test_Shape_operator_assign(Integrals... values) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_construct_iterator(Integrals... values) {
-    using shape_type = llframe::Shape<sizeof...(Integrals)>;
+    using shape_type = llframe::shape::Shape<sizeof...(Integrals)>;
     std::array<int, sizeof...(Integrals)> arr{values...};
     shape_type shape(arr.begin(), arr.end());
     for (int i = 0; i < shape.dims(); i++) { ASSERT_EQ(shape[i], arr[i]); }
-    ASSERT_THROW(shape_type(arr.begin(), arr.end() + 1), llframe::Bad_Range);
+    ASSERT_THROW(shape_type(arr.begin(), arr.end() + 1),
+                 llframe::exception::Bad_Range);
     if constexpr (sizeof...(Integrals) > 0) {
-        ASSERT_THROW(shape_type(arr.end(), arr.begin()), llframe::Bad_Range);
+        ASSERT_THROW(shape_type(arr.end(), arr.begin()),
+                     llframe::exception::Bad_Range);
         shape_type shape_incomplete(arr.begin(), arr.end() - 1);
         for (int i = 0; i < shape_incomplete.dims() - 1; i++) {
             ASSERT_EQ(shape_incomplete[i], arr[i]);
@@ -118,7 +121,7 @@ TEST(Shape, construct) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_operator_array_subscript(Integrals... values) {
-    auto shape = llframe::make_shape(values...);
+    auto shape = llframe::shape ::make_shape(values...);
     auto shape_copy(shape);
     for (size_t i{}; i < shape.dims(); i++) {
         shape_copy[i] += 1;
@@ -138,7 +141,7 @@ TEST(Shape, operator_array_subscript) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_count(std::int64_t count, Integrals... values) {
-    auto shape = llframe::make_shape(values...);
+    auto shape = llframe::shape ::make_shape(values...);
     ASSERT_EQ(shape.count(), count);
 }
 
@@ -152,12 +155,12 @@ TEST(Shape, count) {
 
 template <llframe::is_Integral... Integrals>
 void test_Shape_operator_equal(Integrals... values) {
-    using shape_type = llframe::Shape<sizeof...(Integrals)>;
+    using shape_type = llframe::shape::Shape<sizeof...(Integrals)>;
     shape_type shape1(values...);
     shape_type shape2(values...);
     ASSERT_TRUE(shape1 == shape2);
     ASSERT_FALSE(shape1 != shape2);
-    llframe::Shape<sizeof...(Integrals) + 1> shape3(values...);
+    llframe::shape::Shape<sizeof...(Integrals) + 1> shape3(values...);
     ASSERT_TRUE(shape1 != shape3);
     ASSERT_FALSE(shape1 == shape3);
     if constexpr (sizeof...(Integrals) > 1) {

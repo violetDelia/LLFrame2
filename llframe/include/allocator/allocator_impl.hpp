@@ -24,7 +24,7 @@
 #include "core/exception.hpp"
 #include "device/device_platform.hpp"
 #include "allocator/allocator_define.hpp"
-namespace llframe { namespace allocator {
+namespace llframe ::allocator {
 
 // 设备分配器实现接口
 template <class Ty, device::is_Device Device>
@@ -139,7 +139,8 @@ public:
     [[nodiscard]] static constexpr void_pointer
     allocate_bytes(const size_type bytes, const size_type device_id = 0) {
         if (!platform::awake_device(device_id)) {
-            __LLFRAME_THROW_EXCEPTION_INFO__(Unhandled, "awake device fault!")
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Unhandled,
+                                             "awake device fault!")
         }
         void *adress;
         if (cudaMalloc(&adress, bytes)) { __LLFRAME_THROW_CUDA_ERROR__; }
@@ -156,7 +157,8 @@ public:
                                            const size_type bytes,
                                            const size_type device_id = 0) {
         if (!platform::awake_device(device_id))
-            __LLFRAME_THROW_EXCEPTION_INFO__(Unhandled, "awake device fault!");
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Unhandled,
+                                             "awake device fault!");
         if (cudaFree(adress)) __LLFRAME_THROW_CUDA_ERROR__;
         return;
     };
@@ -172,7 +174,8 @@ struct Allocator_Config {
     // 偏移,辅助计算
     static inline size_type min_block_offset = 1023;
 
-    static constexpr void reset(size_type block_bytes) {
+    // 重新设置分配属性
+    static constexpr void reset(const size_type block_bytes) {
         block_bytes -= 1;
         min_block_bytes = 1;
         min_block_shift = 0;
@@ -182,6 +185,14 @@ struct Allocator_Config {
             min_block_shift += 1;
         }
         min_block_offset = min_block_bytes - 1;
+    }
+
+    // 调整分配大小
+    static constexpr size_type adjust_bytes(const size_type bytes) {
+        if (bytes & min_block_offset) {
+            bytes = ((bytes >> min_block_shift) + 1) << min_block_shift;
+        }
+        return bytes;
     }
 };
 
@@ -236,10 +247,7 @@ public:
         if (n == 0) { return shared_pointer{nullptr}; };
         auto bytes = get_size<sizeof(value_type)>(n);
         // 调整分配大小为比bytes大的最小min_block_offset整数倍
-        if (bytes & config::min_block_offset) {
-            bytes = ((bytes >> config::min_block_shift) + 1)
-                    << config::min_block_shift;
-        }
+        bytes = config::adjust_bytes(bytes);
         std::lock_guard<std::mutex> guard(al_mutex);
         auto &buffer_slot = memory_pool::get_instance(device_id)[bytes];
         void_pointer buffer;
@@ -265,6 +273,6 @@ protected:
     static inline std::mutex al_mutex;
 };
 
-}} // namespace llframe::allocator
+} // namespace llframe::allocator
 
 #endif //__LLFRAME_ALLOCATOR_IMPL_HPP__

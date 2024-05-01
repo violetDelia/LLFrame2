@@ -19,7 +19,7 @@
 #ifndef __LLFRAME_DEVICE_DEFINE_HPP__
 #define __LLFRAME_DEVICE_DEFINE_HPP__
 #include <type_traits>
-namespace llframe { namespace device {
+namespace llframe::device {
 
 class Device;
 
@@ -32,5 +32,5 @@ concept is_Device = std::is_base_of_v<Device, Ty>;
 template <is_Device Device>
 class Device_Platform;
 
-}}     // namespace llframe::device
+} // namespace llframe::device
 #endif //__LLFRAME_DEVICE_DEFINE_HPP__

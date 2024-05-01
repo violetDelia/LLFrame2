@@ -19,7 +19,8 @@
 #ifndef __LLFRAME_ALLOCATOR_DEFINE_HPP__
 #define __LLFRAME_ALLOCATOR_DEFINE_HPP__
 #include "device/device_define.hpp"
-namespace llframe { namespace allocator {
+namespace llframe ::allocator {
+
 template <class Ty>
 class Allocator_Base;
 
@@ -32,6 +33,6 @@ class Memory_Pool;
 template <class Ty, device::is_Device Device>
 class Allocator;
 
-}} // namespace llframe::allocator
+} // namespace llframe::allocator
 
 #endif //__LLFRAME_ALLOCATOR_DEFINE_HPP__

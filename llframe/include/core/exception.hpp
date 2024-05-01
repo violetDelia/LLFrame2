@@ -21,7 +21,7 @@
 #include <string>
 #include <source_location>
 #include "core/base_type.hpp"
-namespace llframe { inline namespace exception {
+namespace llframe ::exception {
 /**
  * @brief 异常
  *
@@ -185,7 +185,7 @@ public:
     using CUDA_Error::CUDA_Error;
 };
 
-}} // namespace llframe::exception
+} // namespace llframe::exception
 /**
  * @brief 抛出异常
  *
@@ -244,46 +244,51 @@ public:
 
 #define __LLFRAME_TRY_CATCH_END__                                              \
     __LLFRAME_TRY_END__                                                        \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Bad_Alloc)                     \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Bad_Index)                     \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Bad_Parameter)                 \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Null_Pointer)                  \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::STD_Exception)                 \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Unhandled)                     \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Unimplement)                   \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::Unknown)                       \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::CuBLAS_Errot)                  \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::CuDNN_Errot)                   \
-    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::CUDA_Error)                    \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Bad_Alloc)          \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Bad_Index)          \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Bad_Parameter)      \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Null_Pointer)       \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::STD_Exception)      \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Unhandled)          \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Unimplement)        \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::Unknown)            \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::CuBLAS_Errot)       \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::CuDNN_Errot)        \
+    __LLFRAME_CATCH_UPDATA_EXCEPTION__(llframe::exception::CUDA_Error)         \
     catch (std::exception & e){__LLFRAME_THROW_EXCEPTION_INFO__(               \
         llframe::STD_Exception, e.what())} __LLFRAME_CATCH_OTHER__
 
 #define __THROW_UNIMPLEMENTED__                                                \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::Unimplement, "Unimplement!")
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::Unimplement,          \
+                                     "Unimplement!")
 
 #define __LLFRAME_THROW_UNHANDLED__                                            \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::Unhandled, "Unhandled!")
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::Unhandled,            \
+                                     "Unhandled!")
 
 #define __LLFRAME_THROW_UNHANDLED_INFO__(message)                              \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::Unhandled, message)
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::Unhandled, message)
 
 #define __LLFRAME_THROW_CUDA_ERROR__                                           \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CUDA_Error, "cuda error!")
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::CUDA_Error,           \
+                                     "cuda error!")
 
 #define __LLFRAME_THROW_CUDA_ERROR_INFO__(cudaError_t)                         \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CUDA_Error,                      \
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::CUDA_Error,           \
                                      std::to_string(cudaError_t).data())
 #define __LLFRAME_THROW_CUBLAS_ERROR__                                         \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuBLAS_Errot, "cublas error!")
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::CuBLAS_Errot,         \
+                                     "cublas error!")
 
 #define __LLFRAME_THROW_CUBLAS_ERROR_INFO__(cublasStatus_t)                    \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuBLAS_Errot,                    \
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::CuBLAS_Errot,         \
                                      std::to_string(cublasStatus_t).data())
 #define __LLFRAME_THROW_CUDNN_ERROR__                                          \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuDNN_Errot, "cudnn error!")
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::CuDNN_Errot,          \
+                                     "cudnn error!")
 
 #define __LLFRAME_THROW_CUDNN_ERROR_INFO__(cudnnStatus_t)                      \
-    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::CuDNN_Errot,                     \
+    __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::CuDNN_Errot,          \
                                      std::to_string(cudnnStatus_t).data())
 
 #endif //__LLFRAME_EXCEPTION_HPP__

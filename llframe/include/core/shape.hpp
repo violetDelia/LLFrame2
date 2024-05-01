@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <numeric>
 #include <iostream>
-namespace llframe { inline namespace exception {
+namespace llframe ::shape {
 template <size_t N_Dim>
 
 /**
@@ -66,10 +66,10 @@ public: // 构造函数
         auto distance = std::distance(first, last);
         if (distance > N_Dim) {
             __LLFRAME_THROW_EXCEPTION_INFO__(
-                Bad_Range, "iterator distance out of Shape range!")
+                exception::Bad_Range, "iterator distance out of Shape range!")
         }
         if (distance < 0) {
-            __LLFRAME_THROW_EXCEPTION_INFO__(Bad_Range,
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Range,
                                              "iterator distance is negative!")
         }
         this->fill(0);
@@ -187,6 +187,6 @@ template <is_Integral... Integrals>
 constexpr Shape<sizeof...(Integrals)> make_shape(Integrals... values) {
     return Shape<sizeof...(Integrals)>(values...);
 }
-}} // namespace llframe::exception
+} // namespace llframe::shape
 
 #endif //__LLFRAME_SHAPE_HPP__

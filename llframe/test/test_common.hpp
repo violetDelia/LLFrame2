@@ -20,8 +20,11 @@ using Exception_Tuple =
 using Device_Tuple = std::tuple<llframe::device::CPU, llframe::device::GPU>;
 using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
 
+// 类型相同
 #define IS_SAME(Ty1, Ty2) if constexpr (std::is_same_v<Ty1, Ty2>)
+// 类型不同
 #define IS_NOT_SAME(Ty1, Ty2) if constexpr (!std::is_same_v<Ty1, Ty2>)
+// apply宏
 #define APPLY_TUPLE(Tuple, func, ...)                                          \
     {                                                                          \
         auto tuple = Tuple();                                                  \
@@ -32,6 +35,7 @@ using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
             },                                                                 \
             tuple);                                                            \
     };
+// apply宏2
 #define APPLY_TUPLE_2(Tuple, Tp, func, ...)                                    \
     {                                                                          \
         auto tuple = Tuple();                                                  \
@@ -43,7 +47,8 @@ using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
             tuple);                                                            \
     };
 
-#define TEST_CUDA_MOLLOC_AND_MEMCPY(value)                                     \
+// 确保可以使用cuda分配内存
+#define ASSERT_CUDA_MOLLOC_AND_MEMCPY(value)                                   \
     {                                                                          \
         decltype(value) *device_p{};                                           \
         decltype(value) host_p[1];                                             \
@@ -55,31 +60,29 @@ using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
         cudaMemcpy(temp_p, device_p, size, cudaMemcpyDeviceToHost);            \
         ASSERT_EQ(*temp_p, *host_p);                                           \
     }
+// id对GPU是有效的
 #define ASSET_VALID_GPU(id)                                                    \
     int device_num;                                                            \
     if (cudaGetDeviceCount(&device_num)) return;                               \
     if (id >= device_num) return;
-
+// 确保设备是有效的GPU,如果Device是GPU
 #define ASSERT_DEVICE_IS_VALID_GPU(Device, id)                                 \
     IS_SAME(Device, llframe::device::GPU) {                                    \
         ASSET_VALID_GPU(id)                                                    \
-        return;                                                                \
     }
-
+// id对cpu是有效的
 #define ASSET_VALID_CPU(id)                                                    \
     if (id >= 1) return;
-
+// 确保设备是有效的CPU,如果Device是CPU
 #define ASSERT_DEVICE_IS_VALID_CPU(Device, id)                                 \
     IS_SAME(Device, llframe::device::CPU) {                                    \
         ASSET_VALID_CPU(id)                                                    \
-        return;                                                                \
     }
-
+// 确保设备是有效的
 #define ASSERT_DEVICE_IS_VALID(Device, id)                                     \
-    IS_SAME(Device, llframe::device::CPU){ASSET_VALID_CPU(id)} IS_SAME(        \
-        Device, llframe::device::GPU) {                                        \
-        ASSET_VALID_GPU(id)                                                    \
-    }
+    ASSERT_DEVICE_IS_VALID_GPU(Device, id)                                     \
+    ASSERT_DEVICE_IS_VALID_CPU(Device, id)
+// 测试Allocator的属性
 template <class Allocator>
 void test_allocator_traits() {
     ASSERT_EQ((std::is_same_v<

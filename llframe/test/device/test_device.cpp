@@ -57,7 +57,7 @@ TEST(Device, get_id) {
 void test_GPU_awake(size_t device_id) {
     ASSET_VALID_GPU(device_id);
     llframe::device::GPU device(device_id);
-    if (device.awake()) { TEST_CUDA_MOLLOC_AND_MEMCPY(100); };
+    if (device.awake()) { ASSERT_CUDA_MOLLOC_AND_MEMCPY(100); };
 }
 
 TEST(GPU, awake) {

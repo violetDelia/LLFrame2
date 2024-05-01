@@ -4,11 +4,11 @@
 #include <cuda_runtime.h>
 int main() {
     try {
-        llframe::device::GPU(2);
+        llframe::allocator::Allocator_Base<int>;
 
-    } catch (llframe::CUDA_Error &e) {
+    } catch (llframe::exception::CUDA_Error &e) {
         std::cout << "cudaerror_t = " << e.what() << std::endl;
-    } catch (llframe::Exception &e) {
+    } catch (llframe::exception::Exception &e) {
         std::cout << "llframe:: " << e.what() << std::endl;
     } catch (...) { std::cout << "other" << std::endl; }
 }

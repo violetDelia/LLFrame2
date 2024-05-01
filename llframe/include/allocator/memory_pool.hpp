@@ -21,7 +21,7 @@
 #include "allocator/allocator_define.hpp"
 #include "unordered_map"
 #include <deque>
-namespace llframe { namespace allocator {
+namespace llframe::allocator {
 /**
  * @brief 内存池
  *
@@ -69,9 +69,9 @@ public:
         return instance.memory_pool_map[device_id];
     }
 
-public:
+private:
     // 内存池 memory_pool_map<device_id,memory_pool<bytes,buffer_list<void*>>>
     memory_pool_map_type memory_pool_map;
 };
-}}     // namespace llframe::allocator
+} // namespace llframe::allocator
 #endif //__LLFRAME_MEMORY_POOL_HPP__

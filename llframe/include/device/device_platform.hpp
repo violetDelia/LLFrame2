@@ -23,7 +23,7 @@
 #include "core/base_type.hpp"
 #include <map>
 #include <cuda_runtime.h>
-namespace llframe { namespace device {
+namespace llframe ::device {
 /**
  * @brief 设备平台基类
  *
@@ -132,7 +132,8 @@ public:
     static constexpr device_type &get_device(const size_type id) {
         auto &instance = get_instance();
         if (instance.device_map.count(id)) { return instance.device_map[id]; }
-        __LLFRAME_THROW_EXCEPTION_INFO__(Bad_Parameter, "device is not exist!")
+        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
+                                         "device is not exist!")
     };
 
     /**
@@ -149,5 +150,5 @@ public:
     };
 };
 
-}}     // namespace llframe::device
+} // namespace llframe::device
 #endif //__LLFRAME_DEVICE_PLATFORM_HPP__

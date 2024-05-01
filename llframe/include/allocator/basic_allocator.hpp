@@ -22,7 +22,7 @@
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
 #include <limits>
-namespace llframe { namespace allocator {
+namespace llframe::allocator {
 
 /**
  * @brief 分配器的共有属性
@@ -44,7 +44,7 @@ protected:
         constexpr size_type max_n =
             std::numeric_limits<size_type>::max() / Ty_Size;
         if (max_n < n)
-            __LLFRAME_THROW_EXCEPTION_INFO__(Bad_Alloc,
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Alloc,
                                              "allocate betys overflow!");
         return n * Ty_Size;
     }
@@ -93,5 +93,5 @@ public:
     };
 };
 
-}}     // namespace llframe::allocator
+} // namespace llframe::allocator
 #endif //__LLFRAME_BASIC_ALLOCATOR_HPP__
