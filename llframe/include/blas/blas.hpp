@@ -13,13 +13,13 @@
 //    limitations under the License.
 
 /**
- * @brief llframe 头文件
+ * @brief 线性代数库相关文件
  *
  */
-#ifndef __LLFRAME_HPP__
-#define __LLFRAME_HPP__
-#include "core/core.hpp"
-#include "device/device.hpp"
-#include "allocator/allocator.hpp"
-#include "blas/blas.hpp"
-#endif //__LLFRAME_HPP__
+#ifndef __LLFRAME_BLAS_HPP__
+#include "blas/blas_define.hpp"
+#include "blas/blas_adapter.hpp"
+#include "blas/blas_adapter_gpu.hpp"
+#include "blas/blas_adapter_cpu.hpp"
+#define __LLFRAME_BLAS_HPP__
+#endif //__LLFRAME_BLAS_HPP__

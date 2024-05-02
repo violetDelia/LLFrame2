@@ -32,16 +32,16 @@ namespace llframe ::device {
  * @tparam Device
  */
 template <is_Device Device>
-class Device_Platform_Base {
+class _Device_Platform_Base {
 public:
-    using Self = Device_Platform_Base<Device>;
+    using Self = _Device_Platform_Base<Device>;
     using device_type = Device;
     using size_type = size_t;
     using device_map_type = std::map<size_type, device_type>;
 
 protected:
-    constexpr Device_Platform_Base() = default;
-    constexpr Device_Platform_Base(const Self &other) = delete;
+    constexpr _Device_Platform_Base() = default;
+    constexpr _Device_Platform_Base(const Self &other) = delete;
     constexpr Self &operator=(const Self &) = delete;
 
 public:
@@ -58,50 +58,54 @@ public:
  * 不同设备平台初始化实现的中间类,负责设备平台的初始化,只实现对应平台的构造函数
  */
 template <is_Device Device>
-class Device_Platform_Initializer : public Device_Platform_Base<Device> {
+class _Device_Platform_Initializer : public _Device_Platform_Base<Device> {
 public:
-    using Self = Device_Platform_Initializer<Device>;
-    using Base = Device_Platform_Base<Device>;
+    using Self = _Device_Platform_Initializer<Device>;
+    using Base = _Device_Platform_Base<Device>;
     using device_type = typename Base::device_type;
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
 };
 
 template <>
-class Device_Platform_Initializer<CPU> : public Device_Platform_Base<CPU> {
+class _Device_Platform_Initializer<CPU> : public _Device_Platform_Base<CPU> {
 public:
-    using Self = Device_Platform_Initializer<CPU>;
-    using Base = Device_Platform_Base<CPU>;
+    using Self = _Device_Platform_Initializer<CPU>;
+    using Base = _Device_Platform_Base<CPU>;
     using device_type = typename Base::device_type;
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
 
 protected:
     // cpu默认只有一个设备
-    constexpr Device_Platform_Initializer() {
+    constexpr _Device_Platform_Initializer() {
         this->device_map[0] = device_type(0);
         this->device_nums = 1;
     }
 };
 
 template <>
-class Device_Platform_Initializer<GPU> : public Device_Platform_Base<GPU> {
+class _Device_Platform_Initializer<GPU> : public _Device_Platform_Base<GPU> {
 public:
-    using Self = Device_Platform_Initializer<GPU>;
-    using Base = Device_Platform_Base<GPU>;
+    using Self = _Device_Platform_Initializer<GPU>;
+    using Base = _Device_Platform_Base<GPU>;
     using device_type = typename Base::device_type;
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
 
 protected:
     // gpu初始化
-    Device_Platform_Initializer() {
+    _Device_Platform_Initializer() {
         int device_count;
         cudaGetDeviceCount(&device_count);
         for (int i{}; i < device_count; i++) {
             this->device_map[i] = device_type(i);
         }
         this->device_nums = device_count;
+        if (this->device_nums > 0) {
+            this->device_map[0].awake();
+            this->active_device_id = 0;
+        }
     }
 };
 
@@ -109,10 +113,10 @@ protected:
  * @brief 设备平台,对外开放的查询和修改设备信息的接口
  */
 template <is_Device Device>
-class Device_Platform : public Device_Platform_Initializer<Device> {
+class Device_Platform : public _Device_Platform_Initializer<Device> {
 public:
     using Self = Device_Platform<Device>;
-    using Base = Device_Platform_Initializer<Device>;
+    using Base = _Device_Platform_Initializer<Device>;
     using device_type = typename Base::device_type;
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
@@ -147,6 +151,14 @@ public:
             return true;
         }
         return false;
+    };
+
+    /**
+     * @brief 获取当前活动的设备
+     */
+    static constexpr device_type &get_active_device() {
+        auto &instance = get_instance();
+        return instance.device_map[instance.active_device_id];
     };
 };
 

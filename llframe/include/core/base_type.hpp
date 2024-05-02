@@ -57,6 +57,35 @@ concept is_Floating_Point = std::is_floating_point_v<Ty>;
 template <class Ty>
 concept is_Arithmetic = std::is_arithmetic_v<Ty>;
 
+/**
+ * @brief 类型是否为指针
+ */
+template <class Ty>
+concept is_Pointer = std::is_pointer_v<Ty>;
+
+template <class _Ty, class... _Others>
+struct _Is_Same_Ty {
+    static const bool value = (... && std::is_same_v<_Ty, _Others>);
+};
+
+template <class _Ty>
+struct _Is_Same_Ty<_Ty> {
+    static const bool value = true;
+};
+
+/**
+ * @brief 类型是否都相同
+ */
+template <class Ty, class... Others>
+concept is_Same_Ty = _Is_Same_Ty<Ty, Others...>::value;
+
+/**
+ * @brief 类型是否都为相同的浮点数
+ */
+template <class Ty, class... Others>
+concept is_Same_Floating_Point =
+    is_Floating_Point<Ty> & is_Same_Ty<Ty, Others...>;
+
 } // namespace concepts
 
 } // namespace llframe

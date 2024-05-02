@@ -77,5 +77,5 @@ add_executable(main "${CMAKE_CURRENT_SOURCE_DIR}/main.cpp")
 target_include_directories(main PRIVATE $<BUILD_INTERFACE:${LLFRAME_INCLUDE_DIR}>
 $<INSTALL_INTERFACE:${LLFRAME_INSTALL_DIR}>
 )
-target_link_libraries(main PRIVATE LLFrame CUDA::cudart CUDA::cublas cudnn)
+target_link_libraries(main PRIVATE LLFrame CUDA::cudart CUDA::cublas cudnn OPENBLAS OpenMP::OpenMP_CXX)
 

@@ -39,7 +39,7 @@ target_include_directories(LLFrame
 )
 
 target_link_libraries(LLFrame
-    PRIVATE CUDA::cudart CUDA::cublas cudnn
+    PRIVATE CUDA::cudart CUDA::cublas cudnn OPENBLAS OpenMP::OpenMP_CXX
 )
 set_property(TARGET LLFrame PROPERTY VERSION ${LLFRAME_VERSION})
 
