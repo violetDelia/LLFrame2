@@ -84,7 +84,7 @@ concept is_Same_Ty = _Is_Same_Ty<Ty, Others...>::value;
  */
 template <class Ty, class... Others>
 concept is_Same_Floating_Point =
-    is_Floating_Point<Ty> & is_Same_Ty<Ty, Others...>;
+    is_Floating_Point<Ty> && is_Same_Ty<Ty, Others...>;
 
 } // namespace concepts
 

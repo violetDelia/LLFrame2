@@ -66,6 +66,34 @@ public:
 
         __THROW_UNIMPLEMENTED__;
     };
+
+    /**
+     * @brief res = sum(xi*yi)
+     */
+    template <is_Arithmetic X, is_Arithmetic Y>
+    static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
+                           const Y *y, const_dif_t incy) {
+        ensure_no_null_pointer(x, y);
+        ensure_not_negative<const int>(n, incx, incy);
+        if constexpr (is_Same_Ty<float, X>) {
+            X sum{};
+            cublasSdot_v2(plat::get_active_device().cublas_handle(),
+                          static_cast<const int>(n), x,
+                          static_cast<const int>(incx), y,
+                          static_cast<const int>(incy), &sum);
+            return sum;
+        }
+        if constexpr (is_Same_Ty<double, X>) {
+            X sum{};
+            cublasDdot_v2(plat::get_active_device().cublas_handle(),
+                          static_cast<const int>(n), x,
+                          static_cast<const int>(incx), y,
+                          static_cast<const int>(incy), &sum);
+            return sum;
+        }
+
+        __THROW_UNIMPLEMENTED__;
+    };
 };
 } // namespace llframe::blas
 #endif //__LLFRAME_BLAS_ADAPTER_GPU_HPP__

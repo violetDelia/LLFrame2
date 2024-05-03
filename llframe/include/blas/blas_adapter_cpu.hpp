@@ -59,6 +59,45 @@ public:
         }
         __THROW_UNIMPLEMENTED__;
     };
+
+    /**
+     * @brief 向量x的和
+     */
+    template <is_Arithmetic X>
+    static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx) {
+        ensure_no_null_pointer(x);
+        ensure_not_negative<const int>(n, incx);
+        if constexpr (is_Same_Ty<float, X>) {
+            return cblas_ssum(static_cast<const int>(n), x,
+                              static_cast<const int>(incx));
+        }
+        if constexpr (is_Same_Ty<double, X>) {
+            return cblas_dsum(static_cast<const int>(n), x,
+                              static_cast<const int>(incx));
+        }
+        __THROW_UNIMPLEMENTED__;
+    };
+
+    /**
+     * @brief res = sum(xi*yi)
+     */
+    template <is_Arithmetic X, is_Arithmetic Y>
+    static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
+                           const Y *y, const_dif_t incy) {
+        ensure_no_null_pointer(x, y);
+        ensure_not_negative<const int>(n, incx, incy);
+        if constexpr (is_Same_Ty<float, X>) {
+            return cblas_sdot(static_cast<const int>(n), x,
+                              static_cast<const int>(incx), y,
+                              static_cast<const int>(incy));
+        }
+        if constexpr (is_Same_Ty<double, X>) {
+            return cblas_ddot(static_cast<const int>(n), x,
+                              static_cast<const int>(incx), y,
+                              static_cast<const int>(incy));
+        }
+        __THROW_UNIMPLEMENTED__;
+    };
 };
 } // namespace llframe::blas
 #endif //__LLFRAME_BLAS_ADAPTER_CPU_HPP__

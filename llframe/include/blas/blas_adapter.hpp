@@ -41,6 +41,7 @@ public:
     using plat = device::Device_Platform<device_type>;
 
 protected:
+    // 判断真正是否为空
     template <is_Pointer... Pointers>
     static constexpr void ensure_no_null_pointer(Pointers... pointers) {
         if constexpr (sizeof...(Pointers) == 0) return;
@@ -50,6 +51,7 @@ protected:
         }
     }
 
+    // 判断数值被转换后是否为负数
     template <class Trans_Ty, is_Arithmetic... Arithmetics>
     static constexpr void ensure_not_negative(Arithmetics... arithmetics) {
         if constexpr (sizeof...(Arithmetics) == 0) return;
@@ -82,9 +84,12 @@ public:
     };
 
 public:
+    /**
+     * @brief res = sum(xi*yi)
+     */
     template <is_Arithmetic X, is_Arithmetic Y>
-    static constexpr auto dot(const_dif_t n, const X *x, const_dif_t incx,
-                              const Y *y, const_dif_t incy) {
+    static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
+                           const Y *y, const_dif_t incy) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -96,13 +101,16 @@ public:
         __THROW_UNIMPLEMENTED__;
     };
 
+    /**
+     * @brief 向量x的和
+     */
     template <is_Arithmetic X>
-    static constexpr auto sum(const_dif_t n, const X *x, const_dif_t incx) {
+    static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx) {
         __THROW_UNIMPLEMENTED__;
     };
 
     template <is_Arithmetic X>
-    static constexpr auto nrm2(const_dif_t N, const X *x, const_dif_t incx) {
+    static constexpr X nrm2(const_dif_t N, const X *x, const_dif_t incx) {
         __THROW_UNIMPLEMENTED__;
     };
 

@@ -19,7 +19,12 @@ using Exception_Tuple =
 
 using Device_Tuple = std::tuple<llframe::device::CPU, llframe::device::GPU>;
 using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
-
+using Arithmetic_Tuple =
+    std::tuple<llframe::base_type::float32_t, llframe::base_type::float64_t,
+               llframe::base_type::int16_t, llframe::base_type::int32_t,
+               llframe::base_type::int64_t, llframe::base_type::int8_t,
+               llframe::base_type::uint16_t, llframe::base_type::uint32_t,
+               llframe::base_type::uint64_t, llframe::base_type::uint8_t>;
 // 类型相同
 #define IS_SAME(Ty1, Ty2) if constexpr (std::is_same_v<Ty1, Ty2>)
 // 类型不同
