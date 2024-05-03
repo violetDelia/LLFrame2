@@ -42,23 +42,25 @@ public:
     using Side = typename Base::Side;
 
 protected:
-    static constexpr const CBLAS_LAYOUT convert_(const Layout layout) {
-        if constexpr (layout == Layout::Col_Major)
-            return CBLAS_LAYOUT::CblasColMajor;
-        if constexpr (layout == Layout::Row_Major)
-            return CBLAS_LAYOUT::CblasRowMajor;
+    // openblas的bug,调用axpy最好不要走超过该值
+    static constexpr size_type openblas_max_axpy_n = 8192;
+    // openblas的bug,调用scal最好不要走超过该值
+    static constexpr size_type openblas_max_scal_n = 8192;
+
+protected:
+    static const CBLAS_LAYOUT convert_(const Layout layout) {
+        if (layout == Layout::Col_Major) return CBLAS_LAYOUT::CblasColMajor;
+        if (layout == Layout::Row_Major) return CBLAS_LAYOUT::CblasRowMajor;
         __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
                                          "cant not convert layout!")
     }
 
-    static constexpr const CBLAS_TRANSPOSE convert_(const Transpose trans) {
-        if constexpr (trans == Transpose::NoTrans)
-            return CBLAS_TRANSPOSE::CblasNoTrans;
-        if constexpr (trans == Transpose::Trans)
-            return CBLAS_TRANSPOSE::CblasTrans;
-        if constexpr (trans == Transpose::ConjNoTrans)
+    static const CBLAS_TRANSPOSE convert_(const Transpose trans) {
+        if (trans == Transpose::NoTrans) return CBLAS_TRANSPOSE::CblasNoTrans;
+        if (trans == Transpose::Trans) return CBLAS_TRANSPOSE::CblasTrans;
+        if (trans == Transpose::ConjNoTrans)
             return CBLAS_TRANSPOSE::CblasConjNoTrans;
-        if constexpr (trans == Transpose::ConjTrans)
+        if (trans == Transpose::ConjTrans)
             return CBLAS_TRANSPOSE::CblasConjTrans;
         __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
                                          "cant not convert transpose!")
@@ -67,7 +69,8 @@ protected:
 public:
     /**
      * @brief 向量x的绝对值和
-     * @remarks CPU 版本/
+     * @remarks CPU 版本
+     */
     template <is_Arithmetic X>
     static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
         ensure_no_null_pointer_(x);
@@ -85,7 +88,8 @@ public:
 
     /**
      * @brief 向量x的和
-     * @remarks CPU 版本/
+     * @remarks CPU 版本
+     */
     template <is_Arithmetic X>
     static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx) {
         ensure_no_null_pointer_(x);
@@ -103,7 +107,8 @@ public:
 
     /**
      * @brief res = sum(xi*yi)
-     * @remarks CPU 版本/
+     * @remarks CPU 版本
+     */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
                            const Y *y, const_dif_t incy) {
@@ -233,15 +238,41 @@ public:
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
-            cblas_saxpy(static_cast<const int>(n), static_cast<const X>(alpha),
-                        x, static_cast<const int>(incx), y,
-                        static_cast<const int>(incy));
+            size_t count = static_cast<int>(n);
+            while (count >= openblas_max_axpy_n) {
+                cblas_saxpy(static_cast<const int>(openblas_max_axpy_n),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx), y,
+                            static_cast<const int>(incy));
+                count -= openblas_max_axpy_n;
+                x += openblas_max_axpy_n * static_cast<const int>(incx);
+                y += openblas_max_axpy_n * static_cast<const int>(incy);
+            }
+            if (count) {
+                cblas_saxpy(static_cast<const int>(count),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx), y,
+                            static_cast<const int>(incy));
+            }
             return;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
-            cblas_daxpy(static_cast<const int>(n), static_cast<const X>(alpha),
-                        x, static_cast<const int>(incx), y,
-                        static_cast<const int>(incy));
+            size_t count = static_cast<int>(n);
+            while (count >= openblas_max_axpy_n) {
+                cblas_daxpy(static_cast<const int>(openblas_max_axpy_n),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx), y,
+                            static_cast<const int>(incy));
+                count -= openblas_max_axpy_n;
+                x += openblas_max_axpy_n * static_cast<const int>(incx);
+                y += openblas_max_axpy_n * static_cast<const int>(incy);
+            }
+            if (count) {
+                cblas_daxpy(static_cast<const int>(count),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx), y,
+                            static_cast<const int>(incy));
+            }
             return;
         }
         __THROW_UNIMPLEMENTED__;
@@ -305,13 +336,35 @@ public:
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
-            cblas_sscal(static_cast<const int>(n), static_cast<const X>(alpha),
-                        x, static_cast<const int>(incx));
+            size_t count = static_cast<int>(n);
+            while (count >= openblas_max_scal_n) {
+                cblas_sscal(static_cast<const int>(openblas_max_scal_n),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx));
+                count -= openblas_max_axpy_n;
+                x += openblas_max_axpy_n * static_cast<const int>(incx);
+            }
+            if (count) {
+                cblas_sscal(static_cast<const int>(count),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx));
+            }
             return;
         }
         if constexpr (is_Same_Ty<double, X>) {
-            cblas_dscal(static_cast<const int>(n), static_cast<const X>(alpha),
-                        x, static_cast<const int>(incx));
+            size_t count = static_cast<int>(n);
+            while (count >= openblas_max_scal_n) {
+                cblas_dscal(static_cast<const int>(openblas_max_scal_n),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx));
+                count -= openblas_max_axpy_n;
+                x += openblas_max_axpy_n * static_cast<const int>(incx);
+            }
+            if (count) {
+                cblas_dscal(static_cast<const int>(count),
+                            static_cast<const X>(alpha), x,
+                            static_cast<const int>(incx));
+            }
             return;
         }
         __THROW_UNIMPLEMENTED__;
@@ -322,7 +375,7 @@ public:
      * @remarks CPU 版本 op(a)->m*n;
      * x->1*n(noTrans)/1*m(Trans);
      * y->1*m(noTrans)/1*n(Trans)
-     *
+     *@note 内存大于2^28比特时会出错
      */
     template <is_Arithmetic X, is_Arithmetic Y, is_Arithmetic A,
               is_Arithmetic Alpha, is_Arithmetic Beta>
@@ -333,6 +386,7 @@ public:
                                const_dif_t incy) {
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
+        ensure_ld_legal_(layout, m, n, lda);
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sgemv(
                 convert_(layout), convert_(trans), static_cast<const int>(m),
@@ -347,7 +401,6 @@ public:
                 static_cast<const int>(n), static_cast<const X>(alpha), a,
                 static_cast<const int>(lda), x, static_cast<const int>(incx),
                 static_cast<const X>(beta), y, static_cast<const int>(incy));
-            return;
             return;
         }
         __THROW_UNIMPLEMENTED__;
@@ -365,6 +418,7 @@ public:
                               const_dif_t lda) {
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
+        ensure_ld_legal_(layout, m, n, lda);
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sger(convert_(layout), static_cast<const int>(m),
                        static_cast<const int>(n), static_cast<const X>(alpha),
@@ -397,12 +451,15 @@ public:
          const Beta beta, C *c, const_dif_t ldc) {
         ensure_no_null_pointer_(a, b, c);
         ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
+        ensure_ld_legal_(layout, trans_a, m, k, lda);
+        ensure_ld_legal_(layout, trans_b, k, n, ldb);
+        ensure_ld_legal_(layout, m, n, ldc);
         if constexpr (is_Same_Ty<float, A, B, C>) {
             cblas_sgemm(convert_(layout), convert_(trans_a), convert_(trans_b),
                         static_cast<const int>(m), static_cast<const int>(n),
                         static_cast<const int>(k), static_cast<const A>(alpha),
                         a, static_cast<const int>(lda), b,
-                        static_cast<const int>(ldb), static_cast<const X>(beta),
+                        static_cast<const int>(ldb), static_cast<const A>(beta),
                         c, static_cast<const int>(ldc));
             return;
         }
@@ -411,7 +468,7 @@ public:
                         static_cast<const int>(m), static_cast<const int>(n),
                         static_cast<const int>(k), static_cast<const A>(alpha),
                         a, static_cast<const int>(lda), b,
-                        static_cast<const int>(ldb), static_cast<const X>(beta),
+                        static_cast<const int>(ldb), static_cast<const A>(beta),
                         c, static_cast<const int>(ldc));
             return;
         }

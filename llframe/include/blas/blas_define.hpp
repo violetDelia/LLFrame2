@@ -35,10 +35,24 @@ enum Blas_Uplo { Upper = 121, Lower = 122 };
 enum Blas_Diag { NonUnit = 131, Unit = 132 };
 enum Blas_Side { Left = 141, Right = 142 };
 
+/**
+ * @brief 是否支持调用Openblas
+ *
+ * @tparam Device 设备类型
+ * @tparam Ty 指针参数
+ * @tparam Others 指针参数
+ */
 template <class Device, class Ty, class... Others>
 concept is_Support_Openblas = std::is_same_v<Device, device::CPU>
                               && is_Same_Floating_Point<Ty, Others...>;
 
+/**
+ * @brief 是否支持调用Cublas
+ *
+ * @tparam Device 设备类型
+ * @tparam Ty 指针参数
+ * @tparam Others 指针参数
+ */
 template <class Device, class Ty, class... Others>
 concept is_Support_Cublas = std::is_same_v<Device, device::GPU>
                             && is_Same_Floating_Point<Ty, Others...>;

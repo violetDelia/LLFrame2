@@ -8,7 +8,7 @@
 
 //    Unless required by applicable law or agreed to in writing, software
 //    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expres__s or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
@@ -42,11 +42,28 @@ public:
     using Side = typename Base::Side;
 
 protected:
-    static constexpr const cublasOperation_t convert_(const Transpose trans) {
-        if constexpr (trans == Transpose::NoTrans)
-            return cublasOperation_t::CUBLAS_OP_N;
-        if constexpr (trans == Transpose::Trans)
-            return cublasOperation_t::CUBLAS_OP_T;
+    // 根据transpose 和 layout 调整 transpose
+    static const cublasOperation_t convert_(const Transpose trans,
+                                            const Layout layout) {
+        if (layout == Layout::Col_Major) {
+            if (trans == Transpose::NoTrans)
+                return cublasOperation_t::CUBLAS_OP_N;
+            if (trans == Transpose::Trans)
+                return cublasOperation_t::CUBLAS_OP_T;
+        } else if (layout == Layout::Row_Major) {
+            if (trans == Transpose::NoTrans)
+                return cublasOperation_t::CUBLAS_OP_T;
+            if (trans == Transpose::Trans)
+                return cublasOperation_t::CUBLAS_OP_N;
+        }
+        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
+                                         "cant not convert transpose!")
+    }
+
+    static const cublasOperation_t convert_(const Transpose trans) {
+        if (trans == Transpose::NoTrans) return cublasOperation_t::CUBLAS_OP_N;
+        if (trans == Transpose::Trans) return cublasOperation_t::CUBLAS_OP_T;
+
         __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
                                          "cant not convert transpose!")
     }
@@ -54,57 +71,59 @@ protected:
 public:
     /**
      * @brief 向量x的绝对值和
+     * @remarks GPU 版本
      */
-    @remarks GPU 版本 template <is_Arithmetic X>
+    template <is_Arithmetic X>
     static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
-            X res{};
+            X res__{};
             cublasSasum_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
-                           static_cast<const int>(incx), &res);
-            return res;
+                           static_cast<const int>(incx), &res__);
+            return res__;
         }
         if constexpr (is_Same_Ty<double, X>) {
-            X res{};
+            X res__{};
             cublasDasum_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
-                           static_cast<const int>(incx), &res);
-            return res;
+                           static_cast<const int>(incx), &res__);
+            return res__;
         }
         __THROW_UNIMPLEMENTED__;
     };
 
     /**
-     * @brief res = sum(xi*yi)
+     * @brief res__ = sum(xi*yi)
+     *  @remarks GPU 版本
      */
-    @remarks GPU 版本 template <is_Arithmetic X, is_Arithmetic Y>
+    template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
                            const Y *y, const_dif_t incy) {
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
-            X res{};
+            X res__{};
             cublasSdot_v2(plat::get_active_device().cublas_handle(),
                           static_cast<const int>(n), x,
                           static_cast<const int>(incx), y,
-                          static_cast<const int>(incy), &res);
-            return res;
+                          static_cast<const int>(incy), &res__);
+            return res__;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
-            X res{};
+            X res__{};
             cublasDdot_v2(plat::get_active_device().cublas_handle(),
                           static_cast<const int>(n), x,
                           static_cast<const int>(incx), y,
-                          static_cast<const int>(incy), &res);
-            return res;
+                          static_cast<const int>(incy), &res__);
+            return res__;
         }
         __THROW_UNIMPLEMENTED__;
     };
 
     /**
-     * @brief res = ||x||^2
+     * @brief res__ = ||x||^2
      * @remarks GPU 版本
      */
     template <is_Arithmetic X>
@@ -112,18 +131,18 @@ public:
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
-            X res{};
+            X res__{};
             cublasSnrm2_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
-                           static_cast<const int>(incx), &res);
-            return res;
+                           static_cast<const int>(incx), &res__);
+            return res__;
         }
         if constexpr (is_Same_Ty<double, X>) {
-            X res{};
+            X res__{};
             cublasDnrm2_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
-                           static_cast<const int>(incx), &res);
-            return res;
+                           static_cast<const int>(incx), &res__);
+            return res__;
         }
         __THROW_UNIMPLEMENTED__;
     };
@@ -131,6 +150,7 @@ public:
     /**
      * @brief 绝对值最大的第一个索引
      * @remarks GPU 版本
+     * @note cublas返回值从1开始
      */
     template <is_Arithmetic X>
     static constexpr difference_type iamax(const_dif_t n, const X *x,
@@ -138,18 +158,18 @@ public:
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
-            difference_type res{};
+            int res__{};
             cublasIsamax_v2(plat::get_active_device().cublas_handle(),
                             static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res);
-            return res;
+                            static_cast<const int>(incx), &res__);
+            return static_cast<difference_type>(res__) - 1;
         }
         if constexpr (is_Same_Ty<double, X>) {
-            difference_type res{};
+            int res__{};
             cublasIdamax_v2(plat::get_active_device().cublas_handle(),
                             static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res);
-            return res;
+                            static_cast<const int>(incx), &res__);
+            return static_cast<difference_type>(res__) - 1;
         }
         __THROW_UNIMPLEMENTED__;
     };
@@ -157,6 +177,7 @@ public:
     /**
      * @brief 绝对值最小的第一个索引
      * @remarks GPU 版本
+     * @note cublas返回值从1开始
      */
     template <is_Arithmetic X>
     static constexpr difference_type iamin(const_dif_t n, const X *x,
@@ -164,18 +185,18 @@ public:
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
-            difference_type res{};
+            int res__{};
             cublasIsamin_v2(plat::get_active_device().cublas_handle(),
                             static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res);
-            return res;
+                            static_cast<const int>(incx), &res__);
+            return static_cast<difference_type>(res__) - 1;
         }
         if constexpr (is_Same_Ty<double, X>) {
-            difference_type res{};
+            int res__{};
             cublasIdamin_v2(plat::get_active_device().cublas_handle(),
                             static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res);
-            return res;
+                            static_cast<const int>(incx), &res__);
+            return static_cast<difference_type>(res__) - 1;
         }
         __THROW_UNIMPLEMENTED__;
     };
@@ -190,17 +211,19 @@ public:
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
-            cublasCaxpy_v2(
-                plat::get_active_device().cublas_handle(),
-                static_cast<const int>(n), static_cast<const X>(alpha), x,
-                static_cast<const int>(incx), y, static_cast<const int>(incy));
+            const X alpha__ = static_cast<const X>(alpha);
+            cublasSaxpy_v2(plat::get_active_device().cublas_handle(),
+                           static_cast<const int>(n), &alpha__, x,
+                           static_cast<const int>(incx), y,
+                           static_cast<const int>(incy));
             return;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
-            cublasDaxpy_v2(
-                plat::get_active_device().cublas_handle(),
-                static_cast<const int>(n), static_cast<const X>(alpha), x,
-                static_cast<const int>(incx), y, static_cast<const int>(incy));
+            const X alpha__ = static_cast<const X>(alpha);
+            cublasDaxpy_v2(plat::get_active_device().cublas_handle(),
+                           static_cast<const int>(n), &alpha__, x,
+                           static_cast<const int>(incx), y,
+                           static_cast<const int>(incy));
             return;
         }
         __THROW_UNIMPLEMENTED__;
@@ -216,7 +239,7 @@ public:
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
-            cublasCcopy_v2(plat::get_active_device().cublas_handle(),
+            cublasScopy_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
                            static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
@@ -242,7 +265,7 @@ public:
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
-            cublasCswap_v2(plat::get_active_device().cublas_handle(),
+            cublasSswap_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
                            static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
@@ -265,26 +288,32 @@ public:
     template <is_Arithmetic X, is_Arithmetic Alpha>
     static constexpr void scal(const_dif_t n, const Alpha alpha, X *x,
                                const_dif_t incx) {
-        __THROW_UNIMPLEMENTED__;
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
+            const X alpha__ = static_cast<const X>(alpha);
             cublasSscal_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n),
-                           static_cast<const X>(alpha), x,
+                           static_cast<const int>(n), &alpha__, x,
                            static_cast<const int>(incx));
             return;
         }
         if constexpr (is_Same_Ty<double, X>) {
+            const X alpha__ = static_cast<const X>(alpha);
             cublasDscal_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n),
-                           static_cast<const X>(alpha), x,
+                           static_cast<const int>(n), &alpha__, x,
                            static_cast<const int>(incx));
             return;
         }
         __THROW_UNIMPLEMENTED__;
     };
 
+    /**
+     * @brief y = alpha*op(a)*x + beta*y;
+     * op(a)->m*n;
+     * x->1*n(noTrans)/1*m(Trans);
+     * y->1*m(noTrans)/1*n(Trans)
+     *
+     */
     template <is_Arithmetic X, is_Arithmetic Y, is_Arithmetic A,
               is_Arithmetic Alpha, is_Arithmetic Beta>
     static constexpr void gemv(const Layout layout, const Transpose trans,
@@ -294,22 +323,49 @@ public:
                                const_dif_t incy) {
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
+        ensure_ld_legal_(layout, m, n, lda);
         if constexpr (is_Same_Ty<float, A, X, Y>) {
-            cublasSgemv_v2(
-                plat::get_active_device().cublas_handle(), convert_(trans),
-                static_cast<const int>(m), static_cast<const int>(n),
-                static_cast<const X>(alpha), a, static_cast<const int>(lda), x,
-                static_cast<const int>(incx), static_cast<const X>(beta), y,
-                static_cast<const int>(incy));
+            const X alpha___ = static_cast<const X>(alpha);
+            const X beta__ = static_cast<const X>(beta);
+            if (layout == Layout::Row_Major) {
+                cublasSgemv_v2(plat::get_active_device().cublas_handle(),
+                               convert_(trans, layout),
+                               static_cast<const int>(n),
+                               static_cast<const int>(m), &alpha___, a,
+                               static_cast<const int>(lda), x,
+                               static_cast<const int>(incx), &beta__, y,
+                               static_cast<const int>(incy));
+            } else if (layout == Layout::Col_Major) {
+                cublasSgemv_v2(plat::get_active_device().cublas_handle(),
+                               convert_(trans, layout),
+                               static_cast<const int>(m),
+                               static_cast<const int>(n), &alpha___, a,
+                               static_cast<const int>(lda), x,
+                               static_cast<const int>(incx), &beta__, y,
+                               static_cast<const int>(incy));
+            }
             return;
         }
         if constexpr (is_Same_Ty<double, A, X, Y>) {
-            cublasDgemv_v2(
-                plat::get_active_device().cublas_handle(), convert_(trans),
-                static_cast<const int>(m), static_cast<const int>(n),
-                static_cast<const X>(alpha), a, static_cast<const int>(lda), x,
-                static_cast<const int>(incx), static_cast<const X>(beta), y,
-                static_cast<const int>(incy));
+            const X alpha___ = static_cast<const X>(alpha);
+            const X beta__ = static_cast<const X>(beta);
+            if (layout == Layout::Row_Major) {
+                cublasDgemv_v2(plat::get_active_device().cublas_handle(),
+                               convert_(trans, layout),
+                               static_cast<const int>(n),
+                               static_cast<const int>(m), &alpha___, a,
+                               static_cast<const int>(lda), x,
+                               static_cast<const int>(incx), &beta__, y,
+                               static_cast<const int>(incy));
+            } else if (layout == Layout::Col_Major) {
+                cublasDgemv_v2(plat::get_active_device().cublas_handle(),
+                               convert_(trans, layout),
+                               static_cast<const int>(m),
+                               static_cast<const int>(n), &alpha___, a,
+                               static_cast<const int>(lda), x,
+                               static_cast<const int>(incx), &beta__, y,
+                               static_cast<const int>(incy));
+            }
             return;
         }
         __THROW_UNIMPLEMENTED__;
@@ -327,20 +383,43 @@ public:
                               const_dif_t lda) {
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
+        ensure_ld_legal_(layout, m, n, lda);
         if constexpr (is_Same_Ty<float, A, X, Y>) {
-            cublasSger_v2(
-                plat::get_active_device().cublas_handle(),
-                static_cast<const int>(m), static_cast<const int>(n),
-                static_cast<const X>(alpha), x, static_cast<const int>(incx), y,
-                static_cast<const int>(incy), a, static_cast<const int>(lda));
+            const A alpha__ = static_cast<const A>(alpha);
+            if (layout == Layout::Row_Major) {
+                cublasSger_v2(plat::get_active_device().cublas_handle(),
+                              static_cast<const int>(n),
+                              static_cast<const int>(m), &alpha__, y,
+                              static_cast<const int>(incy), x,
+                              static_cast<const int>(incx), a,
+                              static_cast<const int>(lda));
+            } else {
+                cublasSger_v2(plat::get_active_device().cublas_handle(),
+                              static_cast<const int>(m),
+                              static_cast<const int>(n), &alpha__, x,
+                              static_cast<const int>(incx), y,
+                              static_cast<const int>(incy), a,
+                              static_cast<const int>(lda));
+            }
             return;
         }
         if constexpr (is_Same_Ty<double, A, X, Y>) {
-            cublasDger_v2(
-                plat::get_active_device().cublas_handle(),
-                static_cast<const int>(m), static_cast<const int>(n),
-                static_cast<const X>(alpha), x, static_cast<const int>(incx), y,
-                static_cast<const int>(incy), a, static_cast<const int>(lda));
+            const A alpha__ = static_cast<const A>(alpha);
+            if (layout == Layout::Row_Major) {
+                cublasDger_v2(plat::get_active_device().cublas_handle(),
+                              static_cast<const int>(n),
+                              static_cast<const int>(m), &alpha__, y,
+                              static_cast<const int>(incy), x,
+                              static_cast<const int>(incx), a,
+                              static_cast<const int>(lda));
+            } else {
+                cublasDger_v2(plat::get_active_device().cublas_handle(),
+                              static_cast<const int>(m),
+                              static_cast<const int>(n), &alpha__, x,
+                              static_cast<const int>(incx), y,
+                              static_cast<const int>(incy), a,
+                              static_cast<const int>(lda));
+            }
             return;
         }
         __THROW_UNIMPLEMENTED__;
@@ -359,24 +438,51 @@ public:
          const Beta beta, C *c, const_dif_t ldc) {
         ensure_no_null_pointer_(a, b, c);
         ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
+        ensure_ld_legal_(layout, trans_a, m, k, lda);
+        ensure_ld_legal_(layout, trans_b, k, n, ldb);
+        ensure_ld_legal_(layout, m, n, ldc);
         if constexpr (is_Same_Ty<float, A, B, C>) {
-            cublasSgemm_v2(
-                plat::get_active_device().cublas_handle(), convert_(trans_a),
-                convert_(trans_b), static_cast<const int>(m),
-                static_cast<const int>(n), static_cast<const int>(k),
-                static_cast<const A>(alpha), a, static_cast<const int>(lda), b,
-                static_cast<const int>(ldb), static_cast<const X>(beta), c,
-                static_cast<const int>(ldc));
+            const A alpha__ = static_cast<const A>(alpha);
+            const A beta__ = static_cast<const A>(beta);
+            if (layout == Layout::Row_Major) {
+                cublasSgemm_v2(
+                    plat::get_active_device().cublas_handle(),
+                    convert_(trans_a), convert_(trans_b),
+                    static_cast<const int>(k), static_cast<const int>(m),
+                    static_cast<const int>(k), &alpha__, b,
+                    static_cast<const int>(k), a, static_cast<const int>(k),
+                    &beta__, c, static_cast<const int>(n));
+            } else {
+                cublasSgemm_v2(
+                    plat::get_active_device().cublas_handle(),
+                    convert_(trans_a, layout), convert_(trans_b, layout),
+                    static_cast<const int>(m), static_cast<const int>(n),
+                    static_cast<const int>(k), &alpha__, a,
+                    static_cast<const int>(lda), b, static_cast<const int>(ldb),
+                    &beta__, c, static_cast<const int>(ldc));
+            }
             return;
         }
         if constexpr (is_Same_Ty<double, A, B, C>) {
-            cublasDgemm_v2(
-                plat::get_active_device().cublas_handle(), convert_(trans_a),
-                convert_(trans_b), static_cast<const int>(m),
-                static_cast<const int>(n), static_cast<const int>(k),
-                static_cast<const A>(alpha), a, static_cast<const int>(lda), b,
-                static_cast<const int>(ldb), static_cast<const X>(beta), c,
-                static_cast<const int>(ldc));
+            const A alpha__ = static_cast<const A>(alpha);
+            const A beta__ = static_cast<const A>(beta);
+            if (layout == Layout::Row_Major) {
+                cublasDgemm_v2(
+                    plat::get_active_device().cublas_handle(),
+                    convert_(trans_a), convert_(trans_b),
+                    static_cast<const int>(k), static_cast<const int>(m),
+                    static_cast<const int>(k), &alpha__, b,
+                    static_cast<const int>(k), a, static_cast<const int>(k),
+                    &beta__, c, static_cast<const int>(n));
+            } else {
+                cublasDgemm_v2(
+                    plat::get_active_device().cublas_handle(),
+                    convert_(trans_a, layout), convert_(trans_b, layout),
+                    static_cast<const int>(m), static_cast<const int>(n),
+                    static_cast<const int>(k), &alpha__, a,
+                    static_cast<const int>(lda), b, static_cast<const int>(ldb),
+                    &beta__, c, static_cast<const int>(ldc));
+            }
             return;
         }
         __THROW_UNIMPLEMENTED__;

@@ -42,6 +42,8 @@ if(MSVC)
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:/openmp>)
     #去掉编译cuda 4819 警告
     string(REGEX REPLACE "\"$" " /wd4819\"" CMAKE_CUDA_FLAGS ${CMAKE_CUDA_FLAGS})
+    #LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT.lib")
 
     add_compile_options(
         $<$<CONFIG:>:/MT>

@@ -22,6 +22,7 @@
 #include "core/base_type.hpp"
 #include "device/device_platform.hpp"
 namespace llframe::blas {
+// blas_adapter的一般功能实现
 template <device::is_Device Device>
 class _Blas_Adapter_Base {
 public:
@@ -40,10 +41,10 @@ public:
 
     using plat = device::Device_Platform<device_type>;
 
-protected:
+protected: // 参数检查辅助方法
     // 判断真正是否为空
     template <is_Pointer... Pointers>
-    static constexpr void ensure_no_null_pointer_(Pointers... pointers) {
+    static constexpr void ensure_no_null_pointer_(const Pointers... pointers) {
         if constexpr (sizeof...(Pointers) == 0) return;
         if ((... || (pointers == nullptr))) {
             __LLFRAME_THROW_EXCEPTION_INFO__(exception::Null_Pointer,
@@ -53,7 +54,8 @@ protected:
 
     // 判断数值被转换后是否为负数
     template <class Trans_Ty, is_Arithmetic... Arithmetics>
-    static constexpr void ensure_not_negative_(Arithmetics... arithmetics) {
+    static constexpr void
+    ensure_not_negative_(const Arithmetics... arithmetics) {
         if constexpr (sizeof...(Arithmetics) == 0) return;
         if ((... || (static_cast<Trans_Ty>(arithmetics) < 0))) {
             __LLFRAME_THROW_EXCEPTION_INFO__(
@@ -62,7 +64,39 @@ protected:
         }
     }
 
-public:
+    // 确保ld参数是合法的
+    static constexpr void ensure_ld_legal_(const Layout layout, const_dif_t m,
+                                           const_dif_t n, const_dif_t ld) {
+        if (((layout == Layout::Row_Major) && (ld >= n))
+            || ((layout == Layout::Col_Major) && (ld >= m))) {
+            return;
+        }
+        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
+                                         "leading demention is illegal!")
+    };
+
+    // 确保ld参数是合法的
+    static constexpr void ensure_ld_legal_(const Layout layout,
+                                           const Transpose transpose,
+                                           const_dif_t m, const_dif_t n,
+                                           const_dif_t ld) {
+        if (transpose == Transpose::NoTrans) {
+            if (((layout == Layout::Row_Major) && (ld >= n))
+                || ((layout == Layout::Col_Major) && (ld >= m))) {
+                return;
+            }
+        }
+        if (transpose == Transpose::Trans) {
+            if (((layout == Layout::Row_Major) && (ld >= m))
+                || ((layout == Layout::Col_Major) && (ld >= n))) {
+                return;
+            }
+        }
+        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
+                                         "leading demention is illegal!")
+    };
+
+public: //
     static constexpr void set_num_threads(int num_threads) {
         __THROW_UNIMPLEMENTED__;
     };
@@ -516,7 +550,8 @@ public: // openblas extensions
 };
 
 /**
- * @brief blas适配器
+ * @brief
+ * 根据不同的设备类型选取合适的线性代数函数,为了能够支持混合精度所以每种指针都当作一个独立的类型去写.后续有需要再进行补充.
  *
  *
  * @tparam Device

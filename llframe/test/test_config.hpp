@@ -16,15 +16,26 @@
 #endif // TEST_BLAS
 
 #ifdef TEST_BLAS_LEVER1
-// #define TEST_BLAS_SUM
-// #define TEST_BLAS_ASUM
-// #define TEST_BLAS_DOT
+#define TEST_BLAS_SUM
+#define TEST_BLAS_ASUM
+#define TEST_BLAS_DOT
 #define TEST_BLAS_NRM2
+#define TEST_BLAS_IAMAX
+#define TEST_BLAS_IAMIN
+#define TEST_BLAS_IMAX
+#define TEST_BLAS_IMIN
+#define TEST_BLAS_AXPY
+#define TEST_BLAS_COPY
+#define TEST_BLAS_SWAP
+#define TEST_BLAS_SCAL
 #endif // TEST_BLAS_LEVER1
 
 #ifdef TEST_BLAS_LEVER2
+#define TEST_BLAS_GEMV
+#define TEST_BLAS_GER
 #endif // TEST_BLAS_LEVER2
 
 #ifdef TEST_BLAS_LEVER3
+#define TEST_BLAS_GEMM
 #endif // TEST_BLAS_LEVER3
 #endif //__LLFRAME_TEST_CONFIG__

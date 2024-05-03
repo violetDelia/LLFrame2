@@ -16,14 +16,18 @@ void test_blas_adapter_sum_for_each_device() {
         for (int i = 0; i < n; i++) { x[i] = 0; }
         x[0] = Ty{1};
         x[n - 1] = Ty{1};
+        if constexpr (std::numeric_limits<Ty>::is_signed) { x[n - 1] = Ty{-1}; }
         if constexpr (!llframe::blas::is_Support_Openblas<Device, Ty>) {
             ASSERT_THROW(Blas_adapter::sum(n, x, 1),
                          llframe::exception::Unimplement);
             delete[] x;
             return;
-        } else {
-            x[n - 1] = Ty{-1};
         }
+        Ty *null = nullptr;
+        ASSERT_THROW(Blas_adapter::sum(n, null, 1),
+                     llframe::exception::Null_Pointer);
+        ASSERT_THROW(Blas_adapter::sum(n, x, -1),
+                     llframe::exception::Bad_Parameter);
         ASSERT_EQ(Blas_adapter::sum(n, x, 1), 0);
         ASSERT_EQ(Blas_adapter::sum(n / 2, x, 2), 1);
         delete[] x;

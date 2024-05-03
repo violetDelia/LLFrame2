@@ -7,6 +7,7 @@
 #include "device/device_define.hpp"
 #include "device/device_impl.hpp"
 #include <cuda_runtime.h>
+#include <limits>
 using Exception_Tuple =
     std::tuple<llframe::exception::Bad_Alloc, llframe::exception::Bad_Parameter,
                llframe::exception::Bad_Index, llframe::exception::Exception,
@@ -87,6 +88,9 @@ using Arithmetic_Tuple =
 #define ASSERT_DEVICE_IS_VALID(Device, id)                                     \
     ASSERT_DEVICE_IS_VALID_GPU(Device, id)                                     \
     ASSERT_DEVICE_IS_VALID_CPU(Device, id)
+// 输出类型
+#define PRINT_TY(TY) std::cout << typeid(TY).name() << std::endl;
+
 // 测试Allocator的属性
 template <class Allocator>
 void test_allocator_traits() {
