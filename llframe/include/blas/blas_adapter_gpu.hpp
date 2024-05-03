@@ -95,7 +95,7 @@ public:
     };
 
     /**
-     * @brief res__ = sum(xi*yi)
+     * @brief res = sum(xi*yi)
      *  @remarks GPU 版本
      */
     template <is_Arithmetic X, is_Arithmetic Y>
@@ -123,7 +123,7 @@ public:
     };
 
     /**
-     * @brief res__ = ||x||^2
+     * @brief res = ||x||^2
      * @remarks GPU 版本
      */
     template <is_Arithmetic X>

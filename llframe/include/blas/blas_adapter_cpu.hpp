@@ -42,9 +42,9 @@ public:
     using Side = typename Base::Side;
 
 protected:
-    // openblas的bug,调用axpy最好不要走超过该值
+    // openblas的bug,调用axpy最好不要超过该值
     static constexpr size_type openblas_max_axpy_n = 8192;
-    // openblas的bug,调用scal最好不要走超过该值
+    // openblas的bug,调用scal最好不要超过该值
     static constexpr size_type openblas_max_scal_n = 8192;
 
 protected:
