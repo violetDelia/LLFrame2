@@ -35,27 +35,32 @@ public:
     using Self = _Device;
     using size_type = size_t;
 
+public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw = true;
+
 public: // 构造函数
-    constexpr _Device() : _Device(0){};
-    explicit constexpr _Device(const size_type device_id) : id_(device_id){};
-    constexpr _Device(const Self &other) = default;
-    constexpr _Device(Self &&other) = delete;
-    constexpr Self &operator=(const Self &other) = default;
-    constexpr Self &operator=(Self &&other) = delete;
+    constexpr _Device() noexcept : _Device(0){};
+    explicit constexpr _Device(const size_type device_id) noexcept :
+        id_(device_id){};
+    constexpr _Device(const Self &other) noexcept = default;
+    constexpr _Device(Self &&other) noexcept = delete;
+    constexpr Self &operator=(const Self &other) noexcept = default;
+    constexpr Self &operator=(Self &&other) noexcept = delete;
     virtual ~_Device(){};
 
 public:
     /**
      * @brief 返回设备编号
      */
-    constexpr size_type get_id() {
+    constexpr size_type get_id() noexcept {
         return this->id_;
     }
 
     /**
      * @brief 唤醒该设备
      */
-    virtual bool awake() = 0;
+    virtual bool awake() noexcept = 0;
 
 protected:
     // 设备编号
@@ -74,7 +79,11 @@ public:
     using Base::_Device;
 
 public:
-    bool awake() override {
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw = Base::construct_no_thorw;
+
+public:
+    bool awake() noexcept override {
         return true;
     }
 };
@@ -97,6 +106,10 @@ public:
 
 private:
     using Base::_Device;
+
+public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw = false;
 
 public: // 重写构造函数
     GPU(const size_type device_id) : Base(device_id) {
@@ -126,20 +139,20 @@ public: // 重写构造函数
     }
 
 public:
-    bool awake() override {
+    bool awake() noexcept override {
         if (cudaSetDevice(this->id_)) { return false; }
         return true;
     };
 
-    auto &cudnn_handle() {
+    auto &cudnn_handle() noexcept {
         return *default_cudnn_handle_;
     }
 
-    auto &cublas_handle() {
+    auto &cublas_handle() noexcept {
         return *default_cublas_handle_;
     }
 
-    auto &property() {
+    auto &property() noexcept {
         return *property_;
     }
 

@@ -1,13 +1,13 @@
 #ifndef __LLFRAME_TEST_CONFIG__
 #define __LLFRAME_TEST_CONFIG__
-// #define TEST_CONFIG
-// #define TEST_BASE_TYPE
-// #define TEST_EXCEPTION
-// #define TEST_SHAPE
-// #define TEST_DEVICE
-// #define TEST_ALLOCATOR
+#define TEST_CONFIG
+#define TEST_BASE_TYPE
+#define TEST_EXCEPTION
+#define TEST_SHAPE
+#define TEST_DEVICE
+#define TEST_ALLOCATOR
 
-#define TEST_BLAS
+// #define TEST_BLAS
 
 #ifdef TEST_BLAS
 #define TEST_BLAS_LEVER1

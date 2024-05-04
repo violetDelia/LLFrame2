@@ -39,10 +39,14 @@ public:
     using size_type = size_t;
     using device_map_type = std::map<size_type, device_type>;
 
+public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw = true;
+
 protected:
-    constexpr _Device_Platform_Base() = default;
-    constexpr _Device_Platform_Base(const Self &other) = delete;
-    constexpr Self &operator=(const Self &) = delete;
+    constexpr _Device_Platform_Base() noexcept = default;
+    constexpr _Device_Platform_Base(const Self &other) noexcept = delete;
+    constexpr Self &operator=(const Self &) noexcept = delete;
 
 public:
     // 保存Device的容器
@@ -65,6 +69,10 @@ public:
     using device_type = typename Base::device_type;
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
+
+public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw = Base::construct_no_thorw;
 };
 
 template <>
@@ -76,9 +84,14 @@ public:
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
 
+public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw =
+        device_type::construct_no_thorw;
+
 protected:
     // cpu默认只有一个设备
-    constexpr _Device_Platform_Initializer() {
+    constexpr _Device_Platform_Initializer() noexcept(construct_no_thorw) {
         this->device_map[0] = device_type(0);
         this->device_nums = 1;
     }
@@ -93,9 +106,14 @@ public:
     using size_type = typename Base::size_type;
     using device_map_type = typename Base::device_map_type;
 
+public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw =
+        device_type::construct_no_thorw;
+
 protected:
     // gpu初始化
-    _Device_Platform_Initializer() {
+    _Device_Platform_Initializer() noexcept(construct_no_thorw) {
         int device_count;
         cudaGetDeviceCount(&device_count);
         for (int i{}; i < device_count; i++) {
@@ -103,7 +121,9 @@ protected:
         }
         this->device_nums = device_count;
         if (this->device_nums > 0) {
-            this->device_map[0].awake();
+            if (!this->device_map[0].awake()) {
+                __LLFRAME_THROW_UNHANDLED_INFO__("awake device falut!")
+            };
             this->active_device_id = 0;
         }
     }
@@ -122,10 +142,14 @@ public:
     using device_map_type = typename Base::device_map_type;
 
 public:
+    // 构造函数是不会发生异常
+    static constinit const bool construct_no_thorw = Base::construct_no_thorw;
+
+public:
     /**
      * @brief 获取设备实例
      */
-    static constexpr Self &get_instance() {
+    static constexpr Self &get_instance() noexcept(construct_no_thorw) {
         static Self instance;
         return instance;
     };
@@ -133,7 +157,8 @@ public:
     /**
      * @brief 获取指定设备
      */
-    static constexpr device_type &get_device(const size_type id) {
+    static constexpr device_type &
+    get_device(const size_type id) noexcept(construct_no_thorw) {
         auto &instance = get_instance();
         if (instance.device_map.count(id)) { return instance.device_map[id]; }
         __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
@@ -143,7 +168,8 @@ public:
     /**
      * @brief 唤醒指定设备
      */
-    static constexpr bool awake_device(const size_type id) {
+    static constexpr bool
+    awake_device(const size_type id) noexcept(construct_no_thorw) {
         auto &instance = get_instance();
         if (instance.active_device_id == id) return true;
         if (get_device(id).awake()) {
@@ -156,7 +182,8 @@ public:
     /**
      * @brief 获取当前活动的设备
      */
-    static constexpr device_type &get_active_device() {
+    static constexpr device_type &
+    get_active_device() noexcept(construct_no_thorw) {
         auto &instance = get_instance();
         return instance.device_map[instance.active_device_id];
     };

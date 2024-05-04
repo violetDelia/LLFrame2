@@ -32,18 +32,17 @@ public:
     using size_type = size_t;
 
 public: // 构造函数
-    constexpr Exception() noexcept = default;
-    constexpr Exception(const Self &other) noexcept = default;
-    constexpr Exception(Self &&other) noexcept = default;
-    explicit constexpr Exception(const char *message) noexcept :
-        message_(message){};
+    constexpr Exception() = default;
+    constexpr Exception(const Self &other) = default;
+    constexpr Exception(Self &&other) = default;
+    explicit constexpr Exception(const char *message) : message_(message){};
     constexpr Exception(const char *message, const char *file,
-                        const size_type line, const char *func_name) noexcept :
+                        const size_type line, const char *func_name) :
         message_(message) {
         this->add_location(file, line, func_name);
     }
     constexpr Exception(const char *file, const size_type line,
-                        const char *func_name) noexcept {
+                        const char *func_name) {
         this->add_location(file, line, func_name);
     }
 
@@ -57,7 +56,7 @@ public:
      * @param func_name 函数名称
      */
     constexpr void add_location(const char *file, const size_type line,
-                                const char *func_name) noexcept {
+                                const char *func_name) {
         this->locations_.append("\t");
         this->locations_.append(func_name);
         this->locations_.append(": ");
@@ -67,7 +66,7 @@ public:
         this->locations_.append(">\n");
     }
 
-    [[nodiscard]] constexpr virtual std::string what() const noexcept {
+    [[nodiscard]] constexpr virtual std::string what() const {
         return this->message_ + this->locations_;
     }
 
