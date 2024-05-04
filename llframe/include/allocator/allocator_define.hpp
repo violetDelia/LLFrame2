@@ -19,6 +19,8 @@
 #ifndef __LLFRAME_ALLOCATOR_DEFINE_HPP__
 #define __LLFRAME_ALLOCATOR_DEFINE_HPP__
 #include "device/device_define.hpp"
+#include "core/base_type.hpp"
+#include <memory>
 namespace llframe ::allocator {
 
 template <class Ty>
@@ -26,6 +28,11 @@ class Biasc_Allocator;
 
 template <device::is_Device Device>
 class Memory_Pool;
+
+class Allocator_Config;
+
+template <class Ty, device::is_Device Device>
+struct Allocator_Traits;
 
 template <class Ty, device::is_Device Device>
 class Allocator;

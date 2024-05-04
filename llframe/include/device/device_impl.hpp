@@ -97,6 +97,7 @@ public:
     using Self = GPU;
     using Base = _Device;
     using size_type = typename Base::size_type;
+
     using property_type = cudaDeviceProp;
     using property_pointer = std::shared_ptr<property_type>;
     using cublas_handle_type = cublasHandle_t;

@@ -24,7 +24,24 @@
 #include "core/exception.hpp"
 #include "device/device_platform.hpp"
 #include "allocator/allocator_define.hpp"
+#include "allocator/basic_allocator.hpp"
 namespace llframe ::allocator {
+
+template <class Ty, device::is_Device Device>
+struct Allocator_Traits {
+    using basic_allocator = Biasc_Allocator<Ty>;
+    using value_type = Ty;
+    using pointer = Ty *;
+    using shared_pointer = std::shared_ptr<Ty>;
+    using const_pointer = const Ty *;
+    using size_type = size_t;
+    using difference_type = ptrdiff_t;
+    using void_pointer = void *;
+    using device_type = Device;
+    using platform = device::Device_Platform<Device>;
+    using memory_pool = Memory_Pool<Device>;
+    using config = Allocator_Config;
+};
 
 /**
  * @brief 设备分配器实现接口
@@ -34,20 +51,21 @@ namespace llframe ::allocator {
  */
 template <class Ty, device::is_Device Device>
 class _Allocator_Impl : public _Allocator_Base<Ty> {
-public:
+private:
     using Self = _Allocator_Impl<Ty, Device>;
     using Base = _Allocator_Base<Ty>;
-    using basic_allocator = Biasc_Allocator<Ty>;
+    using traits = Allocator_Traits<Ty, Device>;
 
-    using value_type = typename Base::value_type;
-    using pointer = typename Base::pointer;
-    using const_pointer = typename Base::const_pointer;
-    using size_type = typename Base::size_type;
-    using difference_type = typename Base::difference_type;
-    using void_pointer = typename Base::void_pointer;
-
-    using device_type = Device;
-    using platform = device::Device_Platform<device_type>;
+public:
+    using basic_allocator = typename traits::basic_allocator;
+    using value_type = typename traits::value_type;
+    using pointer = typename traits::pointer;
+    using const_pointer = typename traits::const_pointer;
+    using size_type = typename traits::size_type;
+    using difference_type = typename traits::difference_type;
+    using void_pointer = typename traits::void_pointer;
+    using device_type = typename traits::device_type;
+    using platform = typename traits::platform;
 
 public:
     /**
@@ -104,20 +122,21 @@ public:
 // CPU特化
 template <class Ty>
 class _Allocator_Impl<Ty, device::CPU> : public _Allocator_Base<Ty> {
-public:
+private:
     using Self = _Allocator_Impl<Ty, device::CPU>;
     using Base = _Allocator_Base<Ty>;
-    using basic_allocator = Biasc_Allocator<Ty>;
+    using traits = Allocator_Traits<Ty, device::CPU>;
 
-    using value_type = typename Base::value_type;
-    using pointer = typename Base::pointer;
-    using const_pointer = typename Base::const_pointer;
-    using size_type = typename Base::size_type;
-    using difference_type = typename Base::difference_type;
-    using void_pointer = typename Base::void_pointer;
-
-    using device_type = device::CPU;
-    using platform = device::Device_Platform<device_type>;
+public:
+    using basic_allocator = typename traits::basic_allocator;
+    using value_type = typename traits::value_type;
+    using pointer = typename traits::pointer;
+    using const_pointer = typename traits::const_pointer;
+    using size_type = typename traits::size_type;
+    using difference_type = typename traits::difference_type;
+    using void_pointer = typename traits::void_pointer;
+    using device_type = typename traits::device_type;
+    using platform = typename traits::platform;
 
 public:
     /**
@@ -171,20 +190,21 @@ public:
 // GPU特化
 template <class Ty>
 class _Allocator_Impl<Ty, device::GPU> : public _Allocator_Base<Ty> {
-public:
+private:
     using Self = _Allocator_Impl<Ty, device::GPU>;
     using Base = _Allocator_Base<Ty>;
-    using basic_allocator = Biasc_Allocator<Ty>;
+    using traits = Allocator_Traits<Ty, device::GPU>;
 
-    using value_type = typename Base::value_type;
-    using pointer = typename Base::pointer;
-    using const_pointer = typename Base::const_pointer;
-    using size_type = typename Base::size_type;
-    using difference_type = typename Base::difference_type;
-    using void_pointer = typename Base::void_pointer;
-
-    using device_type = device::GPU;
-    using platform = device::Device_Platform<device_type>;
+public:
+    using basic_allocator = typename traits::basic_allocator;
+    using value_type = typename traits::value_type;
+    using pointer = typename traits::pointer;
+    using const_pointer = typename traits::const_pointer;
+    using size_type = typename traits::size_type;
+    using difference_type = typename traits::difference_type;
+    using void_pointer = typename traits::void_pointer;
+    using device_type = typename traits::device_type;
+    using platform = typename traits::platform;
 
 protected:
     using Base::get_size_;
@@ -299,20 +319,24 @@ class Allocator : public _Allocator_Base<Ty> {
 public:
     using Self = Biasc_Allocator<Ty>;
     using Base = _Allocator_Base<Ty>;
+    using traits = Allocator_Traits<Ty, Device>;
+    using allocator_impl = _Allocator_Impl<Ty, Device>;
 
-    using value_type = typename Base::value_type;
-    using pointer = typename Base::pointer;
-    using const_pointer = typename Base::const_pointer;
-    using size_type = typename Base::size_type;
-    using difference_type = typename Base::difference_type;
-    using void_pointer = typename Base::void_pointer;
-    using shared_pointer = std::shared_ptr<value_type>;
+public:
+    using basic_allocator = typename traits::basic_allocator;
+    using value_type = typename traits::value_type;
+    using pointer = typename traits::pointer;
+    using shared_pointer = typename traits::shared_pointer;
+    using const_pointer = typename traits::const_pointer;
+    using size_type = typename traits::size_type;
+    using difference_type = typename traits::difference_type;
+    using void_pointer = typename traits::void_pointer;
+    using device_type = typename traits::device_type;
+    using platform = typename traits::platform;
+    using memory_pool = typename traits::memory_pool;
+    using config = typename traits::config;
 
-    using device_type = Device;
-    using allocator_impl = _Allocator_Impl<value_type, device_type>;
-    using memory_pool = Memory_Pool<device_type>;
-    using buffer_list_type = std::deque<void_pointer>;
-    using config = Allocator_Config;
+    using buffer_list_type = typename memory_pool::buffer_list_type;
 
 private:
     // 智能指针的删除器

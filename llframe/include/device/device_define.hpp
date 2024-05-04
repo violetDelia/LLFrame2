@@ -21,13 +21,14 @@
 #include <type_traits>
 namespace llframe::device {
 
-class _Device;
+class CPU;
+class GPU;
 
 /**
  * @brief 判断类型是否是Device的基类
  */
 template <class Ty>
-concept is_Device = std::is_base_of_v<_Device, Ty>;
+concept is_Device = std::is_same_v<CPU, Ty> || std::is_same_v<GPU, Ty>;
 
 template <is_Device Device>
 class Device_Platform;

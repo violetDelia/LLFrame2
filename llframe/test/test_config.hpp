@@ -7,11 +7,11 @@
 #define TEST_DEVICE
 #define TEST_ALLOCATOR
 
-// #define TEST_BLAS
+#define TEST_BLAS
 
 #ifdef TEST_BLAS
-#define TEST_BLAS_LEVER1
-#define TEST_BLAS_LEVER2
+// #define TEST_BLAS_LEVER1
+// #define TEST_BLAS_LEVER2
 #define TEST_BLAS_LEVER3
 #endif // TEST_BLAS
 

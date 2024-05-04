@@ -28,14 +28,19 @@ namespace llframe::allocator {
  */
 template <device::is_Device Device>
 class Memory_Pool {
-public:
+private:
     using Self = Memory_Pool<Device>;
-    using device_type = Device;
-    using value_type = void;
+    using allocator_traits = Allocator_Traits<void, Device>;
+
+public:
+    using device_type = typename allocator_traits::device_type;
+    using value_type = typename allocator_traits::value_type;
+    using pointer = typename allocator_traits::pointer;
+    using size_type = typename allocator_traits::size_type;
+    using void_pointer = typename allocator_traits::void_pointer;
+
     using allocator = Allocator<value_type, device_type>;
-    using pointer = typename allocator::pointer;
-    using size_type = typename allocator::size_type;
-    using buffer_list_type = typename allocator::buffer_list_type;
+    using buffer_list_type = std::deque<void_pointer>;
     using memory_pool_type = std::unordered_map<size_type, buffer_list_type>;
     using memory_pool_map_type =
         std::unordered_map<size_type, memory_pool_type>;
