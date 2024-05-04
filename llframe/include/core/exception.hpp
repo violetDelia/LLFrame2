@@ -35,7 +35,8 @@ public: // 构造函数
     constexpr Exception() noexcept = default;
     constexpr Exception(const Self &other) noexcept = default;
     constexpr Exception(Self &&other) noexcept = default;
-    constexpr Exception(const char *message) noexcept : message_(message){};
+    explicit constexpr Exception(const char *message) noexcept :
+        message_(message){};
     constexpr Exception(const char *message, const char *file,
                         const size_type line, const char *func_name) noexcept :
         message_(message) {

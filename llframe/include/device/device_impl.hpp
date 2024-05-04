@@ -37,7 +37,7 @@ public:
 
 public: // 构造函数
     constexpr _Device() : _Device(0){};
-    constexpr _Device(const size_type device_id) : id_(device_id){};
+    explicit constexpr _Device(const size_type device_id) : id_(device_id){};
     constexpr _Device(const Self &other) = default;
     constexpr _Device(Self &&other) = delete;
     constexpr Self &operator=(const Self &other) = default;
