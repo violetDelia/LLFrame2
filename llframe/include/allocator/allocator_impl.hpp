@@ -22,13 +22,12 @@
 #include <mutex>
 #include <deque>
 #include "core/exception.hpp"
-#include "device/device_platform.hpp"
 #include "allocator/allocator_define.hpp"
-#include "allocator/basic_allocator.hpp"
+#include "device/device_platform.hpp"
 namespace llframe ::allocator {
 
 template <class Ty, device::is_Device Device>
-struct Allocator_Traits {
+struct _Allocator_Features {
     using basic_allocator = Biasc_Allocator<Ty>;
     using value_type = Ty;
     using pointer = Ty *;
@@ -54,18 +53,18 @@ class _Allocator_Impl : public _Allocator_Base<Ty> {
 private:
     using Self = _Allocator_Impl<Ty, Device>;
     using Base = _Allocator_Base<Ty>;
-    using traits = Allocator_Traits<Ty, Device>;
+    using features = _Allocator_Features<Ty, Device>;
 
 public:
-    using basic_allocator = typename traits::basic_allocator;
-    using value_type = typename traits::value_type;
-    using pointer = typename traits::pointer;
-    using const_pointer = typename traits::const_pointer;
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using void_pointer = typename traits::void_pointer;
-    using device_type = typename traits::device_type;
-    using platform = typename traits::platform;
+    using basic_allocator = typename features::basic_allocator;
+    using value_type = typename features::value_type;
+    using pointer = typename features::pointer;
+    using const_pointer = typename features::const_pointer;
+    using size_type = typename features::size_type;
+    using difference_type = typename features::difference_type;
+    using void_pointer = typename features::void_pointer;
+    using device_type = typename features::device_type;
+    using platform = typename features::platform;
 
 public:
     /**
@@ -125,18 +124,18 @@ class _Allocator_Impl<Ty, device::CPU> : public _Allocator_Base<Ty> {
 private:
     using Self = _Allocator_Impl<Ty, device::CPU>;
     using Base = _Allocator_Base<Ty>;
-    using traits = Allocator_Traits<Ty, device::CPU>;
+    using features = _Allocator_Features<Ty, device::CPU>;
 
 public:
-    using basic_allocator = typename traits::basic_allocator;
-    using value_type = typename traits::value_type;
-    using pointer = typename traits::pointer;
-    using const_pointer = typename traits::const_pointer;
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using void_pointer = typename traits::void_pointer;
-    using device_type = typename traits::device_type;
-    using platform = typename traits::platform;
+    using basic_allocator = typename features::basic_allocator;
+    using value_type = typename features::value_type;
+    using pointer = typename features::pointer;
+    using const_pointer = typename features::const_pointer;
+    using size_type = typename features::size_type;
+    using difference_type = typename features::difference_type;
+    using void_pointer = typename features::void_pointer;
+    using device_type = typename features::device_type;
+    using platform = typename features::platform;
 
 public:
     /**
@@ -193,18 +192,18 @@ class _Allocator_Impl<Ty, device::GPU> : public _Allocator_Base<Ty> {
 private:
     using Self = _Allocator_Impl<Ty, device::GPU>;
     using Base = _Allocator_Base<Ty>;
-    using traits = Allocator_Traits<Ty, device::GPU>;
+    using features = _Allocator_Features<Ty, device::GPU>;
 
 public:
-    using basic_allocator = typename traits::basic_allocator;
-    using value_type = typename traits::value_type;
-    using pointer = typename traits::pointer;
-    using const_pointer = typename traits::const_pointer;
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using void_pointer = typename traits::void_pointer;
-    using device_type = typename traits::device_type;
-    using platform = typename traits::platform;
+    using basic_allocator = typename features::basic_allocator;
+    using value_type = typename features::value_type;
+    using pointer = typename features::pointer;
+    using const_pointer = typename features::const_pointer;
+    using size_type = typename features::size_type;
+    using difference_type = typename features::difference_type;
+    using void_pointer = typename features::void_pointer;
+    using device_type = typename features::device_type;
+    using platform = typename features::platform;
 
 protected:
     using Base::get_size_;
@@ -319,22 +318,22 @@ class Allocator : public _Allocator_Base<Ty> {
 public:
     using Self = Biasc_Allocator<Ty>;
     using Base = _Allocator_Base<Ty>;
-    using traits = Allocator_Traits<Ty, Device>;
+    using features = _Allocator_Features<Ty, Device>;
     using allocator_impl = _Allocator_Impl<Ty, Device>;
 
 public:
-    using basic_allocator = typename traits::basic_allocator;
-    using value_type = typename traits::value_type;
-    using pointer = typename traits::pointer;
-    using shared_pointer = typename traits::shared_pointer;
-    using const_pointer = typename traits::const_pointer;
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using void_pointer = typename traits::void_pointer;
-    using device_type = typename traits::device_type;
-    using platform = typename traits::platform;
-    using memory_pool = typename traits::memory_pool;
-    using config = typename traits::config;
+    using basic_allocator = typename features::basic_allocator;
+    using value_type = typename features::value_type;
+    using pointer = typename features::pointer;
+    using shared_pointer = typename features::shared_pointer;
+    using const_pointer = typename features::const_pointer;
+    using size_type = typename features::size_type;
+    using difference_type = typename features::difference_type;
+    using void_pointer = typename features::void_pointer;
+    using device_type = typename features::device_type;
+    using platform = typename features::platform;
+    using memory_pool = typename features::memory_pool;
+    using config = typename features::config;
 
     using buffer_list_type = typename memory_pool::buffer_list_type;
 

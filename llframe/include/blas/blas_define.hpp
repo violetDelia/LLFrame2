@@ -58,9 +58,6 @@ concept is_Support_Cublas = std::is_same_v<Device, device::GPU>
                             && is_Same_Floating_Point<Ty, Others...>;
 
 template <device::is_Device Device>
-struct Blas_Adapter_Traits;
-
-template <device::is_Device Device>
 class Blas_Adapter;
 
 } // namespace llframe::blas

@@ -24,7 +24,7 @@
 namespace llframe::blas {
 
 template <device::is_Device Device>
-struct Blas_Adapter_Traits {
+struct _Blas_Adapter_Features {
     using size_type = size_t;
     using difference_type = ptrdiff_t;
     using const_dif_t = const ptrdiff_t;
@@ -44,21 +44,21 @@ template <device::is_Device Device>
 class _Blas_Adapter_Base {
 private:
     using Self = _Blas_Adapter_Base<Device>;
-    using traits = Blas_Adapter_Traits<Device>;
+    using features = _Blas_Adapter_Features<Device>;
 
 public:
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using const_dif_t = typename traits::const_dif_t;
-    using device_type = typename traits::device_type;
+    using size_type = typename features::size_type;
+    using difference_type = typename features::difference_type;
+    using const_dif_t = typename features::const_dif_t;
+    using device_type = typename features::device_type;
 
-    using Layout = typename Blas_Adapter_Traits<Device>::Layout;
-    using Transpose = typename traits::Transpose;
-    using Uplo = typename traits::Uplo;
-    using Diag = typename traits::Diag;
-    using Side = typename Blas_Adapter_Traits<Device>::Side;
+    using Layout = typename features::Layout;
+    using Transpose = typename features::Transpose;
+    using Uplo = typename features::Uplo;
+    using Diag = typename features::Diag;
+    using Side = typename features::Side;
 
-    using plat = typename traits::plat;
+    using plat = typename features::plat;
 
 protected: // 参数检查辅助方法
     // 判断真正是否为空
@@ -582,21 +582,21 @@ class Blas_Adapter : public _Blas_Adapter_Base<Device> {
 public:
     using Self = Blas_Adapter<Device>;
     using Base = _Blas_Adapter_Base<Device>;
-    using traits = Blas_Adapter_Traits<Device>;
+    using features = _Blas_Adapter_Features<Device>;
 
 public:
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using const_dif_t = typename traits::const_dif_t;
-    using device_type = typename traits::device_type;
+    using size_type = typename features::size_type;
+    using difference_type = typename features::difference_type;
+    using const_dif_t = typename features::const_dif_t;
+    using device_type = typename features::device_type;
 
-    using Layout = typename traits::Layout;
-    using Transpose = typename traits::Transpose;
-    using Uplo = typename traits::Uplo;
-    using Diag = typename traits::Diag;
-    using Side = typename traits::Side;
+    using Layout = typename features::Layout;
+    using Transpose = typename features::Transpose;
+    using Uplo = typename features::Uplo;
+    using Diag = typename features::Diag;
+    using Side = typename features::Side;
 
-    using plat = typename traits::plat;
+    using plat = typename features::plat;
 };
 
 } // namespace llframe::blas

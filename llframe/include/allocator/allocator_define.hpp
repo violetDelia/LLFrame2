@@ -32,9 +32,6 @@ class Memory_Pool;
 class Allocator_Config;
 
 template <class Ty, device::is_Device Device>
-struct Allocator_Traits;
-
-template <class Ty, device::is_Device Device>
 class Allocator;
 
 } // namespace llframe::allocator

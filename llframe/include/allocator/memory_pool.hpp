@@ -30,14 +30,14 @@ template <device::is_Device Device>
 class Memory_Pool {
 private:
     using Self = Memory_Pool<Device>;
-    using allocator_traits = Allocator_Traits<void, Device>;
+    using allocator_features = _Allocator_Features<void, Device>;
 
 public:
-    using device_type = typename allocator_traits::device_type;
-    using value_type = typename allocator_traits::value_type;
-    using pointer = typename allocator_traits::pointer;
-    using size_type = typename allocator_traits::size_type;
-    using void_pointer = typename allocator_traits::void_pointer;
+    using device_type = typename allocator_features::device_type;
+    using value_type = typename allocator_features::value_type;
+    using pointer = typename allocator_features::pointer;
+    using size_type = typename allocator_features::size_type;
+    using void_pointer = typename allocator_features::void_pointer;
 
     using allocator = Allocator<value_type, device_type>;
     using buffer_list_type = std::deque<void_pointer>;

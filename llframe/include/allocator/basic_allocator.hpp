@@ -24,16 +24,6 @@
 #include <limits>
 namespace llframe::allocator {
 
-template <class Ty>
-struct _Allocator_Traits {
-    using value_type = Ty;
-    using pointer = Ty *;
-    using const_pointer = const pointer;
-    using size_type = size_t;
-    using difference_type = ptrdiff_t;
-    using void_pointer = void *;
-};
-
 /**
  * @brief 分配器的共有属性
  */
@@ -41,15 +31,14 @@ template <class Ty>
 class _Allocator_Base {
 private:
     using Self = _Allocator_Base<Ty>;
-    using traits = _Allocator_Traits<Ty>;
 
 public:
-    using value_type = typename traits::value_type;
-    using pointer = typename traits::pointer;
-    using const_pointer = typename traits::const_pointer;
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using void_pointer = typename traits::void_pointer;
+    using value_type = Ty;
+    using pointer = Ty *;
+    using const_pointer = const pointer;
+    using size_type = size_t;
+    using difference_type = ptrdiff_t;
+    using void_pointer = void *;
 
 protected:
     /**
@@ -82,15 +71,14 @@ class Biasc_Allocator : public _Allocator_Base<Ty> {
 private:
     using Self = Biasc_Allocator<Ty>;
     using Base = _Allocator_Base<Ty>;
-    using traits = _Allocator_Traits<Ty>;
 
 public:
-    using value_type = typename traits::value_type;
-    using pointer = typename traits::pointer;
-    using const_pointer = typename traits::const_pointer;
-    using size_type = typename traits::size_type;
-    using difference_type = typename traits::difference_type;
-    using void_pointer = typename traits::void_pointer;
+    using value_type = typename Base::value_type;
+    using pointer = typename Base::pointer;
+    using const_pointer = typename Base::const_pointer;
+    using size_type = typename Base::size_type;
+    using difference_type = typename Base::difference_type;
+    using void_pointer = typename Base::void_pointer;
 
 protected:
     using Base::get_size_;
