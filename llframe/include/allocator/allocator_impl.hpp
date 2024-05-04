@@ -26,7 +26,12 @@
 #include "allocator/allocator_define.hpp"
 namespace llframe ::allocator {
 
-// 设备分配器实现接口
+/**
+ * @brief 设备分配器实现接口
+ *
+ * @tparam Ty 元素类型
+ * @tparam Device 装置类型
+ */
 template <class Ty, device::is_Device Device>
 class _Allocator_Impl : public _Allocator_Base<Ty> {
 public:
@@ -45,21 +50,50 @@ public:
     using platform = device::Device_Platform<device_type>;
 
 public:
+    /**
+     * @brief 在指定设备分配存放若干个元素连续的内存
+     * @param n 元素个数
+     * @param device_id 设备编号
+     * @exception Unimplement
+     */
     [[nodiscard]] static constexpr pointer
     allocate(const size_type n, const size_type device_id = 0) {
         __THROW_UNIMPLEMENTED__;
     };
 
+    /**
+     * @brief 在指定设备分配存放若干字节的连续内存
+     *
+     * @param bytes – 字节数
+     * @param device_id 设备编号
+     * @exception Unimplement
+     */
     [[nodiscard]] static constexpr void_pointer
     allocate_bytes(const size_type bytes, const size_type device_id = 0) {
         __THROW_UNIMPLEMENTED__;
     };
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param n 元素个数
+     * @param device_id 设备编号
+     * @exception Unimplement
+     */
     static constexpr void deallocate(const pointer adress, const size_type n,
                                      const size_type device_id = 0) {
         __THROW_UNIMPLEMENTED__;
     };
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param bytes 字节数
+     * @param device_id 设备编号
+     * @exception Unimplement
+     */
     static constexpr void deallocate_bytes(const void_pointer adress,
                                            const size_type bytes,
                                            const size_type device_id = 0) {
@@ -86,21 +120,47 @@ public:
     using platform = device::Device_Platform<device_type>;
 
 public:
+    /**
+     * @brief 在指定设备分配存放若干个元素连续的内存
+     * @param n 元素个数
+     * @param device_id 设备编号
+     * @exception Bad_Alloc
+     */
     [[nodiscard]] static constexpr pointer
     allocate(const size_type n, const size_type device_id = 0) {
         return basic_allocator::allocate(n);
     };
 
+    /**
+     * @brief 在指定设备分配存放若干字节的连续内存
+     *
+     * @param bytes – 字节数
+     * @param device_id 设备编号
+     */
     [[nodiscard]] static constexpr void_pointer
     allocate_bytes(const size_type bytes, const size_type device_id = 0) {
         return basic_allocator::allocate_bytes(bytes);
     };
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param n 元素个数
+     * @param device_id 设备编号
+     */
     static constexpr void deallocate(const pointer adress, const size_type n,
                                      const size_type device_id = 0) {
         return basic_allocator::deallocate(adress, n);
     };
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param bytes 字节数
+     * @param device_id 设备编号
+     */
     static constexpr void deallocate_bytes(const void_pointer adress,
                                            const size_type bytes,
                                            const size_type device_id = 0) {
@@ -130,12 +190,25 @@ protected:
     using Base::get_size_;
 
 public:
+    /**
+     * @brief 在指定设备分配存放若干个元素连续的内存
+     * @param n 元素个数
+     * @param device_id 设备编号
+     * @exception Bad_Alloc,Unhandled,CUDA_Error
+     */
     [[nodiscard]] static constexpr pointer
     allocate(const size_type n, const size_type device_id = 0) {
         auto bytes = get_size_<sizeof(value_type)>(n);
         return static_cast<pointer>(allocate_bytes(bytes, device_id));
     };
 
+    /**
+     * @brief 在指定设备分配存放若干字节的连续内存
+     *
+     * @param bytes – 字节数
+     * @param device_id 设备编号
+     * @exception Unhandled,CUDA_Error
+     */
     [[nodiscard]] static constexpr void_pointer
     allocate_bytes(const size_type bytes, const size_type device_id = 0) {
         if (!platform::awake_device(device_id)) {
@@ -147,12 +220,26 @@ public:
         return adress;
     };
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param n 元素个数
+     * @param device_id 设备编号
+     */
     static constexpr void deallocate(const pointer adress, const size_type n,
                                      const size_type device_id = 0) {
         auto bytes = get_size_<sizeof(value_type)>(n);
         return deallocate_bytes(adress, bytes, device_id);
     };
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param bytes 字节数
+     * @param device_id 设备编号
+     */
     static constexpr void deallocate_bytes(const void_pointer adress,
                                            const size_type bytes,
                                            const size_type device_id = 0) {
@@ -246,6 +333,12 @@ protected:
     using Base::get_size_;
 
 public:
+    /**
+     * @brief 在指定设备分配存放若干个元素连续的内存
+     * @param n 元素个数
+     * @param device_id 设备编号
+     * @exception Bad_Alloc,Unhandled,CUDA_Error
+     */
     [[nodiscard]] static constexpr shared_pointer
     allocate(const size_type n, const size_type device_id = 0) {
         if (n == 0) { return shared_pointer{nullptr}; };
@@ -265,6 +358,13 @@ public:
                               Deleter_(buffer_slot));
     }
 
+    /**
+     * @brief 释放指定设备上的内存
+     *
+     * @param adress 内存地址
+     * @param bytes 字节数
+     * @param device_id 设备编号
+     */
     static constexpr void deallocate_bytes(const void_pointer adress,
                                            const size_type bytes,
                                            const size_type device_id) {

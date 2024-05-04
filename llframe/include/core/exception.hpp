@@ -66,6 +66,9 @@ public:
         this->locations_.append(">\n");
     }
 
+    /**
+     * @brief 输出故障信息
+     */
     [[nodiscard]] constexpr virtual std::string what() const {
         return this->message_ + this->locations_;
     }

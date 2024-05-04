@@ -38,6 +38,13 @@ public:
     using void_pointer = void *;
 
 protected:
+    /**
+     * @brief 获取实际分配的字节数
+     * @tparam Ty_Size 类型字节数
+     * @param n 元素数量
+     * @exception exception::Bad_Alloc
+     * @return
+     */
     template <size_type Ty_Size>
     static constexpr size_type get_size_(const size_type n) {
         if constexpr (Ty_Size == 0) return 0;
@@ -73,20 +80,37 @@ protected:
     using Base::get_size_;
 
 public:
+    /**
+     * @brief 分配存放若干个连续元素的内存
+     * @exception Bad_Alloc
+     */
     [[nodiscard]] static constexpr pointer allocate(const size_type n) {
         auto bytes = get_size_<sizeof(value_type)>(n);
         return static_cast<pointer>(allocate_bytes(bytes));
     };
 
+    /**
+     * @brief 分配若干个字节的连续内存
+     */
     [[nodiscard]] static constexpr void_pointer
     allocate_bytes(const size_type bytes) {
         return bytes == 0 ? nullptr : ::operator new(bytes);
     };
 
+    /**
+     * @brief 释放指定地址的内存
+     * @param adress 内存地址
+     * @param n 内存中元素个数
+     */
     static constexpr void deallocate(const pointer adress, const size_type n) {
         ::operator delete(adress);
     };
 
+    /**
+     * @brief 释放指定地址的内存
+     * @param adress 内存地址
+     * @param bytes 内存中的字节数
+     */
     static constexpr void deallocate_bytes(const void_pointer adress,
                                            const size_type bytes) {
         ::operator delete(adress);

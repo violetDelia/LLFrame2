@@ -56,7 +56,7 @@ public: // 构造函数
     constexpr Shape(const Self &other) : Base(other) {
     }
 
-    // 移动构造将元素置为0
+    // 移动构造会将元素置为0
     constexpr Shape(Self &&other) : Base(std::move(other)) {
         other.fill(0);
     }
