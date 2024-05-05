@@ -21,4 +21,5 @@
 #include "memory/memory_define.hpp"
 #include "memory/memory_features.hpp"
 #include "memory/memory_impl.hpp"
+#include "memory/memory_operator.hpp"
 #endif //__LLFRAME_MEMORY_HPP__

@@ -13,7 +13,7 @@
 //    limitations under the License.
 
 /**
- * @brief 内存定义
+ * @brief 内存萃取器
  *
  */
 #ifndef __LLFRAME_MEMORY_FEATURES_HPP__

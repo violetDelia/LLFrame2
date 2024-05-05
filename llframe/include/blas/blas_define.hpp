@@ -57,6 +57,17 @@ template <class Device, class Ty, class... Others>
 concept is_Support_Cublas = std::is_same_v<Device, device::GPU>
                             && is_Same_Floating_Point<Ty, Others...>;
 
+/**
+ * @brief 是否支持调用blas
+ *
+ * @tparam Device 设备类型
+ * @tparam Ty 指针参数
+ * @tparam Others 指针参数
+ */
+template <class Device, class Ty, class... Others>
+concept is_Support_Blas = is_Support_Cublas<Device, Ty, Others...>
+                          || is_Support_Openblas<Device, Ty, Others...>;
+
 template <device::is_Device Device>
 class Blas_Adapter;
 

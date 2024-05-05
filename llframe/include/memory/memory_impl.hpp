@@ -19,6 +19,7 @@
 #ifndef __LLFRAME_MEMORY_IMPL_HPP__
 #include "memory/memory_define.hpp"
 #include "core/exception.hpp"
+#include <initializer_list>
 namespace llframe::memory {
 template <class Ty, device::is_Device Device>
 class _Memory_Base {
@@ -52,6 +53,8 @@ public: // 构造函数
         n_elements_(std::move(other.n_elements_)) {
     }
 
+    virtual ~_Memory_Base(){};
+
 public:
     /**
      * @brief 获取内存所属的设备id
@@ -81,6 +84,9 @@ class Memory : public _Memory_Base<Ty, Device> {
     // 便于访问其他Memory的实例
     template <class Ty_, device::is_Device Device_>
     friend class Memory;
+    // 便于对Memory进行操作
+    template <class Ty_, device::is_Device Device_>
+    friend class Memory_Operator;
 
 private:
     using Self = Memory<Ty, Device>;
@@ -103,28 +109,49 @@ public:
     using handle = typename features::handle;
 
 public: // 构造函数
-    using Base::_Memory_Base;
+    constexpr Memory() : Base(){};
+
+    constexpr Memory(const size_type n, const size_type device_id) :
+        Base(n, device_id) {
+        if constexpr (is_Arithmetic<value_type>) return;
+        this->construct();
+    }
+    constexpr Memory(Self &&other) noexcept : Base(std::move(other)) {
+        if constexpr (is_Arithmetic<value_type>) return;
+        this->construct();
+    }
+
+    ~Memory() override {
+        if constexpr (is_Arithmetic<value_type>) return;
+        if (this->n_elements_ == 0) return;
+        if (this->memory_.use_count() == 1) { this->destroy(); }
+    }
 
 public: // 堆内存操作的函数
     /**
      * @brief 获取内存指定位置的元素
-     * @return constexpr value_type
      */
-    constexpr value_type get(const size_type pos) const;
+    constexpr value_type get(const size_type pos) const {
+        return handle::get(*this, pos);
+    };
 
     /**
      * @brief 在指定位置赋值
      * @param pos 位置
      * @param val 值
      */
-    constexpr void set(const size_type pos, const value_type &val);
+    constexpr void set(const size_type pos, const value_type &val) {
+        handle::set(*this, pos, val);
+    };
 
     /**
      * @brief 在指定位置赋值
      * @param pos 位置
      * @param val 值
      */
-    constexpr void set(const size_type pos, const value_type &&val);
+    constexpr void set(const size_type pos, const value_type &&val) {
+        handle::set(*this, pos, val);
+    };
 
     /**
      * @brief 将内存全部元素赋值为指定值
@@ -149,7 +176,9 @@ public: // 堆内存操作的函数
      * @param val 值
      */
     constexpr void fill(const size_type pos, const size_type n,
-                        const value_type &&val);
+                        const value_type &&val) {
+        handle::fill(*this, pos, n, val);
+    };
 
     /**
      * @brief 将若干个连续元素赋值为指定值
@@ -158,7 +187,19 @@ public: // 堆内存操作的函数
      * @param val 值
      */
     constexpr void fill(const size_type pos, const size_type n,
-                        const value_type &val);
+                        const value_type &val) {
+        handle::fill(*this, pos, n, val);
+    };
+
+    /**
+     * @brief 对内存指定位置用初始化列表赋值
+     * @param pos 位置
+     * @param init_list 初始化列表
+     */
+    constexpr void fill(const size_type pos,
+                        std::initializer_list<value_type> init_list) {
+        handle::fill(*this, pos, init_list);
+    };
 
     /**
      * @brief 对所有元素进行默认构造
@@ -173,7 +214,9 @@ public: // 堆内存操作的函数
      * @param pos 位置
      * @param n 个数
      */
-    constexpr void construct(const size_type pos, const size_type n);
+    constexpr void construct(const size_type pos, const size_type n) {
+        handle::construct(*this, pos, n);
+    };
 
     /**
      * @brief 对所有元素进行析构
@@ -188,7 +231,9 @@ public: // 堆内存操作的函数
      * @param pos 位置
      * @param n 个数
      */
-    constexpr void destroy(const size_type pos, const size_type n);
+    constexpr void destroy(const size_type pos, const size_type n) {
+        handle::destroy(*this, pos, n);
+    };
 
     /**
      * @brief 从其他的Memory的元素复制到该内存中
@@ -213,7 +258,9 @@ public: // 堆内存操作的函数
     template <is_Memory Other_Memory>
     constexpr void copy_form(const size_type pos, const size_type n,
                              const Other_Memory &other,
-                             const size_type other_pos);
+                             const size_type other_pos) {
+        handle::copy_form(*this, pos, n, other, other_pos);
+    };
 };
 
 } // namespace llframe::memory

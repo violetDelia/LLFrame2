@@ -28,6 +28,9 @@ template <class Ty, device::is_Device Device>
 class Memory;
 
 template <class Ty, device::is_Device Device>
+class Memory_Checker;
+
+template <class Ty, device::is_Device Device>
 class Memory_Operator;
 
 template <class _Ty>
