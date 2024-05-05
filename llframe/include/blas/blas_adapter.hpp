@@ -24,7 +24,7 @@
 namespace llframe::blas {
 
 template <device::is_Device Device>
-struct _Blas_Adapter_Features {
+struct Blas_Adapter_Features {
     using size_type = size_t;
     using difference_type = ptrdiff_t;
     using const_dif_t = const ptrdiff_t;
@@ -44,7 +44,7 @@ template <device::is_Device Device>
 class _Blas_Adapter_Base {
 private:
     using Self = _Blas_Adapter_Base<Device>;
-    using features = _Blas_Adapter_Features<Device>;
+    using features = Blas_Adapter_Features<Device>;
 
 public:
     using size_type = typename features::size_type;
@@ -582,7 +582,7 @@ class Blas_Adapter : public _Blas_Adapter_Base<Device> {
 public:
     using Self = Blas_Adapter<Device>;
     using Base = _Blas_Adapter_Base<Device>;
-    using features = _Blas_Adapter_Features<Device>;
+    using features = Blas_Adapter_Features<Device>;
 
 public:
     using size_type = typename features::size_type;

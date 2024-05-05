@@ -13,29 +13,12 @@
 //    limitations under the License.
 
 /**
- * @brief 分配器定义文件
+ * @brief 内存 头文件
  *
  */
-#ifndef __LLFRAME_ALLOCATOR_DEFINE_HPP__
-#define __LLFRAME_ALLOCATOR_DEFINE_HPP__
-#include "device/device_define.hpp"
-#include "core/base_type.hpp"
-#include <memory>
-namespace llframe ::allocator {
-
-template <class Ty>
-class Biasc_Allocator;
-
-template <device::is_Device Device>
-class Memory_Pool;
-
-class Allocator_Config;
-
-template <class Ty, device::is_Device Device>
-class Allocator;
-
-template <class Ty, device::is_Device Device>
-struct Allocator_Features;
-} // namespace llframe::allocator
-
-#endif //__LLFRAME_ALLOCATOR_DEFINE_HPP__
+#ifndef __LLFRAME_MEMORY_HPP__
+#define __LLFRAME_MEMORY_HPP__
+#include "memory/memory_define.hpp"
+#include "memory/memory_features.hpp"
+#include "memory/memory_impl.hpp"
+#endif //__LLFRAME_MEMORY_HPP__

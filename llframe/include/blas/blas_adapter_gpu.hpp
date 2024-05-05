@@ -27,7 +27,7 @@ class Blas_Adapter<device::GPU> : public _Blas_Adapter_Base<device::GPU> {
 public:
     using Self = Blas_Adapter<device::GPU>;
     using Base = _Blas_Adapter_Base<device::GPU>;
-    using features = _Blas_Adapter_Features<device::GPU>;
+    using features = Blas_Adapter_Features<device::GPU>;
 
 public:
     using size_type = typename features::size_type;

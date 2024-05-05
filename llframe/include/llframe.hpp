@@ -22,4 +22,5 @@
 #include "device/device.hpp"
 #include "allocator/allocator.hpp"
 #include "blas/blas.hpp"
+#include "memory/memory.hpp"
 #endif //__LLFRAME_HPP__

@@ -27,7 +27,7 @@
 namespace llframe ::allocator {
 
 template <class Ty, device::is_Device Device>
-struct _Allocator_Features {
+struct Allocator_Features {
     using basic_allocator = Biasc_Allocator<Ty>;
     using value_type = Ty;
     using pointer = Ty *;
@@ -53,7 +53,7 @@ class _Allocator_Impl : public _Allocator_Base<Ty> {
 private:
     using Self = _Allocator_Impl<Ty, Device>;
     using Base = _Allocator_Base<Ty>;
-    using features = _Allocator_Features<Ty, Device>;
+    using features = Allocator_Features<Ty, Device>;
 
 public:
     using basic_allocator = typename features::basic_allocator;
@@ -124,7 +124,7 @@ class _Allocator_Impl<Ty, device::CPU> : public _Allocator_Base<Ty> {
 private:
     using Self = _Allocator_Impl<Ty, device::CPU>;
     using Base = _Allocator_Base<Ty>;
-    using features = _Allocator_Features<Ty, device::CPU>;
+    using features = Allocator_Features<Ty, device::CPU>;
 
 public:
     using basic_allocator = typename features::basic_allocator;
@@ -192,7 +192,7 @@ class _Allocator_Impl<Ty, device::GPU> : public _Allocator_Base<Ty> {
 private:
     using Self = _Allocator_Impl<Ty, device::GPU>;
     using Base = _Allocator_Base<Ty>;
-    using features = _Allocator_Features<Ty, device::GPU>;
+    using features = Allocator_Features<Ty, device::GPU>;
 
 public:
     using basic_allocator = typename features::basic_allocator;
@@ -318,7 +318,7 @@ class Allocator : public _Allocator_Base<Ty> {
 public:
     using Self = Biasc_Allocator<Ty>;
     using Base = _Allocator_Base<Ty>;
-    using features = _Allocator_Features<Ty, Device>;
+    using features = Allocator_Features<Ty, Device>;
     using allocator_impl = _Allocator_Impl<Ty, Device>;
 
 public:

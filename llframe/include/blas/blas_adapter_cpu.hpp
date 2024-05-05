@@ -26,7 +26,7 @@ class Blas_Adapter<device::CPU> : public _Blas_Adapter_Base<device::CPU> {
 private:
     using Self = Blas_Adapter<device::CPU>;
     using Base = _Blas_Adapter_Base<device::CPU>;
-    using features = _Blas_Adapter_Features<device::CPU>;
+    using features = Blas_Adapter_Features<device::CPU>;
 
 public:
     using size_type = typename features::size_type;

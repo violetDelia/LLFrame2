@@ -60,5 +60,7 @@ concept is_Support_Cublas = std::is_same_v<Device, device::GPU>
 template <device::is_Device Device>
 class Blas_Adapter;
 
+template <device::is_Device Device>
+struct Blas_Adapter_Features;
 } // namespace llframe::blas
 #endif //__LLFRAME_BLAS_DEFINE_HPP__

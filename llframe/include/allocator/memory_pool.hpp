@@ -30,7 +30,7 @@ template <device::is_Device Device>
 class Memory_Pool {
 private:
     using Self = Memory_Pool<Device>;
-    using allocator_features = _Allocator_Features<void, Device>;
+    using allocator_features = Allocator_Features<void, Device>;
 
 public:
     using device_type = typename allocator_features::device_type;
