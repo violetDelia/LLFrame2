@@ -237,6 +237,7 @@ public:
     static constexpr void fill(memory_type &memory, const size_type pos,
                                const size_type n, const value_type &val) {
         ensure_pos_legally_(memory, pos, n);
+        // 如果可以,尽量调用blas
         if constexpr (blas::is_Support_Blas<device_type, value_type>) {
             blas_adapter::copy(n, &val, 0, memory.memory_.get() + pos, 1);
         } else {
@@ -315,12 +316,13 @@ public:
               const Memory<Ty, device::CPU> &from, const size_type from_pos) {
         ensure_pos_legally_(to, to_pos, n);
         ensure_pos_legally_(from, from_pos, n);
+        // 如果可以,尽量调用blas
         if constexpr (blas::is_Support_Blas<device_type, value_type, Ty>) {
             blas_adapter::copy(n, from.memory_.get() + from_pos, 1,
                                to.memory_.get() + to_pos, 1);
         } else {
-            std::uninitialized_copy_n(from.memory_.get() + from_pos, n,
-                                      to.memory_.get() + to_pos);
+            std ::uninitialized_copy_n(from.memory_.get() + from_pos, n,
+                                       to.memory_.get() + to_pos);
         }
     };
 };

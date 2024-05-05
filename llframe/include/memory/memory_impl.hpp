@@ -20,6 +20,7 @@
 #include "memory/memory_define.hpp"
 #include "core/exception.hpp"
 #include <initializer_list>
+#include <type_traits>
 namespace llframe::memory {
 template <class Ty, device::is_Device Device>
 class _Memory_Base {
