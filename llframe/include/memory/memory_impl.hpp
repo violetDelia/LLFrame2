@@ -52,6 +52,8 @@ public: // 构造函数
         device_id_(std::move(other.device_id_)),
         memory_(std::move(other.memory_)),
         n_elements_(std::move(other.n_elements_)) {
+        other.n_elements_ = 0;
+        other.device_id_ = 0;
     }
 
     virtual ~_Memory_Base(){};
@@ -69,6 +71,11 @@ public:
      */
     constexpr size_type size() const noexcept {
         return n_elements_;
+    }
+
+    // 测试专用
+    constexpr pointer data() const noexcept {
+        return memory_.get();
     }
 
 protected:
@@ -117,6 +124,12 @@ public: // 构造函数
         if constexpr (is_Arithmetic<value_type>) return;
         this->construct();
     }
+
+    constexpr Memory(const Self &other) :
+        Memory(other.n_elements_, other.device_id_) {
+        this->copy_form(other);
+    }
+
     constexpr Memory(Self &&other) noexcept : Base(std::move(other)) {
         if constexpr (is_Arithmetic<value_type>) return;
         this->construct();
@@ -128,7 +141,7 @@ public: // 构造函数
         if (this->memory_.use_count() == 1) { this->destroy(); }
     }
 
-public: // 堆内存操作的函数
+public: // 内存操作的函数
     /**
      * @brief 获取内存指定位置的元素
      */
@@ -177,7 +190,7 @@ public: // 堆内存操作的函数
      * @param val 值
      */
     constexpr void fill(const size_type pos, const size_type n,
-                        const value_type &&val) {
+                        const value_type &val) {
         handle::fill(*this, pos, n, val);
     };
 
@@ -188,7 +201,7 @@ public: // 堆内存操作的函数
      * @param val 值
      */
     constexpr void fill(const size_type pos, const size_type n,
-                        const value_type &val) {
+                        value_type &&val) {
         handle::fill(*this, pos, n, val);
     };
 
@@ -202,6 +215,34 @@ public: // 堆内存操作的函数
         handle::fill(*this, pos, init_list);
     };
 
+    /**
+     * @brief 从其他的Memory的元素复制到该内存中
+     * @param other 其他Memory
+     */
+    template <is_Memory Other_Memory>
+    constexpr void copy_form(const Other_Memory &other) {
+        if (other.n_elements_ != this->n_elements_) {
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
+                                             "Memory capacity is not equal!")
+        }
+        this->copy_form(0, this->n_elements_, other, 0);
+    };
+
+    /**
+     * @brief 从其他的Memory复制若干个元素到该内存指定位置
+     * @param pos 该内存起始位置
+     * @param n 个数
+     * @param other 其他Memory
+     * @param other_pos 另一个Memory的起始位置
+     */
+    template <is_Memory Other_Memory>
+    constexpr void copy_form(const size_type pos, const size_type n,
+                             const Other_Memory &other,
+                             const size_type other_pos) {
+        handle::copy_form(*this, pos, n, other, other_pos);
+    };
+
+protected:
     /**
      * @brief 对所有元素进行默认构造
      *
@@ -234,33 +275,6 @@ public: // 堆内存操作的函数
      */
     constexpr void destroy(const size_type pos, const size_type n) {
         handle::destroy(*this, pos, n);
-    };
-
-    /**
-     * @brief 从其他的Memory的元素复制到该内存中
-     * @param other 其他Memory
-     */
-    template <is_Memory Other_Memory>
-    constexpr void copy_form(const Other_Memory &other) {
-        if (other.n_elements_ != this->n_elements_) {
-            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
-                                             "Memory capacity is not equal!")
-        }
-        this->copy_form(0, this->n_elements_, other, 0);
-    };
-
-    /**
-     * @brief 从其他的Memory复制若干个元素到该内存指定位置
-     * @param pos 该内存起始位置
-     * @param n 个数
-     * @param other 其他Memory
-     * @param other_pos 另一个Memory的起始位置
-     */
-    template <is_Memory Other_Memory>
-    constexpr void copy_form(const size_type pos, const size_type n,
-                             const Other_Memory &other,
-                             const size_type other_pos) {
-        handle::copy_form(*this, pos, n, other, other_pos);
     };
 };
 

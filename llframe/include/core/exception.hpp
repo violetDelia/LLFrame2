@@ -20,13 +20,14 @@
 #define __LLFRAME_EXCEPTION_HPP__
 #include <string>
 #include <source_location>
+#include <exception>
 #include "core/base_type.hpp"
 namespace llframe ::exception {
 /**
  * @brief 异常
  *
  */
-class Exception {
+class Exception : public std::exception {
 public:
     using Self = Exception;
     using size_type = size_t;
@@ -35,14 +36,13 @@ public: // 构造函数
     constexpr Exception() = default;
     constexpr Exception(const Self &other) = default;
     constexpr Exception(Self &&other) = default;
-    explicit constexpr Exception(const char *message) : message_(message){};
-    constexpr Exception(const char *message, const char *file,
-                        const size_type line, const char *func_name) :
+    explicit Exception(const char *message) : message_(message){};
+    Exception(const char *message, const char *file, const size_type line,
+              const char *func_name) :
         message_(message) {
         this->add_location(file, line, func_name);
     }
-    constexpr Exception(const char *file, const size_type line,
-                        const char *func_name) {
+    Exception(const char *file, const size_type line, const char *func_name) {
         this->add_location(file, line, func_name);
     }
 
@@ -69,8 +69,10 @@ public:
     /**
      * @brief 输出故障信息
      */
-    [[nodiscard]] constexpr virtual std::string what() const {
-        return this->message_ + this->locations_;
+    [[nodiscard]] constexpr char const *what() const {
+        return (std::string(typeid(*this).name()) + "\n" + this->message_
+                + this->locations_)
+            .data();
     }
 
 protected:

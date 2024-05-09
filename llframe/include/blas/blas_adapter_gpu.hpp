@@ -77,8 +77,12 @@ public:
      */
     template <is_Arithmetic X>
     static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             X res__{};
             cublasSasum_v2(plat::get_active_device().cublas_handle(),
@@ -103,8 +107,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
                            const Y *y, const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             X res__{};
             cublasSdot_v2(plat::get_active_device().cublas_handle(),
@@ -130,8 +138,12 @@ public:
      */
     template <is_Arithmetic X>
     static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             X res__{};
             cublasSnrm2_v2(plat::get_active_device().cublas_handle(),
@@ -157,8 +169,12 @@ public:
     template <is_Arithmetic X>
     static constexpr difference_type iamax(const_dif_t n, const X *x,
                                            const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             int res__{};
             cublasIsamax_v2(plat::get_active_device().cublas_handle(),
@@ -184,8 +200,12 @@ public:
     template <is_Arithmetic X>
     static constexpr difference_type iamin(const_dif_t n, const X *x,
                                            const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             int res__{};
             cublasIsamin_v2(plat::get_active_device().cublas_handle(),
@@ -210,8 +230,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y, is_Arithmetic Alpha>
     static constexpr void axpy(const_dif_t n, const Alpha alpha, const X *x,
                                const_dif_t incx, Y *y, const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             const X alpha__ = static_cast<const X>(alpha);
             cublasSaxpy_v2(plat::get_active_device().cublas_handle(),
@@ -238,8 +262,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void copy(const_dif_t n, const X *x, const_dif_t incx,
                                Y *y, const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             cublasScopy_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
@@ -264,8 +292,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void swap(const_dif_t n, X *x, const_dif_t incx, Y *y,
                                const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             cublasSswap_v2(plat::get_active_device().cublas_handle(),
                            static_cast<const int>(n), x,
@@ -290,8 +322,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Alpha>
     static constexpr void scal(const_dif_t n, const Alpha alpha, X *x,
                                const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             const X alpha__ = static_cast<const X>(alpha);
             cublasSscal_v2(plat::get_active_device().cublas_handle(),
@@ -323,9 +359,13 @@ public:
                                const A *a, const_dif_t lda, const X *x,
                                const_dif_t incx, const Beta beta, Y *y,
                                const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             const X alpha___ = static_cast<const X>(alpha);
             const X beta__ = static_cast<const X>(beta);
@@ -383,9 +423,13 @@ public:
                               const Alpha alpha, const X *x, const_dif_t incx,
                               const Y *y, const_dif_t incy, A *a,
                               const_dif_t lda) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             const A alpha__ = static_cast<const A>(alpha);
             if (layout == Layout::Row_Major) {
@@ -438,11 +482,15 @@ public:
          const_dif_t m, const_dif_t n, const_dif_t k, const Alpha alpha,
          const A *a, const_dif_t lda, const B *b, const_dif_t ldb,
          const Beta beta, C *c, const_dif_t ldc) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, b, c);
         ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
         ensure_ld_legal_(layout, trans_a, m, k, lda);
         ensure_ld_legal_(layout, trans_b, k, n, ldb);
         ensure_ld_legal_(layout, m, n, ldc);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, A, B, C>) {
             const A alpha__ = static_cast<const A>(alpha);
             const A beta__ = static_cast<const A>(beta);

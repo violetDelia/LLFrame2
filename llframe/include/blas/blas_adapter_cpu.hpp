@@ -74,8 +74,12 @@ public:
      */
     template <is_Arithmetic X>
     static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_sasum(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -93,8 +97,12 @@ public:
      */
     template <is_Arithmetic X>
     static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ssum(static_cast<const int>(n), x,
                               static_cast<const int>(incx));
@@ -113,8 +121,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
                            const Y *y, const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             return cblas_sdot(static_cast<const int>(n), x,
                               static_cast<const int>(incx), y,
@@ -134,8 +146,12 @@ public:
      */
     template <is_Arithmetic X>
     static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_snrm2(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -154,8 +170,12 @@ public:
     template <is_Arithmetic X>
     static constexpr difference_type iamax(const_dif_t n, const X *x,
                                            const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_isamax(static_cast<const int>(n), x,
                                 static_cast<const int>(incx));
@@ -174,8 +194,12 @@ public:
     template <is_Arithmetic X>
     static constexpr difference_type iamin(const_dif_t n, const X *x,
                                            const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_isamin(static_cast<const int>(n), x,
                                 static_cast<const int>(incx));
@@ -195,8 +219,12 @@ public:
     template <is_Arithmetic X>
     static constexpr difference_type imax(const_dif_t n, const X *x,
                                           const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ismax(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -216,8 +244,12 @@ public:
     template <is_Arithmetic X>
     static constexpr difference_type imin(const_dif_t n, const X *x,
                                           const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ismin(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -236,8 +268,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y, is_Arithmetic Alpha>
     static constexpr void axpy(const_dif_t n, const Alpha alpha, const X *x,
                                const_dif_t incx, Y *y, const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             size_t count = static_cast<int>(n);
             while (count >= openblas_max_axpy_n) {
@@ -286,8 +322,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void copy(const_dif_t n, const X *x, const_dif_t incx,
                                Y *y, const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             cblas_scopy(static_cast<const int>(n), x,
                         static_cast<const int>(incx), y,
@@ -310,8 +350,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void swap(const_dif_t n, X *x, const_dif_t incx, Y *y,
                                const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
         ensure_not_negative_<const int>(n, incx, incy);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X, Y>) {
             cblas_sswap(static_cast<const int>(n), x,
                         static_cast<const int>(incx), y,
@@ -334,8 +378,12 @@ public:
     template <is_Arithmetic X, is_Arithmetic Alpha>
     static constexpr void scal(const_dif_t n, const Alpha alpha, X *x,
                                const_dif_t incx) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
         ensure_not_negative_<const int>(n, incx);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, X>) {
             size_t count = static_cast<int>(n);
             while (count >= openblas_max_scal_n) {
@@ -385,9 +433,13 @@ public:
                                const A *a, const_dif_t lda, const X *x,
                                const_dif_t incx, const Beta beta, Y *y,
                                const_dif_t incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sgemv(
                 convert_(layout), convert_(trans), static_cast<const int>(m),
@@ -417,9 +469,14 @@ public:
                               const Alpha alpha, const X *x, const_dif_t incx,
                               const Y *y, const_dif_t incy, A *a,
                               const_dif_t lda) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
         ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sger(convert_(layout), static_cast<const int>(m),
                        static_cast<const int>(n), static_cast<const X>(alpha),
@@ -450,11 +507,15 @@ public:
          const_dif_t m, const_dif_t n, const_dif_t k, const Alpha alpha,
          const A *a, const_dif_t lda, const B *b, const_dif_t ldb,
          const Beta beta, C *c, const_dif_t ldc) {
+        __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, b, c);
         ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
         ensure_ld_legal_(layout, trans_a, m, k, lda);
         ensure_ld_legal_(layout, trans_b, k, n, ldb);
         ensure_ld_legal_(layout, m, n, ldc);
+        __LLFRAME_TRY_END__
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Bad_Parameter)
+        __LLFRAME_CATCH_UPDATA_EXCEPTION__(exception::Null_Pointer)
         if constexpr (is_Same_Ty<float, A, B, C>) {
             cblas_sgemm(convert_(layout), convert_(trans_a), convert_(trans_b),
                         static_cast<const int>(m), static_cast<const int>(n),

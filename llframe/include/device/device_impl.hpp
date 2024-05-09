@@ -35,10 +35,6 @@ public:
     using Self = _Device;
     using size_type = size_t;
 
-public:
-    // 构造函数是不会发生异常
-    static constinit const bool construct_no_thorw = true;
-
 public: // 构造函数
     constexpr _Device() noexcept : _Device(0){};
     explicit constexpr _Device(const size_type device_id) noexcept :
@@ -57,10 +53,9 @@ public:
         return this->id_;
     }
 
-    /**
-     * @brief 唤醒该设备
-     */
-    virtual bool awake() noexcept = 0;
+    bool awake() noexcept {
+        return true;
+    };
 
 protected:
     // 设备编号
@@ -77,15 +72,6 @@ public:
 
 public:
     using Base::_Device;
-
-public:
-    // 构造函数是不会发生异常
-    static constinit const bool construct_no_thorw = Base::construct_no_thorw;
-
-public:
-    bool awake() noexcept override {
-        return true;
-    }
 };
 
 /**
@@ -123,11 +109,11 @@ public: // 重写构造函数
         if (cudaGetDeviceProperties(&(*property_), id))
             __LLFRAME_THROW_CUDA_ERROR__
         default_cudnn_handle_.reset(new cudnn_handle_type);
-        if (cudnnCreate(&(*default_cudnn_handle_)))
-            __LLFRAME_THROW_CUDNN_ERROR__
+        if (auto cudnn_status_t = cudnnCreate(&(*default_cudnn_handle_)))
+            __LLFRAME_THROW_CUDNN_ERROR_INFO__(cudnn_status_t)
         default_cublas_handle_.reset(new cublas_handle_type);
-        if (cublasCreate(&(*default_cublas_handle_)))
-            __LLFRAME_THROW_CUBLAS_ERROR__
+        if (auto cublas_status_t = cublasCreate(&(*default_cublas_handle_)))
+            __LLFRAME_THROW_CUBLAS_ERROR_INFO__(cublas_status_t)
     }
     GPU() : GPU(0){};
     virtual ~GPU() {
@@ -135,12 +121,12 @@ public: // 重写构造函数
             cudnnDestroy(*default_cudnn_handle_);
         }
         if (default_cublas_handle_.use_count() == 1) {
-            cublasDestroy(*default_cublas_handle_);
+            cublasDestroy_v2(*default_cublas_handle_);
         }
     }
 
 public:
-    bool awake() noexcept override {
+    bool awake() noexcept {
         if (cudaSetDevice(this->id_)) { return false; }
         return true;
     };

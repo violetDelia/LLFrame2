@@ -2,10 +2,7 @@
 #ifndef __LLFRAME_TEST_COMMON__
 #define __LLFRAME_TEST_COMMON__
 #include <gtest/gtest.h>
-#include "core/base_type.hpp"
-#include "core/exception.hpp"
-#include "device/device_define.hpp"
-#include "device/device_impl.hpp"
+#include "llframe.hpp"
 #include <cuda_runtime.h>
 #include <limits>
 using Exception_Tuple =
@@ -19,7 +16,8 @@ using Exception_Tuple =
                llframe::exception::CuDNN_Errot>;
 
 using Device_Tuple = std::tuple<llframe::device::CPU, llframe::device::GPU>;
-using Type_Tuple = std::tuple<int, uint16_t, float, double, std::string>;
+using Type_Tuple =
+    std::tuple<int, uint16_t, int8_t, uint64_t, float, double, std::string>;
 using Arithmetic_Tuple =
     std::tuple<llframe::base_type::float32_t, llframe::base_type::float64_t,
                llframe::base_type::int16_t, llframe::base_type::int32_t,
@@ -52,7 +50,29 @@ using Arithmetic_Tuple =
             },                                                                 \
             tuple);                                                            \
     };
-
+// apply宏2
+#define APPLY_TUPLE_3(Tuple, Tp, Tp2, func, ...)                               \
+    {                                                                          \
+        auto tuple = Tuple();                                                  \
+        std::apply(                                                            \
+            [](auto &&...args) {                                               \
+                (func<Tp, Tp2, std::remove_cvref_t<decltype(args)>>(           \
+                     ##__VA_ARGS__),                                           \
+                 ...);                                                         \
+            },                                                                 \
+            tuple);                                                            \
+    };
+#define APPLY_TUPLE_4(Tuple, Tp, Tp2, Tp3, func, ...)                          \
+    {                                                                          \
+        auto tuple = Tuple();                                                  \
+        std::apply(                                                            \
+            [](auto &&...args) {                                               \
+                (func<Tp, Tp2, Tp3, std::remove_cvref_t<decltype(args)>>(      \
+                     ##__VA_ARGS__),                                           \
+                 ...);                                                         \
+            },                                                                 \
+            tuple);                                                            \
+    };
 // 确保可以使用cuda分配内存
 #define ASSERT_CUDA_MOLLOC_AND_MEMCPY(value)                                   \
     {                                                                          \
