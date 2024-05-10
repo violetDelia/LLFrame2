@@ -87,6 +87,13 @@ protected:
     size_type n_elements_{0};
 };
 
+/**
+ * @brief 表示设备上的一段连续内存
+ *
+ *
+ * @tparam Ty 类型
+ * @tparam Device 装置
+ */
 template <class Ty, device::is_Device Device>
 class Memory : public _Memory_Base<Ty, Device> {
     // 便于访问其他Memory的实例

@@ -21,6 +21,9 @@
 #include "allocator/allocator_define.hpp"
 #include "blas/blas_define.hpp"
 namespace llframe::memory {
+/**
+ * @brief  Memory的通用属性
+ */
 template <class Ty, device::is_Device Device>
 struct Memory_Features {
     using device_type = Device;
