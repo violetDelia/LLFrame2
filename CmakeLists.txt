@@ -7,9 +7,11 @@ if(DEFINED TEST_ALL)
     unset(TEST_ALL CACHE)
 endif()
 
+
 ##---------- options ----------##
 option(BUILD_SHARED_LIBS "build shared libs" OFF)
 option(TEST "run test" ON)
+
 
 ##---------- cmake setting ----------##
 CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
@@ -43,16 +45,14 @@ if(MSVC)
     #去掉编译cuda 4819 警告
     string(REGEX REPLACE "\"$" " /wd4819\"" CMAKE_CUDA_FLAGS ${CMAKE_CUDA_FLAGS})
     #LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT.lib")
+    #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:MSVCRT.lib")
 
-    add_compile_options(
-        $<$<CONFIG:>:/MT>
-        $<$<CONFIG:Debug>:/MTd>
-        $<$<CONFIG:Release>:/MT>
-    )
 endif()
 
 ##---------- external library ----------##
+
+
+
 find_package(OPENBLAS 0.3.26 REQUIRED PATHS "D:/CPlus/openblas/lib/cmake/OpenBLAS")
 cmake_path(SET OPENBLAS_INCLUDE_DIR "D:/CPlus/openblas/include")
 cmake_path(SET OPENBLAS_LIB_DIR "D:/CPlus/openblas/lib")
@@ -65,11 +65,17 @@ find_package(GTest 1.14.0 REQUIRED)
 
 find_package(CUDAToolkit 11.7.64 REQUIRED)
 
-cmake_path(SET CUDNN_INCLUDE_DIR "D:/NVIDA GPU Computing ToolKit/CUDA/v11.7/include")
+cmake_path(SET CUDA_INCLUDE_DIR "D:/NVIDA GPU Computing ToolKit/CUDA/v11.7/include")
 # win64
-cmake_path(SET CUDNN_LIB_DIR "D:/NVIDA GPU Computing ToolKit/CUDA/v11.7/lib/x64")
+cmake_path(SET CUDA_LIB_DIR "D:/NVIDA GPU Computing ToolKit/CUDA/v11.7/lib/x64")
+include_directories(${CUDA_INCLUDE_DIR})
+link_directories(${CUDA_LIB_DIR}) 
+
+cmake_path(SET CUDNN_INCLUDE_DIR "D:/CPlus/cudnn/include")
+# win64
+cmake_path(SET CUDNN_LIB_DIR "D:/CPlus/cudnn/lib/x64")
 include_directories(${CUDNN_INCLUDE_DIR})
-include_directories(${CUDNN_LIB_DIR}) 
+link_directories(${CUDNN_LIB_DIR}) 
 ##---------- external library ----------##
 add_subdirectory(${LLFRAME_DIR})
 message(${LLFRAME_INCLUDE_DIR})

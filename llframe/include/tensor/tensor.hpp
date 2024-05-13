@@ -13,15 +13,13 @@
 //    limitations under the License.
 
 /**
- * @brief llframe 头文件
+ * @brief 张量 头文件
  *
  */
-#ifndef __LLFRAME_HPP__
-#define __LLFRAME_HPP__
-#include "core/core.hpp"
-#include "device/device.hpp"
-#include "allocator/allocator.hpp"
-#include "blas/blas.hpp"
-#include "memory/memory.hpp"
-#include "tensor/tensor.hpp"
-#endif //__LLFRAME_HPP__
+#ifndef __LLFRAME_TENSOR_HPP__
+#define __LLFRAME_TENSOR_HPP__
+#include "tensor/tensor_define.hpp"
+#include "tensor/tensor_features.hpp"
+#include "tensor/tensor_base.hpp"
+#include "tensor/tensor_impl.hpp"
+#endif //__LLFRAME_TENSOR_HPP__

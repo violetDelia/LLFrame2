@@ -33,7 +33,7 @@ public:
     using size_type = size_t;
 
 public: // 构造函数
-    constexpr Exception() = default;
+    Exception() = default;
     constexpr Exception(const Self &other) = default;
     constexpr Exception(Self &&other) = default;
     explicit Exception(const char *message) : message_(message){};

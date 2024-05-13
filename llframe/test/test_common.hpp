@@ -5,6 +5,7 @@
 #include "llframe.hpp"
 #include <cuda_runtime.h>
 #include <limits>
+#include <vector>
 using Exception_Tuple =
     std::tuple<llframe::exception::Bad_Alloc, llframe::exception::Bad_Parameter,
                llframe::exception::Bad_Index, llframe::exception::Exception,

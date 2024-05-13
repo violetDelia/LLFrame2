@@ -514,7 +514,7 @@ public:
                            sizeof(value_type) * n, cudaMemcpyHostToDevice)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
-        delete _temp;
+        delete[] _temp;
     };
 
     /**

@@ -118,7 +118,7 @@ public:
     /**
      * @brief 返回Shape所有元素相乘的结果
      */
-    [[nodiscard]] value_type count() const noexcept {
+    [[nodiscard]] value_type count() const  {
         if constexpr (Dims == 0) { return 0; }
         return std::accumulate(this->cbegin(), this->cend(), size_type{1},
                                std::multiplies<value_type>());

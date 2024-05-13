@@ -8,12 +8,20 @@ using namespace llframe;
 
 int main() {
     try {
-        llframe::memory::Memory<int, device::GPU> memory(1, 0);
-        llframe::memory::Memory<float, device::CPU> memory1(1, 0);
-        memory.fill(2);
-        memory1.copy_form(memory);
-        std::cout << memory1.get(0);
-        using adpat = llframe::blas::Blas_Adapter<llframe::device::GPU>;
+        llframe::tensor::Tensor<3,int,llframe::device::GPU> tensor(llframe::shape::make_shape(2, 2, 2),
+                                          7, 0);
+
+        std::cout << tensor.get_device_id() << std::endl;
+        std::cout << tensor.shape() << std::endl;
+        std::cout << tensor.stride() << std::endl;
+        auto memory = tensor.memory_ref();
+
+        for (int i = 0; i < memory.size(); i++) { memory.set(i, i); }
+
+        auto memory_other = tensor.memory();
+        for (int i = 0; i < memory_other.size(); i++) {
+            QUICK_PRINT(memory_other.get(i));
+        }
 
         // memory.fill(5, 5, 3);
         // cudaMemcpy(&a, memory.data(), 4, cudaMemcpyDeviceToHost);

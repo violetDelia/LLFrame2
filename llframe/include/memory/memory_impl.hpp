@@ -18,6 +18,7 @@
  */
 #ifndef __LLFRAME_MEMORY_IMPL_HPP__
 #include "memory/memory_define.hpp"
+#include "memory/memory_operator.hpp"
 #include "core/exception.hpp"
 #include <initializer_list>
 #include <type_traits>
@@ -58,6 +59,12 @@ public: // 构造函数
 
     virtual ~_Memory_Base(){};
 
+protected:
+    constexpr _Memory_Base(const size_type n_elements,
+                           const shared_pointer memory,
+                           const size_type device_id) :
+        n_elements_(n_elements), memory_(memory), device_id_(device_id){};
+
 public:
     /**
      * @brief 获取内存所属的设备id
@@ -73,9 +80,12 @@ public:
         return n_elements_;
     }
 
-    // 测试专用
-    constexpr pointer data() const noexcept {
-        return memory_.get();
+    /**
+     * @brief 内存地址引用个数
+     *
+     */
+    constexpr size_type use_count() const {
+        return memory_.use_count();
     }
 
 protected:
@@ -115,7 +125,8 @@ public:
     using value_type = typename features::value_type;
     using pointer = typename features::pointer;
     using const_pointer = typename features::const_pointer;
-    using shared_pointer = typename features::shared_pointer;
+    using shared_pointer = std::std::shared_ptr<Ty>;
+    // using shared_pointer = typename features::shared_pointer;
     using difference_type = typename features::difference_type;
 
     using platform = typename features::platform;
@@ -146,6 +157,19 @@ public: // 构造函数
         if constexpr (is_Arithmetic<value_type>) return;
         if (this->n_elements_ == 0) return;
         if (this->memory_.use_count() == 1) { this->destroy(); }
+    }
+
+protected:
+    using Base::_Memory_Base;
+
+public:
+    /**
+     * @brief 获取内存的一个浅拷贝
+     *
+     * @return constexpr Self
+     */
+    constexpr Self ref() const {
+        return {this->n_elements_, this->memory_, this->device_id_};
     }
 
 public: // 内存操作的函数
