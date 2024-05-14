@@ -125,7 +125,7 @@ public:
     using value_type = typename features::value_type;
     using pointer = typename features::pointer;
     using const_pointer = typename features::const_pointer;
-    using shared_pointer = std::std::shared_ptr<Ty>;
+    using shared_pointer = std::shared_ptr<Ty>;
     // using shared_pointer = typename features::shared_pointer;
     using difference_type = typename features::difference_type;
 
@@ -149,8 +149,6 @@ public: // 构造函数
     }
 
     constexpr Memory(Self &&other) noexcept : Base(std::move(other)) {
-        if constexpr (is_Arithmetic<value_type>) return;
-        this->construct();
     }
 
     ~Memory() override {

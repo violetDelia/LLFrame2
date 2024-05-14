@@ -4,8 +4,7 @@
 #include <cmath>
 
 template <llframe::device::is_Device Device, class Ty>
-void test_Memory_fill(size_t device_id, Ty val,
-                      std::initializer_list<Ty> init_list) {
+void test_Memory_fill(size_t device_id, Ty val, std::initializer_list<Ty> init_list) {
     using Memory = llframe::memory::Memory<Ty, Device>;
     ASSERT_DEVICE_IS_VALID(Device, device_id);
     IS_SAME(Device, llframe::device::GPU) {
@@ -21,8 +20,7 @@ void test_Memory_fill(size_t device_id, Ty val,
             Memory memory(n, device_id);
             memory.fill(val);
             if (pos + init_list.size() > n) {
-                ASSERT_THROW(memory.fill(pos, init_list),
-                             llframe::exception::Bad_Range);
+                ASSERT_THROW(memory.fill(pos, init_list), llframe::exception::Bad_Range);
                 continue;
             }
             memory.fill(pos, init_list);
@@ -56,8 +54,7 @@ void test_Memory_fill(size_t device_id, Ty val, Ty val2) {
                 Memory memory(n, device_id);
                 memory.fill(val);
                 if (pos + n_pos > n) {
-                    ASSERT_THROW(memory.fill(pos, n_pos, val2),
-                                 llframe::exception::Bad_Range);
+                    ASSERT_THROW(memory.fill(pos, n_pos, val2), llframe::exception::Bad_Range);
                     continue;
                 }
                 memory.fill(pos, n_pos, val2);

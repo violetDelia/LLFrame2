@@ -6,22 +6,27 @@
 using namespace llframe;
 #define QUICK_PRINT(val) std::cout << val << std::endl;
 
+class A {
+public:
+    A() {
+        count++;
+    }
+    ~A() {
+        count--;
+    }
+    static inline int count = 0;
+};
 int main() {
     try {
-        llframe::tensor::Tensor<3,int,llframe::device::GPU> tensor(llframe::shape::make_shape(2, 2, 2),
-                                          7, 0);
+        // llframe::memory::Memory<A, llframe::device::GPU> memory(2,0);
+        // decltype(tensor) tensor_copy(tensor);
 
-        std::cout << tensor.get_device_id() << std::endl;
-        std::cout << tensor.shape() << std::endl;
-        std::cout << tensor.stride() << std::endl;
-        auto memory = tensor.memory_ref();
+        // for (int i = 0; i < memory.size(); i++) { memory.set(i, i); }
 
-        for (int i = 0; i < memory.size(); i++) { memory.set(i, i); }
-
-        auto memory_other = tensor.memory();
-        for (int i = 0; i < memory_other.size(); i++) {
-            QUICK_PRINT(memory_other.get(i));
-        }
+        // auto memory_other = tensor.memory();
+        // for (int i = 0; i < memory_other.size(); i++) {
+        //     QUICK_PRINT(memory_other.get(i));
+        // }
 
         // memory.fill(5, 5, 3);
         // cudaMemcpy(&a, memory.data(), 4, cudaMemcpyDeviceToHost);
@@ -38,9 +43,7 @@ int main() {
         // for (int i = 0; i < 10; i++) { QUICK_PRINT(memory_2.get(i)); }
     } catch (llframe::exception::Exception &e) {
         std::cout << e.what() << std::endl;
-
-    } catch (std::exception &e) {
-        std::cout << e.what() << std::endl;
-
-    } catch (...) { std::cout << "other" << std::endl; }
+    } catch (std::exception &e) { std::cout << e.what() << std::endl; } catch (...) {
+        std::cout << "other" << std::endl;
+    }
 }

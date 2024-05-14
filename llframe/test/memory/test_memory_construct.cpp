@@ -94,13 +94,13 @@ void test_Memory_construct_each_type() {
 }
 
 template <llframe::device::is_Device Device>
-void test_Memory_construct() {
+void test_Memory_construct_each_device() {
     test_Memory_construct_and_destroy<Device>();
     APPLY_TUPLE_2(Type_Tuple, Device, test_Memory_construct_each_type);
 }
 
 TEST(Memory, construct) {
-    APPLY_TUPLE(Device_Tuple, test_Memory_construct);
+    APPLY_TUPLE(Device_Tuple, test_Memory_construct_each_device);
 }
 
 #endif // TEST_Memory

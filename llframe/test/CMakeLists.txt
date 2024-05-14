@@ -12,3 +12,4 @@ target_include_directories(
 target_link_libraries(llframe_test PUBLIC GTest::gtest LLFrame)
 #测试函数有很多数值转换的警告
 target_compile_options(llframe_test PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/wd4244>)
+target_compile_options(llframe_test PRIVATE $<$<COMPILE_LANGUAGE:CXX>:/bigobj>)
