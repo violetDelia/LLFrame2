@@ -135,11 +135,11 @@ public: // 构造函数
     constexpr Memory() : Base() {};
 
     constexpr Memory(const size_type n, const size_type device_id) : Base(n, device_id) {
-        if constexpr (is_Arithmetic<value_type>) return;
         this->construct();
     }
 
-    constexpr Memory(const Self &other) : Memory(other.n_elements_, other.device_id_) {
+    constexpr Memory(const Self &other) : Base(other.n_elements_, other.device_id_) {
+        if (!is_Arithmetic<Ty>) this->construct();
         this->copy_form(other);
     }
 
@@ -265,7 +265,7 @@ public: // 内存操作的函数
 
 protected:
     /**
-     * @brief 对所有元素进行默认构造
+     * @brief 对所有元素进行默认构造初始化
      *
      */
     constexpr void construct() {
@@ -273,7 +273,7 @@ protected:
     };
 
     /**
-     * @brief 将若干个连续元素进行默认构造
+     * @brief 将若干个连续元素进行默认构造初始化
      * @param pos 位置
      * @param n 个数
      */

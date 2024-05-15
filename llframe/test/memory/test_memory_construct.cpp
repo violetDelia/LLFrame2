@@ -54,6 +54,8 @@ void test_Memory_construct__size_type__size_type(size_t device_id) {
         Memory memory(n, device_id);
         ASSERT_EQ(memory.get_id(), device_id);
         ASSERT_EQ(memory.size(), n);
+        Ty ty{};
+        ASSERT_EQ(memory.get(i),ty);
     }
 }
 

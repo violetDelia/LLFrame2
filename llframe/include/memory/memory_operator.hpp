@@ -301,11 +301,15 @@ public:
     };
 
     /**
-     * @brief 对内存若干个连续元素进行默认初始化
+     * @brief 对内存若干个连续元素进行默认构造初始化
      *
      * @param memory 内存
      * @param pos 位置
      * @param n 个数
+     * @version 1.0.0
+     * @author 时光丶人爱 (1152488956.com)
+     * @date 2024-05-16
+     * @copyright Copyright (c) 2024 时光丶人爱
      */
     static constexpr void construct(memory_type &memory, const size_type pos, const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
@@ -480,8 +484,8 @@ public:
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, 1);
         awake_device_(memory);
-        if (auto cuda_error_t = cudaMemcpyAsync(memory.memory_.get() + pos, &val,
-                                                sizeof(value_type), cudaMemcpyHostToDevice)) {
+        if (auto cuda_error_t = cudaMemcpy(memory.memory_.get() + pos, &val, sizeof(value_type),
+                                           cudaMemcpyHostToDevice)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
         __LLFRAME_TRY_CATCH_END__
@@ -540,17 +544,21 @@ public:
     };
 
     /**
-     * @brief 对内存若干个连续元素进行默认初始化
+     * @brief 对内存若干个连续元素进行默认构造初始化
      *
      * @param memory 内存
      * @param pos 位置
      * @param n 个数
+     * @version 1.0.0
+     * @author 时光丶人爱 (1152488956.com)
+     * @date 2024-05-16
+     * @copyright Copyright (c) 2024 时光丶人爱
      */
     static constexpr void construct(memory_type &memory, const size_type pos, const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         if constexpr (!std::is_trivial_v<value_type>)
             __LLFRAME_THROW_UNHANDLED_INFO__("only can construct copy trivially type in gpu!");
-        value_type val;
+        value_type val{};
         fill(memory, pos, n, val);
         __LLFRAME_TRY_CATCH_END__
     };
