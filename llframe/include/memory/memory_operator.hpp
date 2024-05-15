@@ -141,8 +141,23 @@ public:
      * @param pos 位置
      * @param init_list 初始化列表
      */
-    static constexpr void fill(memory_type &memory, const size_type pos,
-                               std::initializer_list<value_type> init_list) {
+
+    /**
+     * @brief 使用迭代器对Memory进行赋值
+     *
+     * @tparam Iterator 迭代器类型
+     * @param memory 内存
+     * @param pos 位置
+     * @param begin 迭代器
+     * @param n 个数
+     * @version 1.0.0
+     * @author 时光丶人爱 (1152488956.com)
+     * @date 2024-05-16
+     * @copyright Copyright (c) 2024 时光丶人爱
+     */
+    template <std::forward_iterator Iterator>
+    static constexpr void fill(memory_type &memory, const size_type pos, Iterator begin,
+                               const size_type n) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -263,17 +278,25 @@ public:
     };
 
     /**
-     * @brief 对内存指定位置用初始化列表赋值
+     * @brief 使用迭代器对Memory进行赋值
+     *
+     * @tparam Iterator 迭代器类型
      * @param memory 内存
      * @param pos 位置
-     * @param init_list 初始化列表
+     * @param begin 迭代器
+     * @param n 个数
+     * @version 1.0.0
+     * @author 时光丶人爱 (1152488956.com)
+     * @date 2024-05-16
+     * @copyright Copyright (c) 2024 时光丶人爱
      */
-    static constexpr void fill(memory_type &memory, const size_type pos,
-                               std::initializer_list<value_type> init_list) {
+    template <std::forward_iterator Iterator>
+    static constexpr void fill(memory_type &memory, const size_type pos, Iterator begin,
+                               const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
-        ensure_pos_legally_(memory, pos, init_list.size());
-        if (init_list.size() == 0) return;
-        std::uninitialized_move_n(init_list.begin(), init_list.size(), memory.memory_.get() + pos);
+        ensure_pos_legally_(memory, pos, n);
+        if (n == 0) return;
+        std::uninitialized_move_n(begin, n, memory.memory_.get() + pos);
         __LLFRAME_TRY_CATCH_END__
     };
 
@@ -488,22 +511,29 @@ public:
     };
 
     /**
-     * @brief 对内存指定位置用初始化列表赋值
+     * @brief 使用迭代器对Memory进行赋值
+     *
+     * @tparam Iterator 迭代器类型
      * @param memory 内存
      * @param pos 位置
-     * @param init_list 初始化列表
+     * @param begin 迭代器
+     * @param n 个数
+     * @version 1.0.0
+     * @author 时光丶人爱 (1152488956.com)
+     * @date 2024-05-16
+     * @copyright Copyright (c) 2024 时光丶人爱
      */
-    static constexpr void fill(memory_type &memory, const size_type pos,
-                               std::initializer_list<value_type> init_list) {
+    template <std::forward_iterator Iterator>
+    static constexpr void fill(memory_type &memory, const size_type pos, Iterator begin,
+                               const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
-        ensure_pos_legally_(memory, pos, init_list.size());
-        if (init_list.size() == 0) return;
-        value_type *_temp = new value_type[init_list.size()];
-        std::uninitialized_move(init_list.begin(), init_list.end(), _temp);
+        ensure_pos_legally_(memory, pos, n);
+        if (n == 0) return;
+        value_type *_temp = new value_type[n];
+        std::uninitialized_move_n(begin, n, _temp);
         awake_device_(memory);
-        if (auto cuda_error_t =
-                cudaMemcpy(memory.memory_.get() + pos, _temp, sizeof(value_type) * init_list.size(),
-                           cudaMemcpyHostToDevice)) {
+        if (auto cuda_error_t = cudaMemcpy(memory.memory_.get() + pos, _temp,
+                                           sizeof(value_type) * n, cudaMemcpyHostToDevice)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
         __LLFRAME_TRY_CATCH_END__

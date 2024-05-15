@@ -64,36 +64,6 @@ public:
     using Base::count;
 };
 
-template <class Ty, device::is_Device Device>
-class Tensor<0, Ty, Device> : public _Tensor_Base<0, Ty, Device> {
-private:
-    using Self = Tensor<0, Ty, Device>;
-    using Base = _Tensor_Base<0, Ty, Device>;
-    using features = Tensor_Features<0, Ty, Device>;
-
-public:
-    using size_type = typename features::size_type;
-    using difference_type = typename features::difference_type;
-
-    using value_type = typename features::value_type;
-    using pointer = typename features::pointer;
-    using const_pointer = typename features::const_pointer;
-    using reference = typename features::reference;
-    using const_reference = typename features::const_reference;
-
-    using device_type = typename features::device_type;
-    using shape_type = typename features::shape_type;
-    using stride_type = typename features::stride_type;
-    using layout_type = typename features::layout_type;
-    using init_list_type = typename features::init_list_type;
-
-    using memory_type = typename features::memory_type;
-    using platform = typename features::platform;
-    using blas_adapter = typename features::blas_adapter;
-
-public:
-    using Base::_Tensor_Base;
-};
 
 } // namespace llframe::tensor
 #endif //__LLFRAME_TENSOR_IMPL_HPP__

@@ -53,7 +53,7 @@ public:
     using blas_adapter = typename features::blas_adapter;
 
 public: // 构造函数
-    constexpr _Tensor_Base() noexcept : shape_{}, stride_{}, start_{0}, memory_{}, device_id_{0} {
+    constexpr _Tensor_Base() : shape_{}, stride_{}, start_{0}, memory_{}, device_id_{0} {
     }
 
     explicit constexpr _Tensor_Base(const shape_type &shape, const size_type device_id = 0) :
@@ -224,12 +224,12 @@ public:
 
 public:
     constexpr _Tensor_Init_List(const shape_type &shape, init_list_type init_list,
-                                const size_type device_id = 0) noexcept : Self(shape, device_id) {
+                                const size_type device_id = 0)  : Self(shape, device_id) {
         __THROW_UNIMPLEMENTED__;
     };
 
     constexpr _Tensor_Init_List(shape_type &&shape, init_list_type init_list,
-                                const size_type device_id = 0) noexcept :
+                                const size_type device_id = 0)  :
         Self(std::move(shape), device_id) {
         __THROW_UNIMPLEMENTED__;
     };

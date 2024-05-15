@@ -44,26 +44,23 @@ public:
     using allocator = typename features::allocator;
 
 public: // 构造函数
-    constexpr _Memory_Base() noexcept {};
+    constexpr _Memory_Base() {};
     constexpr _Memory_Base(const size_type n, const size_type device_id) :
-        n_elements_(n), device_id_(device_id),
-        memory_(allocator::allocate(n, device_id)) {
+        n_elements_(n), device_id_(device_id), memory_(allocator::allocate(n, device_id)) {
     }
-    constexpr _Memory_Base(Self &&other) noexcept :
-        device_id_(std::move(other.device_id_)),
-        memory_(std::move(other.memory_)),
+    constexpr _Memory_Base(Self &&other) :
+        device_id_(std::move(other.device_id_)), memory_(std::move(other.memory_)),
         n_elements_(std::move(other.n_elements_)) {
         other.n_elements_ = 0;
         other.device_id_ = 0;
     }
 
-    virtual ~_Memory_Base(){};
+    virtual ~_Memory_Base() {};
 
 protected:
-    constexpr _Memory_Base(const size_type n_elements,
-                           const shared_pointer memory,
+    constexpr _Memory_Base(const size_type n_elements, const shared_pointer memory,
                            const size_type device_id) :
-        n_elements_(n_elements), memory_(memory), device_id_(device_id){};
+        n_elements_(n_elements), memory_(memory), device_id_(device_id) {};
 
 public:
     /**
@@ -135,20 +132,18 @@ public:
     using handle = typename features::handle;
 
 public: // 构造函数
-    constexpr Memory() : Base(){};
+    constexpr Memory() : Base() {};
 
-    constexpr Memory(const size_type n, const size_type device_id) :
-        Base(n, device_id) {
+    constexpr Memory(const size_type n, const size_type device_id) : Base(n, device_id) {
         if constexpr (is_Arithmetic<value_type>) return;
         this->construct();
     }
 
-    constexpr Memory(const Self &other) :
-        Memory(other.n_elements_, other.device_id_) {
+    constexpr Memory(const Self &other) : Memory(other.n_elements_, other.device_id_) {
         this->copy_form(other);
     }
 
-    constexpr Memory(Self &&other) noexcept : Base(std::move(other)) {
+    constexpr Memory(Self &&other) : Base(std::move(other)) {
     }
 
     ~Memory() override {
@@ -218,8 +213,8 @@ public: // 内存操作的函数
      * @param n 个数
      * @param val 值
      */
-    constexpr void fill(const size_type pos, const size_type n,
-                        const value_type &val) {
+
+    constexpr void fill(const size_type pos, const size_type n, const value_type &val) {
         handle::fill(*this, pos, n, val);
     };
 
@@ -229,8 +224,7 @@ public: // 内存操作的函数
      * @param n 个数
      * @param val 值
      */
-    constexpr void fill(const size_type pos, const size_type n,
-                        value_type &&val) {
+    constexpr void fill(const size_type pos, const size_type n, value_type &&val) {
         handle::fill(*this, pos, n, val);
     };
 
@@ -239,9 +233,8 @@ public: // 内存操作的函数
      * @param pos 位置
      * @param init_list 初始化列表
      */
-    constexpr void fill(const size_type pos,
-                        std::initializer_list<value_type> init_list) {
-        handle::fill(*this, pos, init_list);
+    constexpr void fill(const size_type pos, std::initializer_list<value_type> init_list) {
+        handle::fill(*this, pos, init_list.begin(), init_list.size());
     };
 
     /**
@@ -265,8 +258,7 @@ public: // 内存操作的函数
      * @param other_pos 另一个Memory的起始位置
      */
     template <is_Memory Other_Memory>
-    constexpr void copy_form(const size_type pos, const size_type n,
-                             const Other_Memory &other,
+    constexpr void copy_form(const size_type pos, const size_type n, const Other_Memory &other,
                              const size_type other_pos) {
         handle::copy_form(*this, pos, n, other, other_pos);
     };

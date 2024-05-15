@@ -6,7 +6,7 @@
 // #define TEST_SHAPE
 // #define TEST_DEVICE
 // #define TEST_ALLOCATOR
-//#define TEST_MEMORY
+#define TEST_MEMORY
 #define TEST_TENSOR
 
 // #define TEST_BLAS
