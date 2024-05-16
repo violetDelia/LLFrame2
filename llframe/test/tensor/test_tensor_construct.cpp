@@ -81,6 +81,35 @@ void test_Tensor_construct__value_type__shape_type__size_type(const llframe::sha
 }
 
 template <llframe::device::is_Device Device, class Ty, size_t N>
+void test_Tensor_construct__shape_type__init_list_type__size_type(
+    const llframe::shape::Shape<N> shape, const size_t device_id,
+    typename llframe::tensor::Tensor_Features<N, Ty, Device>::init_list_type init_list,
+    std::initializer_list<Ty> memory_val,
+    typename llframe::tensor::Tensor_Features<N, Ty, Device>::init_list_type bad_init_list) {
+    using Tensor = llframe::tensor::Tensor<N, Ty, Device>;
+    ASSERT_DEVICE_IS_VALID(Device, device_id);
+    IS_SAME(Device, llframe::device::GPU) {
+        if constexpr (!std::is_trivial_v<Ty>) {
+            ASSERT_THROW(Tensor(shape, device_id), llframe::exception::Unhandled);
+            return;
+        }
+    }
+    ASSERT_THROW(Tensor( bad_init_list,shape, device_id), llframe::exception::Bad_Range);
+    Tensor tensor(init_list,shape,  device_id);
+    ASSERT_EQ(tensor.shape(), shape);
+    ASSERT_EQ(tensor.memory().size(), shape.count());
+    ASSERT_EQ(tensor.memory().get_id(), device_id);
+    ASSERT_EQ(tensor.get_device_id(), device_id);
+    ASSERT_EQ(tensor.count(), shape.count());
+    auto it = memory_val.begin();
+    auto memory = tensor.memory(false);
+    for (int i = 0; i < memory.size(); i++) {
+        ASSERT_EQ(memory.get(i), *it);
+        it++;
+    }
+}
+
+template <llframe::device::is_Device Device, class Ty, size_t N>
 void test_Tensor_construct_copy_and_move(const llframe::shape::Shape<N> shape,
                                          const size_t device_id, Ty val, Ty val2) {
     if (val == val2) throw std::exception("bad parameter!");
@@ -158,6 +187,27 @@ void test_Tensor_construct_each_type() {
     test_Tensor_construct_with_shape<Device, Ty>(llframe::shape::make_shape(1, 2, 0));
     test_Tensor_construct_with_shape<Device, Ty>(llframe::shape::make_shape(1, 2, 3, 4));
     test_Tensor_construct_with_shape<Device, Ty>(llframe::shape::make_shape(1, 2, 3, 0));
+
+    for (int device_id = 0; device_id < 10; device_id++) {
+        if constexpr (llframe::is_Arithmetic<Ty>) {
+            test_Tensor_construct__shape_type__init_list_type__size_type<Device, Ty>(
+                llframe::shape::make_shape(1), device_id, {1}, {1}, {1, 2});
+            test_Tensor_construct__shape_type__init_list_type__size_type<Device, Ty>(
+                llframe::shape::make_shape(1, 2), device_id, {{1}}, {1, 0}, {{1, 2, 3}});
+            test_Tensor_construct__shape_type__init_list_type__size_type<Device, Ty>(
+                llframe::shape::make_shape(1, 2, 3), device_id, {{{}, {1}}}, {0, 0, 0, 1, 0, 0},
+                {{{}, {1, 2, 3, 4}}});
+        }
+        if constexpr (std::is_same_v<Ty, std::string>) {
+            test_Tensor_construct__shape_type__init_list_type__size_type<Device, Ty>(
+                llframe::shape::make_shape(1), device_id, {"1"}, {"1"}, {"1", "2"});
+            test_Tensor_construct__shape_type__init_list_type__size_type<Device, Ty>(
+                llframe::shape::make_shape(1, 2), device_id, {{"1"}}, {"1", ""}, {{"1", "2","3"}});
+            test_Tensor_construct__shape_type__init_list_type__size_type<Device, Ty>(
+                llframe::shape::make_shape(1, 2, 3), device_id, {{{"2"}, {"1"}}},
+                {"2", "", "", "1", "", ""}, {{{"2"}, {"1", "2", "3", "4"}}});
+        }
+    }
 }
 
 template <llframe::device::is_Device Device>

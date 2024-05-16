@@ -194,7 +194,7 @@ public:
      * @note 为了方便不同类型不同设备赋值的接口,具体实现另写
      */
     template <is_Memory From_Memory>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const From_Memory &from, const size_type from_pos) {
         __THROW_UNIMPLEMENTED__;
     };
@@ -345,7 +345,7 @@ public:
      * @note 为了方便不同类型不同设备赋值的接口,具体实现另写
      */
     template <is_Memory From_Memory>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const From_Memory &from, const size_type from_pos) {
         __THROW_UNIMPLEMENTED__;
     };
@@ -361,7 +361,7 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const Memory<Ty, device::CPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
@@ -389,12 +389,12 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const Memory<Ty, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         Memory<Ty, device::CPU> birge_memory(n, to.device_id_);
-        birge_memory.copy_form(from);
-        to.copy_form(birge_memory);
+        birge_memory.copy_from(from);
+        to.copy_from(birge_memory);
         __LLFRAME_TRY_CATCH_END__
     };
 
@@ -410,7 +410,7 @@ public:
      */
     template <>
     static constexpr void
-    copy_form<value_type>(memory_type &to, const size_type to_pos, const size_type n,
+    copy_from<value_type>(memory_type &to, const size_type to_pos, const size_type n,
                           const Memory<value_type, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
@@ -588,7 +588,7 @@ public:
      * @note 为了方便不同类型不同设备赋值的接口,具体实现另写
      */
     template <is_Memory From_Memory>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const From_Memory &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         __LLFRAME_TRY_CATCH_END__
@@ -606,12 +606,12 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const Memory<Ty, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         Memory<Ty, device::CPU> birge_memory(n, to.device_id_);
-        birge_memory.copy_form(from);
-        to.copy_form(birge_memory);
+        birge_memory.copy_from(from);
+        to.copy_from(birge_memory);
         __LLFRAME_TRY_CATCH_END__
     };
 
@@ -627,7 +627,7 @@ public:
      */
     template <>
     static constexpr void
-    copy_form<value_type>(memory_type &to, const size_type to_pos, const size_type n,
+    copy_from<value_type>(memory_type &to, const size_type to_pos, const size_type n,
                           const Memory<value_type, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
@@ -652,14 +652,14 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_form(memory_type &to, const size_type to_pos, const size_type n,
+    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
                                     const Memory<Ty, device::CPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         awake_device_(from);
         Memory<value_type, device::CPU> birge_memory(n, to.device_id_);
-        birge_memory.copy_form(from);
+        birge_memory.copy_from(from);
         awake_device_(to);
-        to.copy_form(birge_memory);
+        to.copy_from(birge_memory);
         __LLFRAME_TRY_CATCH_END__
     };
 
@@ -675,7 +675,7 @@ public:
      */
     template <>
     static constexpr void
-    copy_form<value_type>(memory_type &to, const size_type to_pos, const size_type n,
+    copy_from<value_type>(memory_type &to, const size_type to_pos, const size_type n,
                           const Memory<value_type, device::CPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);

@@ -53,27 +53,33 @@ public:
     using blas_adapter = typename features::blas_adapter;
 
 public: // 构造函数
-    constexpr _Tensor_Base() : shape_{}, stride_{}, start_{0}, memory_{}, device_id_{0} {
+    constexpr _Tensor_Base() :
+        shape_{}, stride_{}, start_{0}, memory_{}, device_id_{0} {
     }
 
-    explicit constexpr _Tensor_Base(const shape_type &shape, const size_type device_id = 0) :
-        shape_(shape), start_{0}, memory_(this->shape_.count(), device_id), device_id_{device_id} {
-        this->_init_stride(this->shape_);
-    }
-
-    explicit constexpr _Tensor_Base(shape_type &&shape, const size_type device_id = 0) :
-        shape_(std::move(shape)), start_{0}, memory_(this->shape_.count(), device_id),
+    explicit constexpr _Tensor_Base(const shape_type &shape,
+                                    const size_type device_id = 0) :
+        shape_(shape), start_{0}, memory_(this->shape_.count(), device_id),
         device_id_{device_id} {
         this->_init_stride(this->shape_);
     }
 
+    explicit constexpr _Tensor_Base(shape_type &&shape,
+                                    const size_type device_id = 0) :
+        shape_(std::move(shape)), start_{0},
+        memory_(this->shape_.count(), device_id), device_id_{device_id} {
+        this->_init_stride(this->shape_);
+    }
+
     constexpr _Tensor_Base(const value_type &val, const shape_type &shape,
-                           const size_type device_id = 0) : _Tensor_Base(shape, device_id) {
+                           const size_type device_id = 0) :
+        _Tensor_Base(shape, device_id) {
         this->memory_.fill(val);
     }
 
     constexpr _Tensor_Base(value_type &&val, const shape_type &shape,
-                           const size_type device_id = 0) : _Tensor_Base(shape, device_id) {
+                           const size_type device_id = 0) :
+        _Tensor_Base(shape, device_id) {
         this->memory_.fill(std::move(val));
     }
 
@@ -83,20 +89,23 @@ public: // 构造函数
         this->memory_.fill(val);
     }
 
-    constexpr _Tensor_Base(value_type &&val, shape_type &&shape, const size_type device_id = 0) :
+    constexpr _Tensor_Base(value_type &&val, shape_type &&shape,
+                           const size_type device_id = 0) :
         _Tensor_Base(std::move(shape), device_id) {
         this->memory_.fill(std::move(val));
     }
 
     constexpr _Tensor_Base(const Self &other) :
-        shape_(other.shape_), stride_(other.stride_), start_(other.start_), layout_(other.layout_),
-        device_id_(other.device_id_), memory_(other.memory_) {
+        shape_(other.shape_), stride_(other.stride_), start_(other.start_),
+        layout_(other.layout_), device_id_(other.device_id_),
+        memory_(other.memory_) {
     }
 
     constexpr _Tensor_Base(Self &&other) :
         shape_(std::move(other.shape_)), stride_(std::move(other.stride_)),
-        device_id_(std::move(other.device_id_)), memory_(std::move(other.memory_)),
-        layout_(std::move(other.layout_)), start_(std::move(other.start_)) {
+        device_id_(std::move(other.device_id_)),
+        memory_(std::move(other.memory_)), layout_(std::move(other.layout_)),
+        start_(std::move(other.start_)) {
         other.start_ = 0;
         other.device_id_ = 0;
     }
@@ -145,7 +154,7 @@ public:
      */
     constexpr memory_type memory(const bool copy = false) const {
         if (copy) return memory_;
-        return std::move( memory_.ref());
+        return std::move(memory_.ref());
     }
 
     /**
@@ -222,21 +231,54 @@ public:
     using Base::get_device_id;
     using Base::count;
 
-public:
-    constexpr _Tensor_Init_List(const shape_type &shape, init_list_type init_list,
-                                const size_type device_id = 0)  : Self(shape, device_id) {
-        __THROW_UNIMPLEMENTED__;
+private:
+    template <size_type N>
+    constexpr void _init_memory(
+        size_type pos,
+        typename Tensor_Features<N, value_type, device_type>::init_list_type
+            init_list) {
+        if (init_list.size() > this->shape_[N_Dim - N]) {
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Range,
+                                             "init_list out of range of shape!")
+        }
+        auto init_list_it = init_list.begin();
+        const auto init_list_end = init_list.end();
+        while (init_list_it != init_list_end) {
+            this->_init_memory<N - 1>(pos, *init_list_it);
+            pos += this->stride_[N_Dim - N];
+            init_list_it++;
+        }
     };
 
-    constexpr _Tensor_Init_List(shape_type &&shape, init_list_type init_list,
-                                const size_type device_id = 0)  :
+    template <>
+    constexpr void _init_memory<1>(
+        const size_type pos,
+        typename Tensor_Features<1, value_type, device_type>::init_list_type
+            init_list) {
+        if (init_list.size() > this->shape_[N_Dim - 1]) {
+            __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Range,
+                                             "init_list out of range of shape!")
+        }
+        this->memory_.fill(pos, init_list);
+    }
+
+public:
+    constexpr _Tensor_Init_List(init_list_type init_list,const shape_type &shape,
+                                const size_type device_id = 0) :
+        Self(shape, device_id) {
+        this->_init_memory<N_Dim>(this->start_, init_list);
+    };
+
+    constexpr _Tensor_Init_List( init_list_type init_list,shape_type &&shape,
+                                const size_type device_id = 0) :
         Self(std::move(shape), device_id) {
-        __THROW_UNIMPLEMENTED__;
+        this->_init_memory<N_Dim>(this->start_, init_list);
     };
 };
 
 /**
- * @brief Tensor 初始化列表的实现 如果是0维度的会和其他初始化冲突，所以0维度特化没有使用初始化列表初始化
+ * @brief Tensor 初始化列表的实现
+ * 如果是0维度的会和其他初始化冲突，所以0维度特化没有使用初始化列表初始化
  *
  * @tparam N_Dim
  * @tparam Ty

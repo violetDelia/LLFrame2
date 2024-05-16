@@ -140,7 +140,7 @@ public: // 构造函数
 
     constexpr Memory(const Self &other) : Base(other.n_elements_, other.device_id_) {
         if (!is_Arithmetic<Ty>) this->construct();
-        this->copy_form(other);
+        this->copy_from(other);
     }
 
     constexpr Memory(Self &&other) : Base(std::move(other)) {
@@ -242,12 +242,12 @@ public: // 内存操作的函数
      * @param other 其他Memory
      */
     template <is_Memory Other_Memory>
-    constexpr void copy_form(const Other_Memory &other) {
+    constexpr void copy_from(const Other_Memory &other) {
         if (other.n_elements_ != this->n_elements_) {
             __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Parameter,
                                              "Memory capacity is not equal!")
         }
-        this->copy_form(0, this->n_elements_, other, 0);
+        this->copy_from(0, this->n_elements_, other, 0);
     };
 
     /**
@@ -258,9 +258,9 @@ public: // 内存操作的函数
      * @param other_pos 另一个Memory的起始位置
      */
     template <is_Memory Other_Memory>
-    constexpr void copy_form(const size_type pos, const size_type n, const Other_Memory &other,
+    constexpr void copy_from(const size_type pos, const size_type n, const Other_Memory &other,
                              const size_type other_pos) {
-        handle::copy_form(*this, pos, n, other, other_pos);
+        handle::copy_from(*this, pos, n, other, other_pos);
     };
 
 protected:

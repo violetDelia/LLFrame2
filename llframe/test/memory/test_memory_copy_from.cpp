@@ -27,14 +27,14 @@ void test_Memory_copy_from(size_t left_id, size_t right_id, Right_Ty val) {
     }
     Left_Memory left_memory(1, left_id);
     Right_Memory right_memory(2, right_id);
-    ASSERT_THROW(left_memory.copy_form(right_memory),
+    ASSERT_THROW(left_memory.copy_from(right_memory),
                  llframe::exception::Bad_Parameter);
     for (int i = 0; i < 10; i++) {
         size_t n = (size_t{1} << i);
         Left_Memory left_memory(n, left_id);
         Right_Memory right_memory(n, right_id);
         right_memory.fill(val);
-        left_memory.copy_form(right_memory);
+        left_memory.copy_from(right_memory);
         for (int i = 0; i < left_memory.size(); i++) {
             ASSERT_EQ(right_memory.get(i), left_memory.get(i));
         }
