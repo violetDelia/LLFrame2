@@ -16,8 +16,8 @@
  * @brief 基础类型定义
  *
  */
-#ifndef __LLFRAME_BASE_TYPE_HPP__
-#define __LLFRAME_BASE_TYPE_HPP__
+#ifndef LLFRAME_CORE_BASE_TYPE_HPP
+#define LLFRAME_CORE_BASE_TYPE_HPP
 #include <cstdint>
 #include <cstddef>
 #include <type_traits>
@@ -89,4 +89,4 @@ concept is_Same_Floating_Point =
 } // namespace concepts
 
 } // namespace llframe
-#endif //__LLFRAME_BASE_TYPE_HPP__
+#endif // LLFRAME_CORE_BASE_TYPE_HPP

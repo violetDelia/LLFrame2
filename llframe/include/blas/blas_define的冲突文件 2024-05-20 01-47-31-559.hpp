@@ -16,13 +16,12 @@
  * @brief 线性代数库相关定义
  *
  */
-#ifndef LLFRAME_BLAS_BLAS_DEFINE_HPP
-#define LLFRAME_BLAS_BLAS_DEFINE_HPP
+#ifndef __LLFRAME_BLAS_DEFINE_HPP__
+#define __LLFRAME_BLAS_DEFINE_HPP__
 #include <openblas/cblas.h>
 #include <cublas_v2.h>
 #include <type_traits>
 #include "device/device_define.hpp"
-#include "core/base_type.hpp"
 
 namespace llframe::blas {
 enum Blas_Layout { Row_Major = 101, Col_Major = 102 };
@@ -75,4 +74,4 @@ class Blas_Adapter;
 template <device::is_Device Device>
 struct Blas_Adapter_Features;
 } // namespace llframe::blas
-#endif // LLFRAME_BLAS_BLAS_DEFINE_HPP
+#endif //__LLFRAME_BLAS_DEFINE_HPP__

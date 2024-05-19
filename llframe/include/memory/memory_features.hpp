@@ -16,7 +16,8 @@
  * @brief 内存萃取器
  *
  */
-#ifndef __LLFRAME_MEMORY_FEATURES_HPP__
+#ifndef LLFRAME_MEMORY_MEMORY_FEATURES_HPP
+#define LLFRAME_MEMORY_MEMORY_FEATURES_HPP
 #include "memory/memory_define.hpp"
 #include "allocator/allocator_define.hpp"
 #include "blas/blas_define.hpp"
@@ -42,5 +43,4 @@ struct Memory_Features {
 };
 
 } // namespace llframe::memory
-#define __LLFRAME_MEMORY_FEATURES_HPP__
-#endif //__LLFRAME_MEMORY_FEATURES_HPP__
+#endif // LLFRAME_MEMORY_MEMORY_FEATURES_HPP

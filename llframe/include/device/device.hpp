@@ -16,9 +16,9 @@
  * @brief device 头文件
  *
  */
-#ifndef __LLFRAME_DEVICE_HPP__
-#define __LLFRAME_DEVICE_HPP__
+#ifndef LLFRAME_DEVICE_DEVICE_HPP
+#define LLFRAME_DEVICE_DEVICE_HPP
 #include "device/device_define.hpp"
 #include "device/device_impl.hpp"
 #include "device/device_platform.hpp"
-#endif //__LLFRAME_DEVICE_HPP__
+#endif // LLFRAME_DEVICE_DEVICE_HPP

@@ -16,8 +16,8 @@
  * @brief device 定义
  *
  */
-#ifndef __LLFRAME_DEVICE_DEFINE_HPP__
-#define __LLFRAME_DEVICE_DEFINE_HPP__
+#ifndef LLFRAME_DEVICE_DEVICE_DEFINE_HPP
+#define LLFRAME_DEVICE_DEVICE_DEFINE_HPP
 #include <type_traits>
 namespace llframe::device {
 
@@ -34,4 +34,4 @@ template <is_Device Device>
 class Device_Platform;
 
 } // namespace llframe::device
-#endif //__LLFRAME_DEVICE_DEFINE_HPP__
+#endif // LLFRAME_DEVICE_DEVICE_DEFINE_HPP

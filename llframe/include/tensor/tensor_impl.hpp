@@ -16,8 +16,8 @@
  * @brief 张量实现文件
  *
  */
-#ifndef __LLFRAME_TENSOR_IMPL_HPP__
-#define __LLFRAME_TENSOR_IMPL_HPP__
+#ifndef LLFRAME_TENSOR_TENSOR_IMPL_HPP
+#define LLFRAME_TENSOR_TENSOR_IMPL_HPP
 #include "tensor/tensor_define.hpp"
 #include "tensor/tensor_base.hpp"
 namespace llframe::tensor {
@@ -62,8 +62,9 @@ public:
     using Base::memory;
     using Base::get_device_id;
     using Base::count;
+    using Base::is_continuous;
+    using Base::data;
 };
 
-
 } // namespace llframe::tensor
-#endif //__LLFRAME_TENSOR_IMPL_HPP__
+#endif // LLFRAME_TENSOR_TENSOR_IMPL_HPP

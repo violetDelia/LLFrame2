@@ -16,15 +16,15 @@
  * @brief 分配器定义文件
  *
  */
-#ifndef __LLFRAME_ALLOCATOR_DEFINE_HPP__
-#define __LLFRAME_ALLOCATOR_DEFINE_HPP__
+#ifndef LLFRAME_ALLOCATOR_ALLOCATOR_DEFINE_HPP
+#define LLFRAME_ALLOCATOR_ALLOCATOR_DEFINE_HPP
 #include "device/device_define.hpp"
 #include "core/base_type.hpp"
 #include <memory>
 namespace llframe ::allocator {
 
 template <class Ty>
-class Biasc_Allocator;
+class Biasc_AllocATor;
 
 template <device::is_Device Device>
 class Memory_Pool;
@@ -38,4 +38,4 @@ template <class Ty, device::is_Device Device>
 struct Allocator_Features;
 } // namespace llframe::allocator
 
-#endif //__LLFRAME_ALLOCATOR_DEFINE_HPP__
+#endif // LLFRAME_ALLOCATOR_ALLOCATOR_DEFINE_HPP

@@ -16,8 +16,8 @@
  * @brief device 实现
  *
  */
-#ifndef __LLFRAME_DEVICE_IMPL_HPP__
-#define __LLFRAME_DEVICE_IMPL_HPP__
+#ifndef LLFRAME_DEVICE_DEVICE_IMPL_HPP
+#define LLFRAME_DEVICE_DEVICE_IMPL_HPP
 #include <type_traits>
 #include <cuda_runtime.h>
 #include <cudnn.h>
@@ -36,14 +36,14 @@ public:
     using size_type = size_t;
 
 public: // 构造函数
-    constexpr _Device() noexcept : _Device(0){};
+    constexpr _Device() noexcept : _Device(0) {};
     explicit constexpr _Device(const size_type device_id) noexcept :
-        id_(device_id){};
+        id_(device_id) {};
     constexpr _Device(const Self &other) noexcept = default;
     constexpr _Device(Self &&other) noexcept = delete;
     constexpr Self &operator=(const Self &other) noexcept = default;
     constexpr Self &operator=(Self &&other) noexcept = delete;
-    virtual ~_Device(){};
+    virtual ~_Device() {};
 
 public:
     /**
@@ -115,7 +115,7 @@ public: // 重写构造函数
         if (auto cublas_status_t = cublasCreate(&(*default_cublas_handle_)))
             __LLFRAME_THROW_CUBLAS_ERROR_INFO__(cublas_status_t)
     }
-    GPU() : GPU(0){};
+    GPU() : GPU(0) {};
     virtual ~GPU() {
         if (default_cudnn_handle_.use_count() == 1) {
             cudnnDestroy(*default_cudnn_handle_);
@@ -153,4 +153,4 @@ protected:
 };
 
 } // namespace llframe::device
-#endif //__LLFRAME_DEVICE_IMPL_HPP__
+#endif // LLFRAME_DEVICE_DEVICE_IMPL_HPP

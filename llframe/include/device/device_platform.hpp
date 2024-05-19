@@ -16,8 +16,8 @@
  * @brief 设备平台实现,单例模式,设备实例从这里获取
  *
  */
-#ifndef __LLFRAME_DEVICE_PLATFORM_HPP__
-#define __LLFRAME_DEVICE_PLATFORM_HPP__
+#ifndef LLFRAME_DEVICE_DEVICE_PLATFORM_HPP
+#define LLFRAME_DEVICE_DEVICE_PLATFORM_HPP
 #include "device/device_define.hpp"
 #include "device/device_impl.hpp"
 #include "core/base_type.hpp"
@@ -165,4 +165,4 @@ public:
 };
 
 } // namespace llframe::device
-#endif //__LLFRAME_DEVICE_PLATFORM_HPP__
+#endif // LLFRAME_DEVICE_DEVICE_PLATFORM_HPP

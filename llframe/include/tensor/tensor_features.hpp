@@ -16,8 +16,8 @@
  * @brief 张量通用属性 文件
  *
  */
-#ifndef __LLFRAME_TENSOR_FEATURES_HPP__
-#define __LLFRAME_TENSOR_FEATURES_HPP__
+#ifndef LLFRAME_TENSOR_TENSOR_FEATURES_HPP
+#define LLFRAME_TENSOR_TENSOR_FEATURES_HPP
 #include "tensor/tensor_define.hpp"
 #include "core/shape.hpp"
 #include "blas/blas_define.hpp"
@@ -65,6 +65,7 @@ struct Tensor_Features {
     using memory_type = memory::Memory<Ty, Device>;
     using platform = device::Device_Platform<Device>;
     using blas_adapter = blas::Blas_Adapter<Device>;
+    // using operator= Tensor_Operator;
 };
 } // namespace llframe::tensor
-#endif //__LLFRAME_TENSOR_FEATURES_HPP__
+#endif // LLFRAME_TENSOR_TENSOR_FEATURES_HPP

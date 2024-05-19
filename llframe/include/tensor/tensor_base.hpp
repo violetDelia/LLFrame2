@@ -16,8 +16,8 @@
  * @brief 张量基础功能实现
  *
  */
-#ifndef __LLFRAME_TENSOR_BASE_HPP__
-#define __LLFRAME_TENSOR_BASE_HPP__
+#ifndef LLFRAME_TENSOR_TENSOR_BASE_HPP
+#define LLFRAME_TENSOR_TENSOR_BASE_HPP
 #include "tensor/tensor_define.hpp"
 #include "core/exception.hpp"
 namespace llframe::tensor {
@@ -171,6 +171,32 @@ public:
         return shape_.count();
     }
 
+    /**
+     * @brief 检查Tensor是否连续
+     * @return
+     */
+    constexpr bool is_continuous() const {
+        size_type stride = 1;
+        for (size_type i = N_Dim - 1; i > 0; --i) {
+            if (stride != this->stride_[i]) return false;
+            stride = stride * this->shape_[i];
+        }
+        return true;
+    }
+
+    /**
+     * @brief 获取实际内存地址
+     *
+     * @return constexpr pointer
+     * @version 1.0.0
+     * @author 时光丶人爱 (1152488956.com)
+     * @date 2024-05-18
+     * @copyright Copyright (c) 2024 时光丶人爱
+     */
+    constexpr pointer data() const {
+        return memory_.data();
+    }
+
 protected:
     // 形状
     shape_type shape_;
@@ -230,6 +256,8 @@ public:
     using Base::memory;
     using Base::get_device_id;
     using Base::count;
+    using Base::is_continuous;
+    using Base::data;
 
 private:
     template <size_type N>
@@ -263,13 +291,14 @@ private:
     }
 
 public:
-    constexpr _Tensor_Init_List(init_list_type init_list,const shape_type &shape,
+    constexpr _Tensor_Init_List(init_list_type init_list,
+                                const shape_type &shape,
                                 const size_type device_id = 0) :
         Self(shape, device_id) {
         this->_init_memory<N_Dim>(this->start_, init_list);
     };
 
-    constexpr _Tensor_Init_List( init_list_type init_list,shape_type &&shape,
+    constexpr _Tensor_Init_List(init_list_type init_list, shape_type &&shape,
                                 const size_type device_id = 0) :
         Self(std::move(shape), device_id) {
         this->_init_memory<N_Dim>(this->start_, init_list);
@@ -321,4 +350,4 @@ public:
 };
 
 } // namespace llframe::tensor
-#endif //__LLFRAME_TENSOR_BASE_HPP__
+#endif // LLFRAME_TENSOR_TENSOR_BASE_HPP

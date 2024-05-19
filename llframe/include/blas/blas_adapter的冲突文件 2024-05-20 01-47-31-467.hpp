@@ -16,8 +16,8 @@
  * @brief 线性代数库调用转接器
  *
  */
-#ifndef LLFRAME_BLAS_BLAS_ADAPTER_HPP
-#define LLFRAME_BLAS_BLAS_ADAPTER_HPP
+#ifndef __LLFRAME_BLAS_ADAPTER_HPP__
+#define __LLFRAME_BLAS_ADAPTER_HPP__
 #include "core/exception.hpp"
 #include "core/base_type.hpp"
 #include "device/device_platform.hpp"
@@ -600,4 +600,4 @@ public:
 };
 
 } // namespace llframe::blas
-#endif // LLFRAME_BLAS_BLAS_ADAPTER_HPP
+#endif //__LLFRAME_BLAS_ADAPTER_HPP__

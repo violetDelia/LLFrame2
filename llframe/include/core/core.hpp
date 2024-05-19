@@ -16,9 +16,9 @@
  * @brief core 头文件
  *
  */
-#ifndef __LLFRAME_CORE_HPP__
-#define __LLFRAME_CORE_HPP__
+#ifndef LLFRAME_CORE_CORE_HPP
+#define LLFRAME_CORE_CORE_HPP
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
 #include "core/shape.hpp"
-#endif //__LLFRAME_CORE_HPP__
+#endif // LLFRAME_CORE_CORE_HPP

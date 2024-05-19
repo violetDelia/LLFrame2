@@ -16,8 +16,8 @@
  * @brief 基础分配器实现
  *
  */
-#ifndef __LLFRAME_BASIC_ALLOCATOR_HPP__
-#define __LLFRAME_BASIC_ALLOCATOR_HPP__
+#ifndef LLFRAME_ALLOCATOR_BASIC_ALLOCATOR_HPP
+#define LLFRAME_ALLOCATOR_BASIC_ALLOCATOR_HPP
 #include "allocator/allocator_define.hpp"
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
@@ -122,4 +122,4 @@ public:
 };
 
 } // namespace llframe::allocator
-#endif //__LLFRAME_BASIC_ALLOCATOR_HPP__
+#endif // LLFRAME_ALLOCATOR_BASIC_ALLOCATOR_HPP

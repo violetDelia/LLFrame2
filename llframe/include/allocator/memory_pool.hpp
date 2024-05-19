@@ -16,8 +16,8 @@
  * @brief 分配器 头文件
  *
  */
-#ifndef __LLFRAME_MEMORY_POOL_HPP__
-#define __LLFRAME_MEMORY_POOL_HPP__
+#ifndef LLFRAME_ALLOCATOR_MEMORY_POOL_HPP
+#define LLFRAME_ALLOCATOR_MEMORY_POOL_HPP
 #include "allocator/allocator_define.hpp"
 #include "unordered_map"
 #include <deque>
@@ -79,4 +79,4 @@ private:
     memory_pool_map_type memory_pool_map_;
 };
 } // namespace llframe::allocator
-#endif //__LLFRAME_MEMORY_POOL_HPP__
+#endif // LLFRAME_ALLOCATOR_MEMORY_POOL_HPP

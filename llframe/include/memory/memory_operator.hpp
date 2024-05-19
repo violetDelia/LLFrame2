@@ -16,8 +16,8 @@
  * @brief 对Memory进行操作的类
  *
  */
-#ifndef __LLFRAME_MEMORY_OPERATOR_HPP__
-#define __LLFRAME_MEMORY_OPERATOR_HPP__
+#ifndef LLFRAME_MEMORY_MEMORY_OPERATOR_HPP
+#define LLFRAME_MEMORY_MEMORY_OPERATOR_HPP
 #include "core/exception.hpp"
 #include "memory/memory_define.hpp"
 #include "blas/blas_define.hpp"
@@ -52,15 +52,18 @@ protected:
      *
      */
     template <is_Memory Memory>
-    static constexpr void ensure_pos_legally_(const Memory &memory, const size_type pos,
+    static constexpr void ensure_pos_legally_(const Memory &memory,
+                                              const size_type pos,
                                               const size_type n) {
         if (memory.size() >= pos + n) return;
-        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Range, "out of Memory range!")
+        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Bad_Range,
+                                         "out of Memory range!")
     }
 
     template <class Left_Ty, class Right_Ty, llframe::device::is_Device Device>
-    static constexpr void ensure_same_device_(const Memory<Left_Ty, Device> &left,
-                                              const Memory<Right_Ty, Device> &right) {
+    static constexpr void
+    ensure_same_device_(const Memory<Left_Ty, Device> &left,
+                        const Memory<Right_Ty, Device> &right) {
         if (left.get_id() == right.get_id()) return;
         __LLFRAME_THROW_UNHANDLED_INFO__("difference device!")
     }
@@ -70,8 +73,10 @@ protected:
      */
     template <class Ty, llframe::device::is_Device Device>
     static constexpr void awake_device_(const Memory<Ty, Device> &memory) {
-        if (device::Device_Platform<Device>::awake_device(memory.get_id())) return;
-        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Unhandled, "awake device fault!");
+        if (device::Device_Platform<Device>::awake_device(memory.get_id()))
+            return;
+        __LLFRAME_THROW_EXCEPTION_INFO__(exception::Unhandled,
+                                         "awake device fault!");
     }
 };
 
@@ -109,7 +114,8 @@ public:
     /**
      * @brief 获取内存指定位置的元素
      */
-    static constexpr value_type get(const memory_type &memory, const size_type pos) {
+    static constexpr value_type get(const memory_type &memory,
+                                    const size_type pos) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -119,7 +125,8 @@ public:
      * @param pos 位置
      * @param val 值
      */
-    static constexpr void set(memory_type &memory, const size_type pos, const value_type &val) {
+    static constexpr void set(memory_type &memory, const size_type pos,
+                              const value_type &val) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -130,8 +137,8 @@ public:
      * @param n 个数
      * @param val 值
      */
-    static constexpr void fill(memory_type &memory, const size_type pos, const size_type n,
-                               const value_type &val) {
+    static constexpr void fill(memory_type &memory, const size_type pos,
+                               const size_type n, const value_type &val) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -156,8 +163,8 @@ public:
      * @copyright Copyright (c) 2024 时光丶人爱
      */
     template <std::forward_iterator Iterator>
-    static constexpr void fill(memory_type &memory, const size_type pos, Iterator begin,
-                               const size_type n) {
+    static constexpr void fill(memory_type &memory, const size_type pos,
+                               Iterator begin, const size_type n) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -168,7 +175,8 @@ public:
      * @param pos 位置
      * @param n 个数
      */
-    static constexpr void construct(memory_type &memory, const size_type pos, const size_type n) {
+    static constexpr void construct(memory_type &memory, const size_type pos,
+                                    const size_type n) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -179,7 +187,8 @@ public:
      * @param pos 位置
      * @param n 个数
      */
-    static constexpr void destroy(memory_type &memory, const size_type pos, const size_type n) {
+    static constexpr void destroy(memory_type &memory, const size_type pos,
+                                  const size_type n) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -194,8 +203,9 @@ public:
      * @note 为了方便不同类型不同设备赋值的接口,具体实现另写
      */
     template <is_Memory From_Memory>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const From_Memory &from, const size_type from_pos) {
+    static constexpr void copy_from(memory_type &to, const size_type to_pos,
+                                    const size_type n, const From_Memory &from,
+                                    const size_type from_pos) {
         __THROW_UNIMPLEMENTED__;
     };
 };
@@ -205,7 +215,8 @@ public:
  * @note CPU特化
  */
 template <class Ty>
-class Memory_Operator<Ty, device::CPU> : public Memory_Checker<Ty, device::CPU> {
+class Memory_Operator<Ty, device::CPU>
+    : public Memory_Checker<Ty, device::CPU> {
 private:
     using Base = Memory_Checker<Ty, device::CPU>;
     using Self = Memory_Operator<Ty, device::CPU>;
@@ -235,7 +246,8 @@ public:
     /**
      * @brief 获取内存指定位置的元素
      */
-    static constexpr value_type get(const memory_type &memory, const size_type pos) {
+    static constexpr value_type get(const memory_type &memory,
+                                    const size_type pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, 1);
         __LLFRAME_TRY_CATCH_END__
@@ -248,7 +260,8 @@ public:
      * @param pos 位置
      * @param val 值
      */
-    static constexpr void set(memory_type &memory, const size_type pos, const value_type &val) {
+    static constexpr void set(memory_type &memory, const size_type pos,
+                              const value_type &val) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, 1);
         *(memory.memory_.get() + pos) = val;
@@ -262,8 +275,8 @@ public:
      * @param n 个数
      * @param val 值
      */
-    static constexpr void fill(memory_type &memory, const size_type pos, const size_type n,
-                               const value_type &val) {
+    static constexpr void fill(memory_type &memory, const size_type pos,
+                               const size_type n, const value_type &val) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
@@ -291,8 +304,8 @@ public:
      * @copyright Copyright (c) 2024 时光丶人爱
      */
     template <std::forward_iterator Iterator>
-    static constexpr void fill(memory_type &memory, const size_type pos, Iterator begin,
-                               const size_type n) {
+    static constexpr void fill(memory_type &memory, const size_type pos,
+                               Iterator begin, const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
@@ -311,7 +324,8 @@ public:
      * @date 2024-05-16
      * @copyright Copyright (c) 2024 时光丶人爱
      */
-    static constexpr void construct(memory_type &memory, const size_type pos, const size_type n) {
+    static constexpr void construct(memory_type &memory, const size_type pos,
+                                    const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
@@ -326,7 +340,8 @@ public:
      * @param pos 位置
      * @param n 个数
      */
-    static constexpr void destroy(memory_type &memory, const size_type pos, const size_type n) {
+    static constexpr void destroy(memory_type &memory, const size_type pos,
+                                  const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
@@ -345,8 +360,9 @@ public:
      * @note 为了方便不同类型不同设备赋值的接口,具体实现另写
      */
     template <is_Memory From_Memory>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const From_Memory &from, const size_type from_pos) {
+    static constexpr void copy_from(memory_type &to, const size_type to_pos,
+                                    const size_type n, const From_Memory &from,
+                                    const size_type from_pos) {
         __THROW_UNIMPLEMENTED__;
     };
 
@@ -361,8 +377,9 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const Memory<Ty, device::CPU> &from, const size_type from_pos) {
+    static constexpr void
+    copy_from(memory_type &to, const size_type to_pos, const size_type n,
+              const Memory<Ty, device::CPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
         ensure_pos_legally_(from, from_pos, n);
@@ -371,9 +388,11 @@ public:
         awake_device_(from);
         // 如果可以,尽量调用blas
         if constexpr (blas::is_Support_Blas<device_type, value_type, Ty>) {
-            blas_adapter::copy(n, from.memory_.get() + from_pos, 1, to.memory_.get() + to_pos, 1);
+            blas_adapter::copy(n, from.memory_.get() + from_pos, 1,
+                               to.memory_.get() + to_pos, 1);
         } else {
-            std ::uninitialized_copy_n(from.memory_.get() + from_pos, n, to.memory_.get() + to_pos);
+            std ::uninitialized_copy_n(from.memory_.get() + from_pos, n,
+                                       to.memory_.get() + to_pos);
         }
         __LLFRAME_TRY_CATCH_END__
     };
@@ -389,8 +408,9 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const Memory<Ty, device::GPU> &from, const size_type from_pos) {
+    static constexpr void
+    copy_from(memory_type &to, const size_type to_pos, const size_type n,
+              const Memory<Ty, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         Memory<Ty, device::CPU> birge_memory(n, to.device_id_);
         birge_memory.copy_from(from);
@@ -409,18 +429,18 @@ public:
      *
      */
     template <>
-    static constexpr void
-    copy_from<value_type>(memory_type &to, const size_type to_pos, const size_type n,
-                          const Memory<value_type, device::GPU> &from, const size_type from_pos) {
+    static constexpr void copy_from<value_type>(
+        memory_type &to, const size_type to_pos, const size_type n,
+        const Memory<value_type, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
         ensure_pos_legally_(from, from_pos, n);
         if (n == 0) return;
         awake_device_(from);
         awake_device_(to);
-        if (auto cuda_error_t =
-                cudaMemcpy(to.memory_.get(), from.memory_.get(),
-                           sizeof(value_type) * to.n_elements_, cudaMemcpyDeviceToHost))
+        if (auto cuda_error_t = cudaMemcpy(to.memory_.get(), from.memory_.get(),
+                                           sizeof(value_type) * to.n_elements_,
+                                           cudaMemcpyDeviceToHost))
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         __LLFRAME_TRY_CATCH_END__
     };
@@ -431,7 +451,8 @@ public:
  * @note GPU特化
  */
 template <class Ty>
-class Memory_Operator<Ty, device::GPU> : public Memory_Checker<Ty, device::GPU> {
+class Memory_Operator<Ty, device::GPU>
+    : public Memory_Checker<Ty, device::GPU> {
 private:
     using Base = Memory_Checker<Ty, device::GPU>;
     using Self = Memory_Operator<Ty, device::GPU>;
@@ -461,13 +482,15 @@ public:
     /**
      * @brief 获取内存指定位置的元素
      */
-    static constexpr value_type get(const memory_type &memory, const size_type pos) {
+    static constexpr value_type get(const memory_type &memory,
+                                    const size_type pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, 1);
         value_type val;
         awake_device_(memory);
-        if (auto cuda_error_t = cudaMemcpy(&val, memory.memory_.get() + pos, sizeof(value_type),
-                                           cudaMemcpyDeviceToHost)) {
+        if (auto cuda_error_t =
+                cudaMemcpy(&val, memory.memory_.get() + pos, sizeof(value_type),
+                           cudaMemcpyDeviceToHost)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
         return val;
@@ -480,12 +503,14 @@ public:
      * @param pos 位置
      * @param val 值
      */
-    static constexpr void set(memory_type &memory, const size_type pos, const value_type &val) {
+    static constexpr void set(memory_type &memory, const size_type pos,
+                              const value_type &val) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, 1);
         awake_device_(memory);
-        if (auto cuda_error_t = cudaMemcpy(memory.memory_.get() + pos, &val, sizeof(value_type),
-                                           cudaMemcpyHostToDevice)) {
+        if (auto cuda_error_t =
+                cudaMemcpy(memory.memory_.get() + pos, &val, sizeof(value_type),
+                           cudaMemcpyHostToDevice)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
         __LLFRAME_TRY_CATCH_END__
@@ -498,16 +523,17 @@ public:
      * @param n 个数
      * @param val 值
      */
-    static constexpr void fill(memory_type &memory, const size_type pos, const size_type n,
-                               const value_type &val) {
+    static constexpr void fill(memory_type &memory, const size_type pos,
+                               const size_type n, const value_type &val) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
         value_type *_temp = new value_type[n];
         std::uninitialized_fill_n(_temp, n, val);
         awake_device_(memory);
-        if (auto cuda_error_t = cudaMemcpy(memory.memory_.get() + pos, _temp,
-                                           sizeof(value_type) * n, cudaMemcpyHostToDevice)) {
+        if (auto cuda_error_t =
+                cudaMemcpy(memory.memory_.get() + pos, _temp,
+                           sizeof(value_type) * n, cudaMemcpyHostToDevice)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
         delete[] _temp;
@@ -528,16 +554,17 @@ public:
      * @copyright Copyright (c) 2024 时光丶人爱
      */
     template <std::forward_iterator Iterator>
-    static constexpr void fill(memory_type &memory, const size_type pos, Iterator begin,
-                               const size_type n) {
+    static constexpr void fill(memory_type &memory, const size_type pos,
+                               Iterator begin, const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
         value_type *_temp = new value_type[n];
         std::uninitialized_move_n(begin, n, _temp);
         awake_device_(memory);
-        if (auto cuda_error_t = cudaMemcpy(memory.memory_.get() + pos, _temp,
-                                           sizeof(value_type) * n, cudaMemcpyHostToDevice)) {
+        if (auto cuda_error_t =
+                cudaMemcpy(memory.memory_.get() + pos, _temp,
+                           sizeof(value_type) * n, cudaMemcpyHostToDevice)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         };
         __LLFRAME_TRY_CATCH_END__
@@ -554,10 +581,12 @@ public:
      * @date 2024-05-16
      * @copyright Copyright (c) 2024 时光丶人爱
      */
-    static constexpr void construct(memory_type &memory, const size_type pos, const size_type n) {
+    static constexpr void construct(memory_type &memory, const size_type pos,
+                                    const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         if constexpr (!std::is_trivial_v<value_type>)
-            __LLFRAME_THROW_UNHANDLED_INFO__("only can construct copy trivially type in gpu!");
+            __LLFRAME_THROW_UNHANDLED_INFO__(
+                "only can construct copy trivially type in gpu!");
         value_type val{};
         fill(memory, pos, n, val);
         __LLFRAME_TRY_CATCH_END__
@@ -570,10 +599,12 @@ public:
      * @param pos 位置
      * @param n 个数
      */
-    static constexpr void destroy(memory_type &memory, const size_type pos, const size_type n) {
+    static constexpr void destroy(memory_type &memory, const size_type pos,
+                                  const size_type n) {
         __LLFRAME_TRY_CATCH_BEGIN__
         if constexpr (std::is_trivial_v<value_type>) return;
-        __LLFRAME_THROW_UNHANDLED_INFO__("only can destroy trivial type in gpu!");
+        __LLFRAME_THROW_UNHANDLED_INFO__(
+            "only can destroy trivial type in gpu!");
         __LLFRAME_TRY_CATCH_END__
     };
 
@@ -588,8 +619,9 @@ public:
      * @note 为了方便不同类型不同设备赋值的接口,具体实现另写
      */
     template <is_Memory From_Memory>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const From_Memory &from, const size_type from_pos) {
+    static constexpr void copy_from(memory_type &to, const size_type to_pos,
+                                    const size_type n, const From_Memory &from,
+                                    const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         __LLFRAME_TRY_CATCH_END__
         __THROW_UNIMPLEMENTED__;
@@ -606,8 +638,9 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const Memory<Ty, device::GPU> &from, const size_type from_pos) {
+    static constexpr void
+    copy_from(memory_type &to, const size_type to_pos, const size_type n,
+              const Memory<Ty, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         Memory<Ty, device::CPU> birge_memory(n, to.device_id_);
         birge_memory.copy_from(from);
@@ -626,16 +659,17 @@ public:
      *
      */
     template <>
-    static constexpr void
-    copy_from<value_type>(memory_type &to, const size_type to_pos, const size_type n,
-                          const Memory<value_type, device::GPU> &from, const size_type from_pos) {
+    static constexpr void copy_from<value_type>(
+        memory_type &to, const size_type to_pos, const size_type n,
+        const Memory<value_type, device::GPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
         ensure_pos_legally_(from, from_pos, n);
         if (n == 0) return;
-        if (auto cuda_error_t = cudaMemcpyPeer(to.memory_.get() + to_pos, to.device_id_,
-                                               from.memory_.get() + from_pos, from.device_id_,
-                                               sizeof(value_type) * n)) {
+        if (auto cuda_error_t =
+                cudaMemcpyPeer(to.memory_.get() + to_pos, to.device_id_,
+                               from.memory_.get() + from_pos, from.device_id_,
+                               sizeof(value_type) * n)) {
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         }
         __LLFRAME_TRY_CATCH_END__
@@ -652,8 +686,9 @@ public:
      *
      */
     template <class Ty>
-    static constexpr void copy_from(memory_type &to, const size_type to_pos, const size_type n,
-                                    const Memory<Ty, device::CPU> &from, const size_type from_pos) {
+    static constexpr void
+    copy_from(memory_type &to, const size_type to_pos, const size_type n,
+              const Memory<Ty, device::CPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         awake_device_(from);
         Memory<value_type, device::CPU> birge_memory(n, to.device_id_);
@@ -674,18 +709,18 @@ public:
      *
      */
     template <>
-    static constexpr void
-    copy_from<value_type>(memory_type &to, const size_type to_pos, const size_type n,
-                          const Memory<value_type, device::CPU> &from, const size_type from_pos) {
+    static constexpr void copy_from<value_type>(
+        memory_type &to, const size_type to_pos, const size_type n,
+        const Memory<value_type, device::CPU> &from, const size_type from_pos) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(to, to_pos, n);
         ensure_pos_legally_(from, from_pos, n);
         if (n == 0) return;
         awake_device_(from);
         awake_device_(to);
-        if (auto cuda_error_t =
-                cudaMemcpy(to.memory_.get(), from.memory_.get(),
-                           sizeof(value_type) * to.n_elements_, cudaMemcpyHostToDevice))
+        if (auto cuda_error_t = cudaMemcpy(to.memory_.get(), from.memory_.get(),
+                                           sizeof(value_type) * to.n_elements_,
+                                           cudaMemcpyHostToDevice))
             __LLFRAME_THROW_CUDA_ERROR_INFO__(cuda_error_t);
         __LLFRAME_TRY_CATCH_END__
     }
@@ -693,4 +728,4 @@ public:
 
 } // namespace llframe::memory
 
-#endif //__LLFRAME_MEMORY_OPERATOR_HPP__
+#endif // LLFRAME_MEMORY_MEMORY_OPERATOR_HPP

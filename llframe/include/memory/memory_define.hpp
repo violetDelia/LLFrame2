@@ -16,8 +16,8 @@
  * @brief 内存定义
  *
  */
-#ifndef __LLFRAME_MEMORY_DEFINE_HPP__
-#define __LLFRAME_MEMORY_DEFINE_HPP__
+#ifndef LLFRAME_MEMORY_MEMORY_DEFINE_HPP
+#define LLFRAME_MEMORY_MEMORY_DEFINE_HPP
 #include "device/device_define.hpp"
 #include <type_traits>
 namespace llframe::memory {
@@ -49,4 +49,4 @@ template <class Ty>
 concept is_Memory = _Is_Memory<Ty>::value;
 
 } // namespace llframe::memory
-#endif //__LLFRAME_MEMORY_DEFINE_HPP__
+#endif // LLFRAME_MEMORY_MEMORY_DEFINE_HPP

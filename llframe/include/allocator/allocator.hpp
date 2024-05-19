@@ -16,10 +16,10 @@
  * @brief 分配器 头文件
  *
  */
-#ifndef __LLFRAME_ALLOCATOR_HPP__
-#define __LLFRAME_ALLOCATOR_HPP__
+#ifndef __LLFRAME_ALLOCATOR_ALLOCATOR_HPP__
+#define __LLFRAME_ALLOCATOR_ALLOCATOR_HPP__
 #include "allocator/allocator_define.hpp"
 #include "allocator/basic_allocator.hpp"
 #include "allocator/allocator_impl.hpp"
 #include "allocator/memory_pool.hpp"
-#endif //__LLFRAME_ALLOCATOR_HPP__
+#endif //__LLFRAME_ALLOCATOR_ALLOCATOR_HPP__

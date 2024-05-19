@@ -16,12 +16,12 @@
  * @brief llframe 头文件
  *
  */
-#ifndef __LLFRAME_HPP__
-#define __LLFRAME_HPP__
+#ifndef LLFRAME_LLFRAME_HPP
+#define LLFRAME_LLFRAME_HPP
 #include "core/core.hpp"
 #include "device/device.hpp"
 #include "allocator/allocator.hpp"
 #include "blas/blas.hpp"
 #include "memory/memory.hpp"
 #include "tensor/tensor.hpp"
-#endif //__LLFRAME_HPP__
+#endif // LLFRAME_LLFRAME_HPP

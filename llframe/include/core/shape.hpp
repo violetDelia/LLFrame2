@@ -16,8 +16,8 @@
  * @brief 表示形状或者尺寸的类
  *
  */
-#ifndef __LLFRAME_SHAPE_HPP__
-#define __LLFRAME_SHAPE_HPP__
+#ifndef LLFRAME_CORE_SHAPE_HPP
+#define LLFRAME_CORE_SHAPE_HPP
 #include "core/base_type.hpp"
 #include "core/exception.hpp"
 #include <array>
@@ -118,7 +118,7 @@ public:
     /**
      * @brief 返回Shape所有元素相乘的结果
      */
-    [[nodiscard]] value_type count() const  {
+    [[nodiscard]] value_type count() const {
         if constexpr (Dims == 0) { return 0; }
         return std::accumulate(this->cbegin(), this->cend(), size_type{1},
                                std::multiplies<value_type>());
@@ -189,4 +189,4 @@ constexpr Shape<sizeof...(Integrals)> make_shape(Integrals... values) {
 }
 } // namespace llframe::shape
 
-#endif //__LLFRAME_SHAPE_HPP__
+#endif // LLFRAME_CORE_SHAPE_HPP

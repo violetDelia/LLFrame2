@@ -18,13 +18,18 @@ public:
 };
 int main() {
     try {
-        llframe::memory::Memory<A, llframe::device::CPU> memory(2,0);
-        auto c(memory);
-        
-        
+        llframe::tensor::Tensor<3, float, llframe::device::GPU> tensor(
+            2, llframe::shape::make_shape(5, 5, 5), 0);
+        llframe::tensor::Tensor<3, float, llframe::device::GPU> tensor1(
+            3, llframe::shape::make_shape(5, 5, 5), 0);
+        llframe::tensor::Tensor_Operator::add(tensor, tensor1);
+        for (int i = 0; i < tensor.count(); i++) {
+            std::cout << tensor.memory().get(i) << std::endl;
+        }
+
     } catch (llframe::exception::Exception &e) {
         std::cout << e.what() << std::endl;
-    } catch (std::exception &e) { std::cout << e.what() << std::endl; } catch (...) {
-        std::cout << "other" << std::endl;
-    }
+    } catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
+    } catch (...) { std::cout << "other" << std::endl; }
 }

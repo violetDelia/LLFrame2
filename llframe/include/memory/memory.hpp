@@ -16,10 +16,10 @@
  * @brief 内存 头文件
  *
  */
-#ifndef __LLFRAME_MEMORY_HPP__
-#define __LLFRAME_MEMORY_HPP__
+#ifndef LLFRAME_MEMORY_MEMORY_HPP
+#define LLFRAME_MEMORY_MEMORY_HPP
 #include "memory/memory_define.hpp"
 #include "memory/memory_features.hpp"
 #include "memory/memory_impl.hpp"
 #include "memory/memory_operator.hpp"
-#endif //__LLFRAME_MEMORY_HPP__
+#endif // LLFRAME_MEMORY_MEMORY_HPP

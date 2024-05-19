@@ -16,10 +16,12 @@
  * @brief 张量 头文件
  *
  */
-#ifndef __LLFRAME_TENSOR_HPP__
-#define __LLFRAME_TENSOR_HPP__
+#ifndef LLFRAME_TENSOR_TENSOR_HPP
+#define LLFRAME_TENSOR_TENSOR_HPP
 #include "tensor/tensor_define.hpp"
 #include "tensor/tensor_features.hpp"
 #include "tensor/tensor_base.hpp"
 #include "tensor/tensor_impl.hpp"
-#endif //__LLFRAME_TENSOR_HPP__
+#include "tensor/tensor_operator.hpp"
+#include "tensor/tensor_operator_impl.hpp"
+#endif // LLFRAME_TENSOR_TENSOR_HPP

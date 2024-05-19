@@ -16,10 +16,10 @@
  * @brief 线性代数库相关文件
  *
  */
-#ifndef __LLFRAME_BLAS_HPP__
+#ifndef LLFRAME_BLAS_BLAS_HPP
 #include "blas/blas_define.hpp"
 #include "blas/blas_adapter.hpp"
 #include "blas/blas_adapter_gpu.hpp"
 #include "blas/blas_adapter_cpu.hpp"
-#define __LLFRAME_BLAS_HPP__
-#endif //__LLFRAME_BLAS_HPP__
+#define LLFRAME_BLAS_BLAS_HPP
+#endif // LLFRAME_BLAS_BLAS_HPP
