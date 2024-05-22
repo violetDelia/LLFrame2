@@ -22,7 +22,7 @@ int main() {
             2, llframe::shape::make_shape(5, 5, 5), 0);
         llframe::tensor::Tensor<3, float, llframe::device::GPU> tensor1(
             3, llframe::shape::make_shape(5, 5, 5), 0);
-        llframe::tensor::Tensor_Operator::add(tensor, tensor1);
+        llframe::tensor::Tensor_Operator::multiply(tensor, tensor1);
         for (int i = 0; i < tensor.count(); i++) {
             std::cout << tensor.memory().get(i) << std::endl;
         }

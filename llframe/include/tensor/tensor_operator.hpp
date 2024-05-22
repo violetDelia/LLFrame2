@@ -64,6 +64,66 @@ public:
     static constexpr void add(Left &&left, Right &&right) {
         imp::add(left, right);
     }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void substract(Left &left, Right &right) {
+        imp::substract(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void substract(Left &&left, Right &right) {
+        imp::substract(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void substract(Left &left, Right &&right) {
+        imp::substract(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void substract(Left &&left, Right &&right) {
+        imp::substract(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void divide(Left &left, Right &right) {
+        imp::divide(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void divide(Left &&left, Right &right) {
+        imp::divide(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void divide(Left &left, Right &&right) {
+        imp::divide(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void divide(Left &&left, Right &&right) {
+        imp::divide(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void multiply(Left &left, Right &right) {
+        imp::multiply(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void multiply(Left &&left, Right &right) {
+        imp::multiply(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void multiply(Left &left, Right &&right) {
+        imp::multiply(left, right);
+    }
+
+    template <is_Tensor Left, is_Tensor_or_Arith Right>
+    static constexpr void multiply(Left &&left, Right &&right) {
+        imp::multiply(left, right);
+    }
 };
 } // namespace llframe::tensor
 #endif // LLFRAME_TENSOR_TENSOR_OPERATOR_HPP

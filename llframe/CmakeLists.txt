@@ -24,6 +24,9 @@ set(LLFRAME_INSTALL_RUNTIME_DIR ${INSTALL_RUNTIME_DIR})
 ##---------- serach sorce file ----------##
 aux_source_directory(${LLFRAME_SOURCE_DIR} LLFRAME_SOURCE_FILES)
 
+##---------- add LLframe_Cuda ----------##
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/include/blas/blas_extension_gpu/cuda/src)
+
 ##---------- compiler llframe ----------##
 if(BUILD_SHARED_LIBS)
     add_library(LLFrame SHARED ${LLFRAME_SOURCE_FILES})
@@ -39,7 +42,7 @@ target_include_directories(LLFrame
 )
 
 target_link_libraries(LLFrame
-    PRIVATE CUDA::cudart CUDA::cublas cudnn OPENBLAS OpenMP::OpenMP_CXX
+    PRIVATE CUDA::cudart CUDA::cublas cudnn OPENBLAS OpenMP::OpenMP_CXX LLFrame_Cuda
 )
 set_property(TARGET LLFrame PROPERTY VERSION ${LLFRAME_VERSION})
 
@@ -48,7 +51,6 @@ if(TEST_LLFRAME)
     enable_testing()
     add_subdirectory(${LLFRAME_TEST_DIR})
 endif(TEST_LLFRAME)
-message(${LLFRAME_INSTALL_INCLUDE_DIR})
 
 ##---------- install ----------##
 include(CMakePackageConfigHelpers)

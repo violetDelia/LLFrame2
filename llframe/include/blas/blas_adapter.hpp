@@ -566,6 +566,25 @@ public:
     };
 
 public: // openblas extensions
+    /**
+     * @brief y_i = y_i/x_i;
+     *
+     */
+    template <is_Arithmetic X, is_Arithmetic Y>
+    static constexpr void divide_vv(const int n, X *x, const int incx, Y *y,
+                                    const int incy) {
+        __THROW_UNIMPLEMENTED__;
+    }
+
+    /**
+     * @brief y_i = y_i*x_i;
+     *
+     */
+    template <is_Arithmetic X, is_Arithmetic Y>
+    static constexpr void multiply_vv(const int n, X *x, const int incx, Y *y,
+                                      const int incy) {
+        __THROW_UNIMPLEMENTED__;
+    }
 };
 
 /**

@@ -155,23 +155,19 @@ public:
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
         platform<Left>::awake_device(left.get_device_id());
-        // 需要自己写算子，
-        __THROW_UNIMPLEMENTED__;
-        // blas<Left>::axpy(left.count(), -1, right.data(), 0, left.data(), 1);
+        blas<Left>::divide_vv(left.count(), right.data(), 1, left.data(), 1);
         __LLFRAME_TRY_CATCH_END__
     }
 
     template <is_Tensor Left, is_Tensor Right>
-    static constexpr void multiplay(Left &left, Right &right) {
+    static constexpr void multiply(Left &left, Right &right) {
         __LLFRAME_TRY_CATCH_BEGIN__
         _ensure_same_device(left, right);
         _ensure_same_dims(left, right);
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
         platform<Left>::awake_device(left.get_device_id());
-        // 需要自己写算子，
-        __THROW_UNIMPLEMENTED__;
-        // blas<Left>::axpy(left.count(), -1, right.data(), 0, left.data(), 1);
+        blas<Left>::multiply_vv(left.count(), right.data(), 1, left.data(), 1);
         __LLFRAME_TRY_CATCH_END__
     }
 

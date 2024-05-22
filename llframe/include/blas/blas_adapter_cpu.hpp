@@ -21,6 +21,7 @@
 #include "blas/blas_define.hpp"
 #include "blas/blas_adapter.hpp"
 #include "openblas/cblas.h"
+#include "blas/blas_extension_cpu/core.hpp"
 namespace llframe::blas {
 template <>
 class Blas_Adapter<device::CPU> : public _Blas_Adapter_Base<device::CPU> {
@@ -77,7 +78,6 @@ public:
     static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_sasum(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -98,7 +98,6 @@ public:
     static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ssum(static_cast<const int>(n), x,
                               static_cast<const int>(incx));
@@ -120,7 +119,6 @@ public:
                            const Y *y, const_dif_t incy) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
-        ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
             return cblas_sdot(static_cast<const int>(n), x,
                               static_cast<const int>(incx), y,
@@ -143,7 +141,6 @@ public:
     static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_snrm2(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -165,7 +162,6 @@ public:
                                            const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_isamax(static_cast<const int>(n), x,
                                 static_cast<const int>(incx));
@@ -187,7 +183,6 @@ public:
                                            const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_isamin(static_cast<const int>(n), x,
                                 static_cast<const int>(incx));
@@ -210,7 +205,6 @@ public:
                                           const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ismax(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -233,7 +227,6 @@ public:
                                           const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ismin(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -255,7 +248,6 @@ public:
                                const_dif_t incx, Y *y, const_dif_t incy) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
-        ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
             size_t count = static_cast<int>(n);
             while (count >= openblas_max_axpy_n) {
@@ -307,7 +299,6 @@ public:
                                Y *y, const_dif_t incy) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
-        ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
             cblas_scopy(static_cast<const int>(n), x,
                         static_cast<const int>(incx), y,
@@ -333,7 +324,6 @@ public:
                                const_dif_t incy) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
-        ensure_not_negative_<const int>(n, incx, incy);
         if constexpr (is_Same_Ty<float, X, Y>) {
             cblas_sswap(static_cast<const int>(n), x,
                         static_cast<const int>(incx), y,
@@ -359,7 +349,6 @@ public:
                                const_dif_t incx) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
-        ensure_not_negative_<const int>(n, incx);
         if constexpr (is_Same_Ty<float, X>) {
             size_t count = static_cast<int>(n);
             while (count >= openblas_max_scal_n) {
@@ -412,7 +401,6 @@ public:
                                const_dif_t incy) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
-        ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sgemv(
@@ -446,7 +434,6 @@ public:
                               const_dif_t lda) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
-        ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sger(convert_(layout), static_cast<const int>(m),
@@ -481,7 +468,6 @@ public:
          const Beta beta, C *c, const_dif_t ldc) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, b, c);
-        ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
         ensure_ld_legal_(layout, trans_a, m, k, lda);
         ensure_ld_legal_(layout, trans_b, k, n, ldb);
         ensure_ld_legal_(layout, m, n, ldc);
@@ -506,6 +492,33 @@ public:
         __LLFRAME_TRY_CATCH_END__
         __THROW_UNIMPLEMENTED__;
     };
+
+public: // openblas extensions
+    /**
+     * @brief y_i = y_i/x_i;
+     *
+     */
+    template <is_Arithmetic X, is_Arithmetic Y>
+    static constexpr void divide_vv(const int n, X *x, const int incx, Y *y,
+                                    const int incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
+        ensure_no_null_pointer_(x, y);
+        extension::cpu::divide_vv(n, x, incx, y, incy);
+        __LLFRAME_TRY_CATCH_END__
+    }
+
+    /**
+     * @brief y_i = y_i*x_i;
+     *
+     */
+    template <is_Arithmetic X, is_Arithmetic Y>
+    static constexpr void multiply_vv(const int n, X *x, const int incx, Y *y,
+                                      const int incy) {
+        __LLFRAME_TRY_CATCH_BEGIN__
+        ensure_no_null_pointer_(x, y);
+        extension::cpu::multiply_vv(n, x, incx, y, incy);
+        __LLFRAME_TRY_CATCH_END__
+    }
 };
 } // namespace llframe::blas
 #endif // LLFRAME_BLAS_BLAS_ADAPTER_CPU_HPP
