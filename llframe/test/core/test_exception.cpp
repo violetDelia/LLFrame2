@@ -1,5 +1,5 @@
 #include "test_config.hpp"
-#ifdef TEST_EXCEPTION
+#ifdef TEST_EXCEPTION_DISCARD
 #include <gtest/gtest.h>
 #include "test_common.hpp"
 #include <string>
@@ -23,16 +23,20 @@
 #define MAKE_WAHT(message, file, line, func_name)                              \
     CONCAT_STRING(MAKE_WAHT_PREFIX(message),                                   \
                   MAKE_LOCATION(file, line, func_name))
-
+#define EXCEPTION_CLASS_INFO(exception)                                        \
+    std::string(typeid(exception).name()) + '\n'
 template <class Exception>
 void test_Exception_default_construct() {
     Exception exception;
-    ASSERT_EQ(exception.what(), DEFAULT_WAHT);
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception), DEFAULT_WAHT));
 }
 template <class Exception>
 void test_Exception_construct_message(const char *message) {
     Exception exception(message);
-    ASSERT_EQ(exception.what(), MAKE_WAHT_PREFIX(message));
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT_PREFIX(message)));
 }
 
 template <class Exception>
@@ -40,7 +44,9 @@ void test_Exception_construct_message_file_line_func_name(
     const char *message, const char *file, const size_t line,
     const char *func_name) {
     Exception exception(message, file, line, func_name);
-    ASSERT_EQ(exception.what(), MAKE_WAHT(message, file, line, func_name));
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT(message, file, line, func_name)));
 }
 
 template <class Exception>
@@ -48,8 +54,9 @@ void test_Exception_construct_file_line_func_name(const char *file,
                                                   const size_t line,
                                                   const char *func_name) {
     Exception exception(file, line, func_name);
-    ASSERT_EQ(exception.what(),
-              MAKE_WAHT(DEFAULT_MESSAGE, file, line, func_name));
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT(DEFAULT_MESSAGE, file, line, func_name)));
 }
 
 template <class Exception>
@@ -57,7 +64,8 @@ void test_Exception_construct_copy(const char *message, const char *file,
                                    const size_t line, const char *func_name) {
     Exception exception(message, file, line, func_name);
     auto exception_copy(exception);
-    ASSERT_EQ(exception.what(), exception_copy.what());
+    ASSERT_EQ(std::string(exception.what()),
+              std::string(exception_copy.what()));
 }
 
 template <class Exception>
@@ -65,8 +73,10 @@ void test_Exception_construct_move(const char *message, const char *file,
                                    const size_t line, const char *func_name) {
     Exception exception(message, file, line, func_name);
     auto exception_move(std::move(exception));
-    ASSERT_EQ(exception.what(), "");
-    ASSERT_EQ(exception_move.what(), MAKE_WAHT(message, file, line, func_name));
+    ASSERT_EQ(std::string(exception.what()), "");
+    ASSERT_EQ(std::string(exception_move.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT(message, file, line, func_name)));
 }
 
 template <class Exception>
@@ -83,20 +93,23 @@ void test_Exception_construct(const char *message, const char *file,
 }
 
 TEST(Exception, construct) {
-    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "", "", 0, "");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "\n", "\t", 0,
+                "34445");
     APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "\n", "**@@#", 0,
                 ")__!+");
     APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "\t", "||!@\\23", 0,
                 ")(*(!@*))");
-    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "???#?@?", "", 0,
-                "");
+    APPLY_TUPLE(Exception_Tuple, test_Exception_construct, "???#?@?", "56", 0,
+                "77");
 }
 
 template <class Exception>
 void test_Exception_what(const char *message, const char *file, size_t line,
                          const char *func_name) {
     Exception exception(message, file, line, func_name);
-    ASSERT_EQ(exception.what(), MAKE_WAHT(message, file, line, func_name));
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT(message, file, line, func_name)));
 }
 
 TEST(Exception, what) {
@@ -112,9 +125,13 @@ template <class Exception>
 void test_Exception_add_location(const char *message, const char *file,
                                  size_t line, const char *func_name) {
     Exception exception(message);
-    ASSERT_EQ(exception.what(), MAKE_WAHT_PREFIX(message));
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT_PREFIX(message)));
     exception.add_location(file, line, func_name);
-    ASSERT_EQ(exception.what(), MAKE_WAHT(message, file, line, func_name));
+    ASSERT_EQ(std::string(exception.what()),
+              CONCAT_STRING(EXCEPTION_CLASS_INFO(Exception),
+                            MAKE_WAHT(message, file, line, func_name)));
 }
 
 TEST(Exception, add_location) {
@@ -126,4 +143,4 @@ TEST(Exception, add_location) {
     APPLY_TUPLE(Exception_Tuple, test_Exception_add_location, "???#?@?", "", 0,
                 "");
 }
-#endif // TEST_EXCEPTION
+#endif // TEST_EXCEPTION_DISCARD

@@ -78,20 +78,21 @@ public:
      * @remarks GPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
+    static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx,
+                            device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             X res__{};
-            cublasSasum_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasSasum_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), &res__);
             return res__;
         }
         if constexpr (is_Same_Ty<double, X>) {
             X res__{};
-            cublasDasum_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasDasum_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), &res__);
             return res__;
         }
@@ -105,21 +106,21 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
-                           const Y *y, const_dif_t incy) {
+                           const Y *y, const_dif_t incy, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
             X res__{};
-            cublasSdot_v2(plat::get_active_device().cublas_handle(),
-                          static_cast<const int>(n), x,
+            cublasSdot_v2(device.cublas_handle(), static_cast<const int>(n), x,
                           static_cast<const int>(incx), y,
                           static_cast<const int>(incy), &res__);
             return res__;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
             X res__{};
-            cublasDdot_v2(plat::get_active_device().cublas_handle(),
-                          static_cast<const int>(n), x,
+            cublasDdot_v2(device.cublas_handle(), static_cast<const int>(n), x,
                           static_cast<const int>(incx), y,
                           static_cast<const int>(incy), &res__);
             return res__;
@@ -133,20 +134,21 @@ public:
      * @remarks GPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx) {
+    static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx,
+                            device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             X res__{};
-            cublasSnrm2_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasSnrm2_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), &res__);
             return res__;
         }
         if constexpr (is_Same_Ty<double, X>) {
             X res__{};
-            cublasDnrm2_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasDnrm2_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), &res__);
             return res__;
         }
@@ -160,22 +162,22 @@ public:
      * @note cublas返回值从1开始
      */
     template <is_Arithmetic X>
-    static constexpr difference_type iamax(const_dif_t n, const X *x,
-                                           const_dif_t incx) {
+    static constexpr difference_type
+    iamax(const_dif_t n, const X *x, const_dif_t incx, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             int res__{};
-            cublasIsamax_v2(plat::get_active_device().cublas_handle(),
-                            static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res__);
+            cublasIsamax_v2(device.cublas_handle(), static_cast<const int>(n),
+                            x, static_cast<const int>(incx), &res__);
             return static_cast<difference_type>(res__) - 1;
         }
         if constexpr (is_Same_Ty<double, X>) {
             int res__{};
-            cublasIdamax_v2(plat::get_active_device().cublas_handle(),
-                            static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res__);
+            cublasIdamax_v2(device.cublas_handle(), static_cast<const int>(n),
+                            x, static_cast<const int>(incx), &res__);
             return static_cast<difference_type>(res__) - 1;
         }
         __LLFRAME_TRY_CATCH_END__
@@ -188,22 +190,22 @@ public:
      * @note cublas返回值从1开始
      */
     template <is_Arithmetic X>
-    static constexpr difference_type iamin(const_dif_t n, const X *x,
-                                           const_dif_t incx) {
+    static constexpr difference_type
+    iamin(const_dif_t n, const X *x, const_dif_t incx, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             int res__{};
-            cublasIsamin_v2(plat::get_active_device().cublas_handle(),
-                            static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res__);
+            cublasIsamin_v2(device.cublas_handle(), static_cast<const int>(n),
+                            x, static_cast<const int>(incx), &res__);
             return static_cast<difference_type>(res__) - 1;
         }
         if constexpr (is_Same_Ty<double, X>) {
             int res__{};
-            cublasIdamin_v2(plat::get_active_device().cublas_handle(),
-                            static_cast<const int>(n), x,
-                            static_cast<const int>(incx), &res__);
+            cublasIdamin_v2(device.cublas_handle(), static_cast<const int>(n),
+                            x, static_cast<const int>(incx), &res__);
             return static_cast<difference_type>(res__) - 1;
         }
         __LLFRAME_TRY_CATCH_END__
@@ -216,22 +218,23 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y, is_Arithmetic Alpha>
     static constexpr void axpy(const_dif_t n, const Alpha alpha, const X *x,
-                               const_dif_t incx, Y *y, const_dif_t incy) {
+                               const_dif_t incx, Y *y, const_dif_t incy,
+                               device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
             const X alpha__ = static_cast<const X>(alpha);
-            cublasSaxpy_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), &alpha__, x,
-                           static_cast<const int>(incx), y,
+            cublasSaxpy_v2(device.cublas_handle(), static_cast<const int>(n),
+                           &alpha__, x, static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
             return;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
             const X alpha__ = static_cast<const X>(alpha);
-            cublasDaxpy_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), &alpha__, x,
-                           static_cast<const int>(incx), y,
+            cublasDaxpy_v2(device.cublas_handle(), static_cast<const int>(n),
+                           &alpha__, x, static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
             return;
         }
@@ -245,19 +248,19 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void copy(const_dif_t n, const X *x, const_dif_t incx,
-                               Y *y, const_dif_t incy) {
+                               Y *y, const_dif_t incy, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
-            cublasScopy_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasScopy_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
             return;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
-            cublasDcopy_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasDcopy_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
             return;
@@ -272,19 +275,19 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void swap(const_dif_t n, X *x, const_dif_t incx, Y *y,
-                               const_dif_t incy) {
+                               const_dif_t incy, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
-            cublasSswap_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasSswap_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
             return;
         }
         if constexpr (is_Same_Ty<double, X, Y>) {
-            cublasDswap_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), x,
+            cublasDswap_v2(device.cublas_handle(), static_cast<const int>(n), x,
                            static_cast<const int>(incx), y,
                            static_cast<const int>(incy));
             return;
@@ -299,21 +302,21 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Alpha>
     static constexpr void scal(const_dif_t n, const Alpha alpha, X *x,
-                               const_dif_t incx) {
+                               const_dif_t incx, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             const X alpha__ = static_cast<const X>(alpha);
-            cublasSscal_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), &alpha__, x,
-                           static_cast<const int>(incx));
+            cublasSscal_v2(device.cublas_handle(), static_cast<const int>(n),
+                           &alpha__, x, static_cast<const int>(incx));
             return;
         }
         if constexpr (is_Same_Ty<double, X>) {
             const X alpha__ = static_cast<const X>(alpha);
-            cublasDscal_v2(plat::get_active_device().cublas_handle(),
-                           static_cast<const int>(n), &alpha__, x,
-                           static_cast<const int>(incx));
+            cublasDscal_v2(device.cublas_handle(), static_cast<const int>(n),
+                           &alpha__, x, static_cast<const int>(incx));
             return;
         }
         __LLFRAME_TRY_CATCH_END__
@@ -333,24 +336,24 @@ public:
                                const_dif_t m, const_dif_t n, const Alpha alpha,
                                const A *a, const_dif_t lda, const X *x,
                                const_dif_t incx, const Beta beta, Y *y,
-                               const_dif_t incy) {
+                               const_dif_t incy, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
+        ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             const X alpha___ = static_cast<const X>(alpha);
             const X beta__ = static_cast<const X>(beta);
             if (layout == Layout::Row_Major) {
-                cublasSgemv_v2(plat::get_active_device().cublas_handle(),
-                               convert_(trans, layout),
+                cublasSgemv_v2(device.cublas_handle(), convert_(trans, layout),
                                static_cast<const int>(n),
                                static_cast<const int>(m), &alpha___, a,
                                static_cast<const int>(lda), x,
                                static_cast<const int>(incx), &beta__, y,
                                static_cast<const int>(incy));
             } else if (layout == Layout::Col_Major) {
-                cublasSgemv_v2(plat::get_active_device().cublas_handle(),
-                               convert_(trans, layout),
+                cublasSgemv_v2(device.cublas_handle(), convert_(trans, layout),
                                static_cast<const int>(m),
                                static_cast<const int>(n), &alpha___, a,
                                static_cast<const int>(lda), x,
@@ -363,16 +366,14 @@ public:
             const X alpha___ = static_cast<const X>(alpha);
             const X beta__ = static_cast<const X>(beta);
             if (layout == Layout::Row_Major) {
-                cublasDgemv_v2(plat::get_active_device().cublas_handle(),
-                               convert_(trans, layout),
+                cublasDgemv_v2(device.cublas_handle(), convert_(trans, layout),
                                static_cast<const int>(n),
                                static_cast<const int>(m), &alpha___, a,
                                static_cast<const int>(lda), x,
                                static_cast<const int>(incx), &beta__, y,
                                static_cast<const int>(incy));
             } else if (layout == Layout::Col_Major) {
-                cublasDgemv_v2(plat::get_active_device().cublas_handle(),
-                               convert_(trans, layout),
+                cublasDgemv_v2(device.cublas_handle(), convert_(trans, layout),
                                static_cast<const int>(m),
                                static_cast<const int>(n), &alpha___, a,
                                static_cast<const int>(lda), x,
@@ -394,22 +395,22 @@ public:
     static constexpr void ger(const Layout layout, const_dif_t m, const_dif_t n,
                               const Alpha alpha, const X *x, const_dif_t incx,
                               const Y *y, const_dif_t incy, A *a,
-                              const_dif_t lda) {
+                              const_dif_t lda, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
+        ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             const A alpha__ = static_cast<const A>(alpha);
             if (layout == Layout::Row_Major) {
-                cublasSger_v2(plat::get_active_device().cublas_handle(),
-                              static_cast<const int>(n),
+                cublasSger_v2(device.cublas_handle(), static_cast<const int>(n),
                               static_cast<const int>(m), &alpha__, y,
                               static_cast<const int>(incy), x,
                               static_cast<const int>(incx), a,
                               static_cast<const int>(lda));
             } else {
-                cublasSger_v2(plat::get_active_device().cublas_handle(),
-                              static_cast<const int>(m),
+                cublasSger_v2(device.cublas_handle(), static_cast<const int>(m),
                               static_cast<const int>(n), &alpha__, x,
                               static_cast<const int>(incx), y,
                               static_cast<const int>(incy), a,
@@ -420,15 +421,13 @@ public:
         if constexpr (is_Same_Ty<double, A, X, Y>) {
             const A alpha__ = static_cast<const A>(alpha);
             if (layout == Layout::Row_Major) {
-                cublasDger_v2(plat::get_active_device().cublas_handle(),
-                              static_cast<const int>(n),
+                cublasDger_v2(device.cublas_handle(), static_cast<const int>(n),
                               static_cast<const int>(m), &alpha__, y,
                               static_cast<const int>(incy), x,
                               static_cast<const int>(incx), a,
                               static_cast<const int>(lda));
             } else {
-                cublasDger_v2(plat::get_active_device().cublas_handle(),
-                              static_cast<const int>(m),
+                cublasDger_v2(device.cublas_handle(), static_cast<const int>(m),
                               static_cast<const int>(n), &alpha__, x,
                               static_cast<const int>(incx), y,
                               static_cast<const int>(incy), a,
@@ -450,31 +449,33 @@ public:
     gemm(const Layout layout, const Transpose trans_a, const Transpose trans_b,
          const_dif_t m, const_dif_t n, const_dif_t k, const Alpha alpha,
          const A *a, const_dif_t lda, const B *b, const_dif_t ldb,
-         const Beta beta, C *c, const_dif_t ldc) {
+         const Beta beta, C *c, const_dif_t ldc, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, b, c);
+        ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
         ensure_ld_legal_(layout, trans_a, m, k, lda);
         ensure_ld_legal_(layout, trans_b, k, n, ldb);
         ensure_ld_legal_(layout, m, n, ldc);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, A, B, C>) {
             const A alpha__ = static_cast<const A>(alpha);
             const A beta__ = static_cast<const A>(beta);
             if (layout == Layout::Row_Major) {
-                cublasSgemm_v2(
-                    plat::get_active_device().cublas_handle(),
-                    convert_(trans_a), convert_(trans_b),
-                    static_cast<const int>(k), static_cast<const int>(m),
-                    static_cast<const int>(k), &alpha__, b,
-                    static_cast<const int>(k), a, static_cast<const int>(k),
-                    &beta__, c, static_cast<const int>(n));
+                cublasSgemm_v2(device.cublas_handle(), convert_(trans_a),
+                               convert_(trans_b), static_cast<const int>(k),
+                               static_cast<const int>(m),
+                               static_cast<const int>(k), &alpha__, b,
+                               static_cast<const int>(k), a,
+                               static_cast<const int>(k), &beta__, c,
+                               static_cast<const int>(n));
             } else {
                 cublasSgemm_v2(
-                    plat::get_active_device().cublas_handle(),
-                    convert_(trans_a, layout), convert_(trans_b, layout),
-                    static_cast<const int>(m), static_cast<const int>(n),
-                    static_cast<const int>(k), &alpha__, a,
-                    static_cast<const int>(lda), b, static_cast<const int>(ldb),
-                    &beta__, c, static_cast<const int>(ldc));
+                    device.cublas_handle(), convert_(trans_a, layout),
+                    convert_(trans_b, layout), static_cast<const int>(m),
+                    static_cast<const int>(n), static_cast<const int>(k),
+                    &alpha__, a, static_cast<const int>(lda), b,
+                    static_cast<const int>(ldb), &beta__, c,
+                    static_cast<const int>(ldc));
             }
             return;
         }
@@ -482,21 +483,21 @@ public:
             const A alpha__ = static_cast<const A>(alpha);
             const A beta__ = static_cast<const A>(beta);
             if (layout == Layout::Row_Major) {
-                cublasDgemm_v2(
-                    plat::get_active_device().cublas_handle(),
-                    convert_(trans_a), convert_(trans_b),
-                    static_cast<const int>(k), static_cast<const int>(m),
-                    static_cast<const int>(k), &alpha__, b,
-                    static_cast<const int>(k), a, static_cast<const int>(k),
-                    &beta__, c, static_cast<const int>(n));
+                cublasDgemm_v2(device.cublas_handle(), convert_(trans_a),
+                               convert_(trans_b), static_cast<const int>(k),
+                               static_cast<const int>(m),
+                               static_cast<const int>(k), &alpha__, b,
+                               static_cast<const int>(k), a,
+                               static_cast<const int>(k), &beta__, c,
+                               static_cast<const int>(n));
             } else {
                 cublasDgemm_v2(
-                    plat::get_active_device().cublas_handle(),
-                    convert_(trans_a, layout), convert_(trans_b, layout),
-                    static_cast<const int>(m), static_cast<const int>(n),
-                    static_cast<const int>(k), &alpha__, a,
-                    static_cast<const int>(lda), b, static_cast<const int>(ldb),
-                    &beta__, c, static_cast<const int>(ldc));
+                    device.cublas_handle(), convert_(trans_a, layout),
+                    convert_(trans_b, layout), static_cast<const int>(m),
+                    static_cast<const int>(n), static_cast<const int>(k),
+                    &alpha__, a, static_cast<const int>(lda), b,
+                    static_cast<const int>(ldb), &beta__, c,
+                    static_cast<const int>(ldc));
             }
             return;
         }
@@ -511,11 +512,12 @@ public: // openblas extensions
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void divide_vv(const int n, X *x, const int incx, Y *y,
-                                    const int incy) {
+                                    const int incy, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
-        extension::gpu::divide_vv(n, x, incx, y, incy,
-                                  plat::get_active_device().property());
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
+        extension::gpu::divide_vv(n, x, incx, y, incy, device.property());
         __LLFRAME_TRY_CATCH_END__
     }
 
@@ -525,11 +527,12 @@ public: // openblas extensions
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void multiply_vv(const int n, X *x, const int incx, Y *y,
-                                      const int incy) {
+                                      const int incy, device::GPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
-        extension::gpu::multiply_vv(n, x, incx, y, incy,
-                                    plat::get_active_device().property());
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
+        extension::gpu::multiply_vv(n, x, incx, y, incy, device.property());
         __LLFRAME_TRY_CATCH_END__
     }
 };

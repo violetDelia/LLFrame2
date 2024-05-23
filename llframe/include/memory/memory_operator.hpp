@@ -280,10 +280,9 @@ public:
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_pos_legally_(memory, pos, n);
         if (n == 0) return;
-        // 如果可以,尽量调用blas
         if constexpr (blas::is_Support_Blas<device_type, value_type>) {
-            awake_device_(memory);
-            blas_adapter::copy(n, &val, 0, memory.memory_.get() + pos, 1);
+            blas_adapter::copy(n, &val, 0, memory.memory_.get() + pos, 1,
+                               platform::get_device(memory.get_id()));
         } else {
             std::uninitialized_fill_n(memory.memory_.get() + pos, n, val);
         }
@@ -385,11 +384,10 @@ public:
         ensure_pos_legally_(from, from_pos, n);
         ensure_same_device_(from, to);
         if (n == 0) return;
-        awake_device_(from);
-        // 如果可以,尽量调用blas
         if constexpr (blas::is_Support_Blas<device_type, value_type, Ty>) {
             blas_adapter::copy(n, from.memory_.get() + from_pos, 1,
-                               to.memory_.get() + to_pos, 1);
+                               to.memory_.get() + to_pos, 1,
+                               platform::get_device(from.get_id()));
         } else {
             std ::uninitialized_copy_n(from.memory_.get() + from_pos, n,
                                        to.memory_.get() + to_pos);

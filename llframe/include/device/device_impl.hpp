@@ -53,7 +53,7 @@ public:
         return this->id_;
     }
 
-    bool awake() noexcept {
+    constexpr bool awake() noexcept {
         return true;
     };
 

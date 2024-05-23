@@ -130,8 +130,8 @@ public:
         _ensure_same_dims(left, right);
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
-        platform<Left>::awake_device(left.get_device_id());
-        blas<Left>::axpy(left.count(), 1, right.data(), 0, left.data(), 1);
+        blas<Left>::axpy(left.count(), 1, right.data(), 0, left.data(), 1,
+                         platform<Left>::get_device(left.get_device_id()));
         __LLFRAME_TRY_CATCH_END__
     }
 
@@ -142,8 +142,8 @@ public:
         _ensure_same_dims(left, right);
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
-        platform<Left>::awake_device(left.get_device_id());
-        blas<Left>::axpy(left.count(), -1, right.data(), 0, left.data(), 1);
+        blas<Left>::axpy(left.count(), -1, right.data(), 0, left.data(), 1,
+                         platform<Left>::get_device(left.get_device_id()));
         __LLFRAME_TRY_CATCH_END__
     }
 
@@ -154,8 +154,8 @@ public:
         _ensure_same_dims(left, right);
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
-        platform<Left>::awake_device(left.get_device_id());
-        blas<Left>::divide_vv(left.count(), right.data(), 1, left.data(), 1);
+        blas<Left>::divide_vv(left.count(), right.data(), 1, left.data(), 1,
+                              platform<Left>::get_device(left.get_device_id()));
         __LLFRAME_TRY_CATCH_END__
     }
 
@@ -166,8 +166,9 @@ public:
         _ensure_same_dims(left, right);
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
-        platform<Left>::awake_device(left.get_device_id());
-        blas<Left>::multiply_vv(left.count(), right.data(), 1, left.data(), 1);
+        blas<Left>::multiply_vv(
+            left.count(), right.data(), 1, left.data(), 1,
+            platform<Left>::get_device(left.get_device_id()));
         __LLFRAME_TRY_CATCH_END__
     }
 
@@ -178,7 +179,6 @@ public:
         _ensure_same_dims(left, right);
         _ensure_continious(left, right);
         _ensure_same_shape(left, right);
-        platform<Left>::awake_device(left.get_device_id());
         __THROW_UNIMPLEMENTED__;
         // blas<Left>::gemm();
         __LLFRAME_TRY_CATCH_END__

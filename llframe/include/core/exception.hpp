@@ -72,7 +72,8 @@ public:
     [[nodiscard]] char const *what() const {
         std::string info = std::string(typeid(*this).name()) + '\n'
                            + this->message_ + this->locations_;
-        auto size = info.capacity();
+        info.shrink_to_fit();
+        auto size = info.size();
         char *str = new char[size];
         memcpy(str, info.data(), size);
         return str;

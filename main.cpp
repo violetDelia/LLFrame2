@@ -18,7 +18,7 @@ public:
 };
 int main() {
     try {
-        llframe::tensor::Tensor<3, float, llframe::device::GPU> tensor(
+        llframe::tensor::Tensor<3, int, llframe::device::GPU> tensor(
             2, llframe::shape::make_shape(5, 5, 5), 0);
         llframe::tensor::Tensor<3, float, llframe::device::GPU> tensor1(
             3, llframe::shape::make_shape(5, 5, 5), 0);

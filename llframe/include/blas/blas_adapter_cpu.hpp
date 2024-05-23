@@ -75,9 +75,12 @@ public:
      * @remarks CPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx) {
+    static constexpr X asum(const_dif_t n, const X *x, const_dif_t incx,
+                            device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_sasum(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -95,9 +98,12 @@ public:
      * @remarks CPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx) {
+    static constexpr X sum(const_dif_t n, const X *x, const_dif_t incx,
+                           device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ssum(static_cast<const int>(n), x,
                               static_cast<const int>(incx));
@@ -116,9 +122,11 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr X dot(const_dif_t n, const X *x, const_dif_t incx,
-                           const Y *y, const_dif_t incy) {
+                           const Y *y, const_dif_t incy, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
             return cblas_sdot(static_cast<const int>(n), x,
                               static_cast<const int>(incx), y,
@@ -138,9 +146,12 @@ public:
      * @remarks CPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx) {
+    static constexpr X nrm2(const_dif_t n, const X *x, const_dif_t incx,
+                            device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_snrm2(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -158,10 +169,12 @@ public:
      * @remarks CPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr difference_type iamax(const_dif_t n, const X *x,
-                                           const_dif_t incx) {
+    static constexpr difference_type
+    iamax(const_dif_t n, const X *x, const_dif_t incx, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_isamax(static_cast<const int>(n), x,
                                 static_cast<const int>(incx));
@@ -179,10 +192,12 @@ public:
      * @remarks CPU 版本
      */
     template <is_Arithmetic X>
-    static constexpr difference_type iamin(const_dif_t n, const X *x,
-                                           const_dif_t incx) {
+    static constexpr difference_type
+    iamin(const_dif_t n, const X *x, const_dif_t incx, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_isamin(static_cast<const int>(n), x,
                                 static_cast<const int>(incx));
@@ -201,10 +216,12 @@ public:
      * @note 仅openblas支持
      */
     template <is_Arithmetic X>
-    static constexpr difference_type imax(const_dif_t n, const X *x,
-                                          const_dif_t incx) {
+    static constexpr difference_type
+    imax(const_dif_t n, const X *x, const_dif_t incx, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ismax(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -223,10 +240,12 @@ public:
      * @note 仅openblas支持
      */
     template <is_Arithmetic X>
-    static constexpr difference_type imin(const_dif_t n, const X *x,
-                                          const_dif_t incx) {
+    static constexpr difference_type
+    imin(const_dif_t n, const X *x, const_dif_t incx, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             return cblas_ismin(static_cast<const int>(n), x,
                                static_cast<const int>(incx));
@@ -245,9 +264,12 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y, is_Arithmetic Alpha>
     static constexpr void axpy(const_dif_t n, const Alpha alpha, const X *x,
-                               const_dif_t incx, Y *y, const_dif_t incy) {
+                               const_dif_t incx, Y *y, const_dif_t incy,
+                               device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
             size_t count = static_cast<int>(n);
             while (count >= openblas_max_axpy_n) {
@@ -296,9 +318,11 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void copy(const_dif_t n, const X *x, const_dif_t incx,
-                               Y *y, const_dif_t incy) {
+                               Y *y, const_dif_t incy, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
             cblas_scopy(static_cast<const int>(n), x,
                         static_cast<const int>(incx), y,
@@ -321,9 +345,11 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void swap(const_dif_t n, X *x, const_dif_t incx, Y *y,
-                               const_dif_t incy) {
+                               const_dif_t incy, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X, Y>) {
             cblas_sswap(static_cast<const int>(n), x,
                         static_cast<const int>(incx), y,
@@ -346,9 +372,11 @@ public:
      */
     template <is_Arithmetic X, is_Arithmetic Alpha>
     static constexpr void scal(const_dif_t n, const Alpha alpha, X *x,
-                               const_dif_t incx) {
+                               const_dif_t incx, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x);
+        ensure_not_negative_<const int>(n, incx);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, X>) {
             size_t count = static_cast<int>(n);
             while (count >= openblas_max_scal_n) {
@@ -398,10 +426,12 @@ public:
                                const_dif_t m, const_dif_t n, const Alpha alpha,
                                const A *a, const_dif_t lda, const X *x,
                                const_dif_t incx, const Beta beta, Y *y,
-                               const_dif_t incy) {
+                               const_dif_t incy, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
+        ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sgemv(
                 convert_(layout), convert_(trans), static_cast<const int>(m),
@@ -431,10 +461,12 @@ public:
     static constexpr void ger(const Layout layout, const_dif_t m, const_dif_t n,
                               const Alpha alpha, const X *x, const_dif_t incx,
                               const Y *y, const_dif_t incy, A *a,
-                              const_dif_t lda) {
+                              const_dif_t lda, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, x, y);
+        ensure_not_negative_<const int>(m, n, lda, incx, incy);
         ensure_ld_legal_(layout, m, n, lda);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, A, X, Y>) {
             cblas_sger(convert_(layout), static_cast<const int>(m),
                        static_cast<const int>(n), static_cast<const X>(alpha),
@@ -465,12 +497,14 @@ public:
     gemm(const Layout layout, const Transpose trans_a, const Transpose trans_b,
          const_dif_t m, const_dif_t n, const_dif_t k, const Alpha alpha,
          const A *a, const_dif_t lda, const B *b, const_dif_t ldb,
-         const Beta beta, C *c, const_dif_t ldc) {
+         const Beta beta, C *c, const_dif_t ldc, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(a, b, c);
+        ensure_not_negative_<const int>(m, n, k, lda, ldb, ldc);
         ensure_ld_legal_(layout, trans_a, m, k, lda);
         ensure_ld_legal_(layout, trans_b, k, n, ldb);
         ensure_ld_legal_(layout, m, n, ldc);
+        plat::awake_device(device.get_id());
         if constexpr (is_Same_Ty<float, A, B, C>) {
             cblas_sgemm(convert_(layout), convert_(trans_a), convert_(trans_b),
                         static_cast<const int>(m), static_cast<const int>(n),
@@ -500,9 +534,11 @@ public: // openblas extensions
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void divide_vv(const int n, X *x, const int incx, Y *y,
-                                    const int incy) {
+                                    const int incy, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         extension::cpu::divide_vv(n, x, incx, y, incy);
         __LLFRAME_TRY_CATCH_END__
     }
@@ -513,9 +549,11 @@ public: // openblas extensions
      */
     template <is_Arithmetic X, is_Arithmetic Y>
     static constexpr void multiply_vv(const int n, X *x, const int incx, Y *y,
-                                      const int incy) {
+                                      const int incy, device::CPU &device) {
         __LLFRAME_TRY_CATCH_BEGIN__
         ensure_no_null_pointer_(x, y);
+        ensure_not_negative_<const int>(n, incx, incy);
+        plat::awake_device(device.get_id());
         extension::cpu::multiply_vv(n, x, incx, y, incy);
         __LLFRAME_TRY_CATCH_END__
     }
