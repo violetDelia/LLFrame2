@@ -59,7 +59,7 @@ protected:
     }
 
     template <is_Tensor Tensor, is_Tensor... Others>
-    static constexpr void _ensure_same_device(Tensor tensor,
+    static constexpr void _ensure_same_device(Tensor &tensor,
                                               Others &...others) {
         if constexpr (sizeof...(Others) == 0) return;
         if constexpr (!(...
@@ -71,7 +71,7 @@ protected:
     };
 
     template <is_Tensor Tensor, is_Tensor... Others>
-    static constexpr void _ensure_same_dims(Tensor tensor, Others &...others) {
+    static constexpr void _ensure_same_dims(Tensor &tensor, Others &...others) {
         if constexpr (sizeof...(Others) == 0) return;
         if constexpr ((...
                        || (shape_type<Tensor>::Dims
@@ -82,7 +82,8 @@ protected:
     }
 
     template <is_Tensor Tensor, is_Tensor... Others>
-    static constexpr void _ensure_same_shape(Tensor tensor, Others &...others) {
+    static constexpr void _ensure_same_shape(Tensor &tensor,
+                                             Others &...others) {
         if constexpr (sizeof...(Others) == 0) return;
         if ((... || (tensor.shape() != others.shape()))) {
             __LLFRAME_THROW_EXCEPTION_INFO__(llframe::exception::Unimplement,
